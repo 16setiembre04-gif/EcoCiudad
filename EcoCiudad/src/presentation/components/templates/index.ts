@@ -1,0 +1,9 @@
+export { AuthTemplate } from './auth-template';
+export { DashboardTemplate } from './dashboard-template';
+export { MapTemplate } from './map-template';
+export { CommunityTemplate } from './community-template';
+export { ProfileTemplate } from './profile-template';
+export { OnboardingContainer } from './onboarding-container';
+export { EventsLayout } from './events-layout';
+export { RecyclingCentersLayout } from './recycling-centers-layout';
+export { OperatorLayout } from './operator-layout';

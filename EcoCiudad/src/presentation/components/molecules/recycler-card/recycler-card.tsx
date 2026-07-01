@@ -1,0 +1,109 @@
+import { View } from 'react-native';
+import { Card } from '@/components/atoms/card';
+import { ThemedText } from '@/components/atoms/text';
+import { Chip } from '@/components/atoms/chip';
+import { Icon } from '@/components/atoms/icon';
+import { Divider } from '@/components/atoms/divider';
+import { RecyclerCardProps } from './types';
+import { spacing } from '@/theme/spacing';
+import { useTheme } from '@/theme/context';
+
+export function RecyclerCard({
+  name,
+  materials,
+  rating,
+  phone,
+  email,
+  distance,
+  action,
+  onPress,
+  containerStyle,
+  testID,
+}: RecyclerCardProps) {
+  const theme = useTheme();
+  const displayMaterials = materials.slice(0, 3);
+  const remainingCount = materials.length - 3;
+
+  const content = (
+    <View style={{ gap: spacing.md }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <View style={{ flex: 1, gap: spacing.xs }}>
+          <ThemedText type="title" numberOfLines={1}>
+            {name}
+          </ThemedText>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+            <Icon name="star" size={16} color="#FACC15" />
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+              {rating.toFixed(1)}
+            </ThemedText>
+            {distance && (
+              <>
+                <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+                  •
+                </ThemedText>
+                <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+                  {distance}
+                </ThemedText>
+              </>
+            )}
+          </View>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+        {displayMaterials.map((material, index) => (
+          <Chip key={index} variant="tonal" size="sm" iconName="recycle">
+            {material}
+          </Chip>
+        ))}
+        {remainingCount > 0 && (
+          <Chip variant="tonal" size="sm">
+            +{remainingCount} more
+          </Chip>
+        )}
+      </View>
+
+      <Divider orientation="horizontal" />
+
+      <View style={{ gap: spacing.sm }}>
+        {phone && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <Icon name="phone" size={16} color={theme.colors.textSecondary} />
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+              {phone}
+            </ThemedText>
+          </View>
+        )}
+        {email && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <Icon name="email" size={16} color={theme.colors.textSecondary} />
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1}>
+              {email}
+            </ThemedText>
+          </View>
+        )}
+      </View>
+
+      {action && (
+        <>
+          <Divider orientation="horizontal" />
+          <View>{action}</View>
+        </>
+      )}
+    </View>
+  );
+
+  if (onPress) {
+    return (
+      <Card variant="elevated" padding="lg" onPress={onPress} style={containerStyle} testID={testID}>
+        {content}
+      </Card>
+    );
+  }
+
+  return (
+    <Card variant="elevated" padding="lg" style={containerStyle} testID={testID}>
+      {content}
+    </Card>
+  );
+}

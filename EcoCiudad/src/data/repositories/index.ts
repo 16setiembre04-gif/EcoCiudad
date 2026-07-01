@@ -1,0 +1,8 @@
+export { AuthRepositoryImpl } from './auth.repository.impl';
+export { ReportRepositoryImpl } from './report.repository.impl';
+export { EventRepositoryImpl } from './event.repository.impl';
+export { RecyclingCenterRepositoryImpl } from './recycling-center.repository.impl';
+export { CommunityRepository } from './community.repository.impl';
+export { PostRepository } from './post.repository.impl';
+export { PollRepository } from './poll.repository.impl';
+export { OperatorRepositoryImpl } from './operator.repository.impl';
