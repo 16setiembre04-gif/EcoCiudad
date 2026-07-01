@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from 'react';
-import { type Theme, citizenTheme, operatorTheme, type ThemeRole } from '../index';
+import { type Theme, citizenTheme, operatorTheme, adminTheme, type ThemeRole } from '../index';
 
 const ThemeContext = createContext<Theme>(citizenTheme);
 
@@ -10,7 +10,14 @@ export interface ThemeProviderProps {
 
 export function ThemeProvider({ children, role = 'citizen' }: ThemeProviderProps) {
   const theme = useMemo(() => {
-    return role === 'operator' ? operatorTheme : citizenTheme;
+    switch (role) {
+      case 'operator':
+        return operatorTheme;
+      case 'admin':
+        return adminTheme;
+      default:
+        return citizenTheme;
+    }
   }, [role]);
 
   return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;

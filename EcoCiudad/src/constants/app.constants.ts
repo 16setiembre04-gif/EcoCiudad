@@ -27,6 +27,13 @@ export const QUERY_KEYS = {
   RECYCLERS: 'recyclers',
   RECYCLING_CENTERS: 'recycling_centers',
   NOTIFICATIONS: 'notifications',
+  ADMIN: 'admin',
+  ADMIN_DASHBOARD: 'admin_dashboard',
+  ADMIN_ACTIVITY: 'admin_activity',
+  ADMIN_REPORTS_CATEGORY: 'admin_reports_category',
+  ADMIN_REPORTS_DISTRICT: 'admin_reports_district',
+  ADMIN_ACTIVITY_LOGS: 'admin_activity_logs',
+  ADMIN_SETTINGS: 'admin_settings',
 } as const;
 
 export const PAGINATION = {

@@ -6,3 +6,4 @@ export { CommunityRepository } from './community.repository.impl';
 export { PostRepository } from './post.repository.impl';
 export { PollRepository } from './poll.repository.impl';
 export { OperatorRepositoryImpl } from './operator.repository.impl';
+export { AdminRepositoryImpl } from './admin.repository.impl';

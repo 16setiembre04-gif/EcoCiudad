@@ -20,3 +20,11 @@ export {
   type OperatorPerformanceDTO,
 } from './operator.dto';
 export * from './community.dto';
+export {
+  type DashboardStatsDTO,
+  type ActivityDataDTO,
+  type ReportsByCategoryDTO,
+  type ReportsByDistrictDTO,
+  type AdminActivityLogDTO,
+  type SystemSettingsDTO,
+} from './admin.dto';

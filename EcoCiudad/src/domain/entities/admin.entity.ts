@@ -71,13 +71,16 @@ export interface DashboardStats {
   totalAdmins: number;
   totalCommunities: number;
   totalEvents: number;
+  upcomingEvents: number;
   totalReports: number;
   resolvedReports: number;
   pendingReports: number;
   activeReports: number;
+  inProgressReports: number;
   rejectedReports: number;
   totalRecyclingCenters: number;
   totalAchievements: number;
+  ecoPointsDistributed: number;
 }
 
 export interface ActivityData {

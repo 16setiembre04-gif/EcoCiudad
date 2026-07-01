@@ -14,3 +14,4 @@ export {
 } from './recycling-center.mapper';
 export { OperatorMapper } from './operator.mapper';
 export * from './community.mapper';
+export { AdminMapper } from './admin.mapper';

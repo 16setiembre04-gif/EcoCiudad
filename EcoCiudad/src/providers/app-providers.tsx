@@ -20,7 +20,7 @@ interface AppProvidersProps {
 
 export function AppProviders({ children }: AppProvidersProps) {
   const user = useAuthStore((state) => state.user);
-  const role = user?.role === 'operator' ? 'operator' : 'citizen';
+  const role = user?.role === 'operator' ? 'operator' : user?.role === 'admin' ? 'admin' : 'citizen';
 
   return (
     <QueryClientProvider client={queryClient}>

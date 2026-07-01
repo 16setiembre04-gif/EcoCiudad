@@ -36,3 +36,21 @@ export {
   type OperatorPerformance,
 } from './operator.entity';
 export * from './community';
+export {
+  type AdminActivityLog,
+  type AdminAction,
+  type EntityType,
+  type SystemSettings,
+  type DashboardStats,
+  type ActivityData,
+  type ReportsByCategory,
+  type ReportsByDistrict,
+  type UserStatistics,
+} from './admin.entity';
+export {
+  type AdminRepository,
+  type AdminFilters,
+  type ReportFilters as AdminReportFilters,
+  type ActivityLogFilters,
+  type AnalyticsFilters,
+} from '../repositories/admin.repository';

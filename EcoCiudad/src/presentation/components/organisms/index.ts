@@ -32,3 +32,7 @@ export * from './operator-dashboard-header';
 export * from './assigned-reports-list';
 export * from './route-planner';
 export * from './performance-summary';
+export * from './admin-dashboard-header';
+export * from './admin-stats-grid';
+export * from './admin-quick-actions';
+export * from './admin-recent-activity';

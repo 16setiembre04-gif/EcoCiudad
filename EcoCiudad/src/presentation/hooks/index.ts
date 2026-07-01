@@ -69,3 +69,12 @@ export {
   useOptimizeRoute,
   useOperatorDashboard,
 } from './use-operator-queries.hook';
+export {
+  useAdminDashboardStats,
+  useAdminActivityData,
+  useAdminReportsByCategory,
+  useAdminReportsByDistrict,
+  useAdminActivityLogs,
+  useAdminLogActivity,
+  useAdminDashboard,
+} from './use-admin-queries.hook';

@@ -5,3 +5,4 @@ export * from './report.constants';
 export * from './event.constants';
 export * from './recycling.constants';
 export * from './operator.constants';
+export * from './admin.constants';

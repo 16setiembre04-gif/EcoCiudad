@@ -69,3 +69,27 @@ export const operatorThemeColors: ThemeColors = {
   errorLight: '#FEE2E2',
   info: '#3B82F6',
 };
+
+export const adminThemeColors: ThemeColors = {
+  primary: '#6D28D9',
+  primaryLight: '#C4B5FD',
+  onPrimary: '#FFFFFF',
+  secondary: '#8B5CF6',
+  secondaryLight: '#DDD6FE',
+  onSecondary: '#FFFFFF',
+  background: '#F8FAFC',
+  surface: '#FFFFFF',
+  surfaceVariant: '#F1F5F9',
+  onSurface: '#1E293B',
+  onSurfaceVariant: '#64748B',
+  border: '#E2E8F0',
+  divider: '#CBD5E1',
+  textPrimary: '#1E293B',
+  textSecondary: '#64748B',
+  disabled: '#94A3B8',
+  success: '#22C55E',
+  warning: '#FACC15',
+  error: '#EF4444',
+  errorLight: '#FEE2E2',
+  info: '#3B82F6',
+};

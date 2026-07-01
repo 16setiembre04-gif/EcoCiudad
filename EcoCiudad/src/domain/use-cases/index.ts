@@ -60,3 +60,15 @@ export * from './community.use-cases';
 export * from './post.use-cases';
 export * from './poll.use-cases';
 export * from './operator.use-cases';
+export {
+  GetDashboardStatsUseCase,
+  GetActivityDataUseCase,
+  GetReportsByCategoryUseCase,
+  GetReportsByDistrictUseCase,
+  GetActivityLogsUseCase,
+  LogActivityUseCase,
+  GetSettingsUseCase,
+  UpdateSettingUseCase,
+  GetAnalyticsUseCase,
+  ExportAnalyticsUseCase,
+} from './admin.use-cases';

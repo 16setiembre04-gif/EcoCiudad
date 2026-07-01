@@ -5,6 +5,7 @@ import {
   EventRemoteDataSource,
   RecyclingCenterRemoteDataSource,
   CommunityRemoteDataSource,
+  AdminRemoteDataSource,
 } from '../../data/datasources/remote';
 import { OperatorDatasource } from '../../data/datasources/operator.datasource';
 import {
@@ -16,6 +17,7 @@ import {
   PostRepository,
   PollRepository,
   OperatorRepositoryImpl,
+  AdminRepositoryImpl,
 } from '../../data/repositories';
 import {
   SignInUseCase,
@@ -116,6 +118,16 @@ import {
   GetOperatorPerformanceUseCase,
   GetTodayRouteUseCase,
   OptimizeRouteUseCase,
+  GetDashboardStatsUseCase,
+  GetActivityDataUseCase,
+  GetReportsByCategoryUseCase,
+  GetReportsByDistrictUseCase,
+  GetActivityLogsUseCase,
+  LogActivityUseCase,
+  GetSettingsUseCase,
+  UpdateSettingUseCase,
+  GetAnalyticsUseCase,
+  ExportAnalyticsUseCase,
 } from '../../domain/use-cases';
 
 const authDataSource = new AuthRemoteDataSource(supabase);
@@ -133,6 +145,9 @@ const communityRepository = new CommunityRepository(communityDataSource);
 const postRepository = new PostRepository(communityDataSource);
 const pollRepository = new PollRepository(communityDataSource);
 const operatorRepository = new OperatorRepositoryImpl(operatorDataSource);
+
+const adminDataSource = new AdminRemoteDataSource(supabase);
+const adminRepository = new AdminRepositoryImpl(adminDataSource);
 
 export const container = {
   authUseCases: {
@@ -249,5 +264,17 @@ export const container = {
     getPerformance: new GetOperatorPerformanceUseCase(operatorRepository),
     getTodayRoute: new GetTodayRouteUseCase(operatorRepository),
     optimizeRoute: new OptimizeRouteUseCase(operatorRepository),
+  },
+  adminUseCases: {
+    getDashboardStats: new GetDashboardStatsUseCase(adminRepository),
+    getActivityData: new GetActivityDataUseCase(adminRepository),
+    getReportsByCategory: new GetReportsByCategoryUseCase(adminRepository),
+    getReportsByDistrict: new GetReportsByDistrictUseCase(adminRepository),
+    getActivityLogs: new GetActivityLogsUseCase(adminRepository),
+    logActivity: new LogActivityUseCase(adminRepository),
+    getSettings: new GetSettingsUseCase(adminRepository),
+    updateSetting: new UpdateSettingUseCase(adminRepository),
+    getAnalytics: new GetAnalyticsUseCase(adminRepository),
+    exportAnalytics: new ExportAnalyticsUseCase(adminRepository),
   },
 } as const;

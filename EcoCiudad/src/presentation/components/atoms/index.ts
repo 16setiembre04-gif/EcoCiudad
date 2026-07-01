@@ -35,3 +35,5 @@ export * from './status-indicator';
 export * from './operator-avatar';
 export * from './assignment-chip';
 export * from './operator-timeline-dot';
+export * from './bar-chart';
+export * from './horizontal-bar-chart';

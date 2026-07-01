@@ -7,3 +7,4 @@ export { OnboardingContainer } from './onboarding-container';
 export { EventsLayout } from './events-layout';
 export { RecyclingCentersLayout } from './recycling-centers-layout';
 export { OperatorLayout } from './operator-layout';
+export { AdminLayout } from './admin-layout';

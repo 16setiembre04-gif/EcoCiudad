@@ -1,4 +1,4 @@
-import { type AdminActivityLog, type SystemSettings, type DashboardStats, type ActivityData, type ReportsByCategory, type ReportsByDistrict, type UserStatistics, type OperatorPerformance, type AdminAction, type EntityType } from '../entities';
+import { type AdminActivityLog, type SystemSettings, type DashboardStats, type ActivityData, type ReportsByCategory, type ReportsByDistrict, type OperatorPerformance, type AdminAction, type EntityType } from '../entities';
 import { type DomainError } from '../errors';
 import { type Either } from './auth.repository';
 import { type User, type UserRole } from '../entities';

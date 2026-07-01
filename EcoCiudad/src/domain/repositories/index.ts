@@ -6,3 +6,9 @@ export { type ICommunityRepository, type CommunityFilters } from './community.re
 export { type IPostRepository, type PostFilters } from './post.repository';
 export { type IPollRepository } from './poll.repository';
 export { type OperatorRepository, type OperatorReportFilters } from './operator.repository';
+export {
+  type AdminRepository,
+  type AdminFilters,
+  type ActivityLogFilters,
+  type AnalyticsFilters,
+} from './admin.repository';
