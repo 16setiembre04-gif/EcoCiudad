@@ -62,8 +62,16 @@ export interface AdminRepository {
   activateUser(id: string): Promise<Either<DomainError, User>>;
   deactivateUser(id: string): Promise<Either<DomainError, User>>;
   suspendUser(id: string, reason: string): Promise<Either<DomainError, User>>;
+  restoreUser(id: string): Promise<Either<DomainError, User>>;
   deleteUser(id: string): Promise<Either<DomainError, void>>;
   assignRole(id: string, role: UserRole): Promise<Either<DomainError, User>>;
+  resetPassword(id: string, newPassword: string): Promise<Either<DomainError, void>>;
+  getUserStatistics(id: string): Promise<Either<DomainError, {
+    reportCount: number;
+    eventCount: number;
+    communityCount: number;
+    ecoPoints: number;
+  }>>;
 
   // Operators Management
   getOperatorPerformance(operatorId: string): Promise<Either<DomainError, OperatorPerformance>>;
@@ -71,6 +79,7 @@ export interface AdminRepository {
 
   // Reports Management
   getReports(filters?: ReportFilters): Promise<Either<DomainError, Report[]>>;
+  getReportById(id: string): Promise<Either<DomainError, Report>>;
   assignReport(reportId: string, operatorId: string): Promise<Either<DomainError, Report>>;
   updateReportStatus(reportId: string, status: ReportStatus): Promise<Either<DomainError, Report>>;
   updateReportPriority(reportId: string, priority: ReportPriority): Promise<Either<DomainError, Report>>;

@@ -7,6 +7,7 @@ export default function CitizenTabsLayout() {
       <Tabs.Screen name="map" options={{ title: 'Map' }} />
       <Tabs.Screen name="events" options={{ title: 'Events' }} />
       <Tabs.Screen name="reports" options={{ title: 'Reports' }} />
+      <Tabs.Screen name="community" options={{ title: 'Community' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>
   );

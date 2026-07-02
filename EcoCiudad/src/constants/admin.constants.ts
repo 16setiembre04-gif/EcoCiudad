@@ -3,6 +3,7 @@ import { type IconName } from '@/components/atoms/icon';
 export const ADMIN_ROUTES = {
   DASHBOARD: '/(admin)/(tabs)',
   USERS: '/(admin)/(tabs)/users',
+  USER_DETAIL: '/(admin)/users/[id]',
   REPORTS: '/(admin)/(tabs)/reports',
   EVENTS: '/(admin)/(tabs)/events',
   SETTINGS: '/(admin)/(tabs)/settings',
@@ -54,4 +55,32 @@ export const ADMIN_CONSTANTS = {
   ACTIVITY_LOG_LIMIT: 20,
   ACTIVITY_DATA_DAYS: 30,
   STATS_REFETCH_INTERVAL: 60 * 1000,
+  USERS_PAGE_SIZE: 20,
 } as const;
+
+export const USER_ROLES_CONFIG: Record<string, { label: string; color: string; icon: IconName }> = {
+  citizen: { label: 'Citizen', color: '#22C55E', icon: 'user' },
+  operator: { label: 'Operator', color: '#3B82F6', icon: 'truck' },
+  admin: { label: 'Administrator', color: '#8B5CF6', icon: 'settings' },
+  guest: { label: 'Guest', color: '#6B7280', icon: 'user' },
+};
+
+export const USER_STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  active: { label: 'Active', color: '#22C55E' },
+  inactive: { label: 'Inactive', color: '#6B7280' },
+  suspended: { label: 'Suspended', color: '#EF4444' },
+};
+
+export const ADMIN_REPORT_STATUS_CONFIG: Record<string, { label: string; color: string }> = {
+  pending: { label: 'Pending', color: '#F59E0B' },
+  in_review: { label: 'In Review', color: '#3B82F6' },
+  resolved: { label: 'Resolved', color: '#22C55E' },
+  rejected: { label: 'Rejected', color: '#EF4444' },
+};
+
+export const ADMIN_REPORT_PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
+  low: { label: 'Low', color: '#22C55E' },
+  medium: { label: 'Medium', color: '#F59E0B' },
+  high: { label: 'High', color: '#F97316' },
+  critical: { label: 'Critical', color: '#EF4444' },
+};

@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type AdminActivityLog } from '@/domain/entities';
-import { type AnalyticsFilters, type ActivityLogFilters } from '@/domain/repositories';
+import { type AdminActivityLog, type User, type UserRole, type Report, type ReportStatus, type ReportPriority } from '@/domain/entities';
+import { type AnalyticsFilters, type ActivityLogFilters, type AdminFilters, type ReportFilters } from '@/domain/repositories';
 import { container } from '@/presentation/navigation/container';
 import { QUERY_KEYS, ADMIN_CONSTANTS } from '@/constants';
 
+// Dashboard Hooks
 export function useAdminDashboardStats() {
   return useQuery({
     queryKey: [QUERY_KEYS.ADMIN_DASHBOARD, 'stats'],
@@ -99,4 +100,233 @@ export function useAdminDashboard() {
       logsQuery.refetch();
     },
   };
+}
+
+// Users Management Hooks
+export function useAdminUsers(filters?: AdminFilters) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ADMIN, 'users', filters],
+    queryFn: async () => {
+      const result = await container.adminUseCases.getUsers.execute(filters);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+  });
+}
+
+export function useAdminUser(id: string) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ADMIN, 'users', id],
+    queryFn: async () => {
+      const result = await container.adminUseCases.getUserById.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useAdminUserStatistics(id: string) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ADMIN, 'users', id, 'statistics'],
+    queryFn: async () => {
+      const result = await container.adminUseCases.getUserStatistics.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useAdminUpdateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<User> }) => {
+      const result = await container.adminUseCases.updateUser.execute(id, data);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', variables.id] });
+    },
+  });
+}
+
+export function useAdminActivateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await container.adminUseCases.activateUser.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', id] });
+    },
+  });
+}
+
+export function useAdminDeactivateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await container.adminUseCases.deactivateUser.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', id] });
+    },
+  });
+}
+
+export function useAdminSuspendUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
+      const result = await container.adminUseCases.suspendUser.execute(id, reason);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', variables.id] });
+    },
+  });
+}
+
+export function useAdminRestoreUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await container.adminUseCases.restoreUser.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', id] });
+    },
+  });
+}
+
+export function useAdminDeleteUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await container.adminUseCases.deleteUser.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+    },
+  });
+}
+
+export function useAdminAssignRole() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, role }: { id: string; role: UserRole }) => {
+      const result = await container.adminUseCases.assignRole.execute(id, role);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'users', variables.id] });
+    },
+  });
+}
+
+export function useAdminResetPassword() {
+  return useMutation({
+    mutationFn: async ({ id, newPassword }: { id: string; newPassword: string }) => {
+      const result = await container.adminUseCases.resetPassword.execute(id, newPassword);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+  });
+}
+
+// Reports Management Hooks
+export function useAdminReports(filters?: ReportFilters) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ADMIN, 'reports', filters],
+    queryFn: async () => {
+      const result = await container.adminUseCases.getReports.execute(filters);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+  });
+}
+
+export function useAdminReport(id: string) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ADMIN, 'reports', id],
+    queryFn: async () => {
+      const result = await container.adminUseCases.getReportById.execute(id);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useAdminAssignReport() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ reportId, operatorId }: { reportId: string; operatorId: string }) => {
+      const result = await container.adminUseCases.assignReport.execute(reportId, operatorId);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports', variables.reportId] });
+    },
+  });
+}
+
+export function useAdminUpdateReportStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ reportId, status }: { reportId: string; status: ReportStatus }) => {
+      const result = await container.adminUseCases.updateReportStatus.execute(reportId, status);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports', variables.reportId] });
+    },
+  });
+}
+
+export function useAdminUpdateReportPriority() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ reportId, priority }: { reportId: string; priority: ReportPriority }) => {
+      const result = await container.adminUseCases.updateReportPriority.execute(reportId, priority);
+      if (result.left) throw result.left;
+      return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports', variables.reportId] });
+    },
+  });
 }

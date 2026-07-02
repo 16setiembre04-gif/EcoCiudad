@@ -6,6 +6,10 @@ export default function AdminLayout() {
     <AuthGuard allowedRoles={['admin']}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="users" />
+        <Stack.Screen name="users/[id]" />
+        <Stack.Screen name="reports" />
+        <Stack.Screen name="reports/[id]" />
       </Stack>
     </AuthGuard>
   );

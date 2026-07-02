@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { View, StyleSheet, RefreshControl } from 'react-native';
+import { useRouter } from 'expo-router';
 import Animated from 'react-native-reanimated';
 import { AdminLayout } from '@/presentation/components/templates/admin-layout';
 import { AdminDashboardHeader } from '@/presentation/components/organisms/admin-dashboard-header';
@@ -16,6 +17,7 @@ import { spacing } from '@/theme/spacing';
 
 export default function AdminDashboardScreen() {
   const theme = useTheme();
+  const router = useRouter();
   const { user } = useAuth();
   const {
     stats,
@@ -33,7 +35,11 @@ export default function AdminDashboardScreen() {
     (key: string) => {
       switch (key) {
         case 'users':
+          router.push('/(admin)/users' as any);
+          break;
         case 'reports':
+          router.push('/(admin)/reports' as any);
+          break;
         case 'events':
         case 'settings':
           break;
@@ -41,7 +47,7 @@ export default function AdminDashboardScreen() {
           break;
       }
     },
-    []
+    [router]
   );
 
   const handleRefresh = useCallback(() => {

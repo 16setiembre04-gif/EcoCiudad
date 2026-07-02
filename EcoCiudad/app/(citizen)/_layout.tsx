@@ -16,6 +16,13 @@ export default function CitizenLayout() {
         <Stack.Screen name="recycling/[id]" />
         <Stack.Screen name="recycling/map" />
         <Stack.Screen name="recycling/favorites" />
+        <Stack.Screen name="community/[id]" />
+        <Stack.Screen name="community/create" />
+        <Stack.Screen name="community/my-communities" />
+        <Stack.Screen name="community/invitations" />
+        <Stack.Screen name="community/[id]/edit" />
+        <Stack.Screen name="community/[id]/members" />
+        <Stack.Screen name="community/[id]/settings" />
         <Stack.Screen name="profile" />
       </Stack>
     </AuthGuard>

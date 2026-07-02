@@ -137,36 +137,109 @@ export class AdminRepositoryImpl implements AdminRepository {
     return { left: new UnexpectedError() };
   }
 
-  async getUsers(_filters?: AdminFilters): Promise<Either<DomainError, User[]>> {
-    return { left: new UnexpectedError() };
+  async getUsers(filters?: AdminFilters): Promise<Either<DomainError, User[]>> {
+    try {
+      const dtos = await this.dataSource.getUsers(filters);
+      return { right: dtos.map(AdminMapper.toUser) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async getUserById(_id: string): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async getUserById(id: string): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.getUserById(id);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async updateUser(_id: string, _data: Partial<User>): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async updateUser(id: string, data: Partial<User>): Promise<Either<DomainError, User>> {
+    try {
+      const dto = AdminMapper.toUserDto(data);
+      const updated = await this.dataSource.updateUser(id, dto);
+      return { right: AdminMapper.toUser(updated) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async activateUser(_id: string): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async activateUser(id: string): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.activateUser(id);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async deactivateUser(_id: string): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async deactivateUser(id: string): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.deactivateUser(id);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async suspendUser(_id: string, _reason: string): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async suspendUser(id: string, reason: string): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.suspendUser(id, reason);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async deleteUser(_id: string): Promise<Either<DomainError, void>> {
-    return { left: new UnexpectedError() };
+  async deleteUser(id: string): Promise<Either<DomainError, void>> {
+    try {
+      await this.dataSource.deleteUser(id);
+      return { right: undefined };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async assignRole(_id: string, _role: UserRole): Promise<Either<DomainError, User>> {
-    return { left: new UnexpectedError() };
+  async assignRole(id: string, role: UserRole): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.assignRole(id, role);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
+  }
+
+  async restoreUser(id: string): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.restoreUser(id);
+      return { right: AdminMapper.toUser(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
+  }
+
+  async resetPassword(id: string, newPassword: string): Promise<Either<DomainError, void>> {
+    try {
+      await this.dataSource.resetPassword(id, newPassword);
+      return { right: undefined };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
+  }
+
+  async getUserStatistics(id: string): Promise<Either<DomainError, {
+    reportCount: number;
+    eventCount: number;
+    communityCount: number;
+    ecoPoints: number;
+  }>> {
+    try {
+      const stats = await this.dataSource.getUserStatistics(id);
+      return { right: stats };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
   async getOperatorPerformance(_operatorId: string): Promise<Either<DomainError, OperatorPerformance>> {
@@ -177,20 +250,49 @@ export class AdminRepositoryImpl implements AdminRepository {
     return { left: new UnexpectedError() };
   }
 
-  async getReports(_filters?: ReportFilters): Promise<Either<DomainError, Report[]>> {
-    return { left: new UnexpectedError() };
+  async getReports(filters?: ReportFilters): Promise<Either<DomainError, Report[]>> {
+    try {
+      const dtos = await this.dataSource.getReports(filters);
+      return { right: dtos.map(AdminMapper.toReport) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async assignReport(_reportId: string, _operatorId: string): Promise<Either<DomainError, Report>> {
-    return { left: new UnexpectedError() };
+  async getReportById(id: string): Promise<Either<DomainError, Report>> {
+    try {
+      const dto = await this.dataSource.getReportById(id);
+      return { right: AdminMapper.toReport(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async updateReportStatus(_reportId: string, _status: ReportStatus): Promise<Either<DomainError, Report>> {
-    return { left: new UnexpectedError() };
+  async assignReport(reportId: string, operatorId: string): Promise<Either<DomainError, Report>> {
+    try {
+      const dto = await this.dataSource.assignReport(reportId, operatorId);
+      return { right: AdminMapper.toReport(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
-  async updateReportPriority(_reportId: string, _priority: ReportPriority): Promise<Either<DomainError, Report>> {
-    return { left: new UnexpectedError() };
+  async updateReportStatus(reportId: string, status: ReportStatus): Promise<Either<DomainError, Report>> {
+    try {
+      const dto = await this.dataSource.updateReportStatus(reportId, status);
+      return { right: AdminMapper.toReport(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
+  }
+
+  async updateReportPriority(reportId: string, priority: ReportPriority): Promise<Either<DomainError, Report>> {
+    try {
+      const dto = await this.dataSource.updateReportPriority(reportId, priority);
+      return { right: AdminMapper.toReport(dto) };
+    } catch {
+      return { left: new UnexpectedError() };
+    }
   }
 
   async getCommunities(_filters?: AdminFilters): Promise<Either<DomainError, Community[]>> {

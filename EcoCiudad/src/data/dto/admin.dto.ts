@@ -58,3 +58,47 @@ export interface SystemSettingsDTO {
   created_at: string;
   updated_at: string;
 }
+
+export interface UserDTO {
+  id: string;
+  email: string;
+  display_name: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  department?: string;
+  district?: string;
+  avatar_url?: string;
+  role: string;
+  is_email_verified: boolean;
+  is_active: boolean;
+  suspension_reason?: string;
+  suspended_at?: string;
+  eco_points: number;
+  level: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReportDTO {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  severity?: string;
+  is_anonymous?: boolean;
+  latitude: number;
+  longitude: number;
+  address?: string;
+  images: string[];
+  reporter_id: string;
+  assignee_id?: string;
+  priority?: string;
+  resolution_notes?: string;
+  resolution_photos?: string[];
+  estimated_completion?: string;
+  resolved_at?: string;
+  created_at: string;
+  updated_at: string;
+}

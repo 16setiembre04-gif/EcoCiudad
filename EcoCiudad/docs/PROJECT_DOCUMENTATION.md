@@ -1,8 +1,8 @@
 # EcoCiudad - Complete Project Documentation
 
-**Version**: 1.1.0  
+**Version**: 1.4.0  
 **Last Updated**: July 1, 2026  
-**Status**: Production-Ready (Admin Dashboard Complete, Management Screens Pending)
+**Status**: Production-Ready (Community Core Screens Complete, Admin Dashboard + Users Management + Reports Management Complete)
 
 ---
 
@@ -1297,33 +1297,76 @@ interface ReportFormProps {
 **Purpose:** Environmental communities
 
 **Screens:**
-- CommunitiesListScreen
-- CommunityDetailScreen
-- CreateCommunityScreen
+- CommunitiesListScreen ✅
+- CommunityDetailScreen ✅
+- CreateCommunityScreen ✅
+- EditCommunityScreen ✅
+- CommunityMembersScreen ✅
+- MyCommunitiesScreen ✅
+- CommunityInvitationsScreen ✅
+- CommunitySettingsScreen ✅
 
 **Routes:**
 ```
-/(citizen)/communities
-/(citizen)/communities/[id]
-/(citizen)/communities/create
+/(citizen)/(tabs)/community              # Communities Home
+/(citizen)/community/[id]                # Community Details
+/(citizen)/community/my-communities      # My Communities
+/(citizen)/community/create              # Create Community
+/(citizen)/community/[id]/edit           # Edit Community
+/(citizen)/community/[id]/members        # Community Members
+/(citizen)/community/invitations         # Community Invitations
+/(citizen)/community/[id]/settings       # Community Settings
 ```
 
 **Hooks:**
-- `useCommunities()` - Fetch communities
-- `useCommunity()` - Fetch single community
+- `useCommunities(filters?)` - Fetch communities with filters
+- `useCommunity(id)` - Fetch single community
+- `useMyCommunities()` - Fetch user's joined communities
+- `useIsMember(communityId)` - Check membership status
 - `useCreateCommunity()` - Create community mutation
+- `useUpdateCommunity()` - Update community mutation
+- `useDeleteCommunity()` - Delete community mutation
+- `useJoinCommunity()` - Join community mutation
+- `useLeaveCommunity()` - Leave community mutation
+- `useCommunityMembers(communityId, role?)` - Fetch members
+- `useUpdateMemberRole()` - Update member role mutation
+- `usePosts(filters)` - Fetch posts
+- `usePost(id)` - Fetch single post
+- `useCreatePost()` - Create post mutation
+- `useDeletePost()` - Delete post mutation
+- `usePinPost()` - Pin/unpin post mutation
+- `useComments(postId)` - Fetch comments
+- `useCreateComment()` - Create comment mutation
+- `useDeleteComment()` - Delete comment mutation
+- `useAddReaction()` - Add reaction mutation
+- `useRemoveReaction()` - Remove reaction mutation
+- `useBookmarkPost()` - Bookmark post mutation
+- `useRemoveBookmark()` - Remove bookmark mutation
+- `useBookmarkedPosts()` - Fetch bookmarked posts
+- `useIsBookmarked(postId)` - Check bookmark status
+- `usePoll(postId)` - Fetch poll
+- `useVotePoll()` - Vote mutation
+- `useHasVoted(pollId)` - Check vote status
+- `useCommunityDashboard()` - Aggregated dashboard data
 
-**Repository:** `CommunityRepository`
+**Repository:** `CommunityRepository`, `PostRepository`, `PollRepository`
 
-**Database:** `communities`, `community_members` tables
+**Database:** `communities`, `community_members`, `posts`, `comments`, `reactions`, `bookmarks`, `polls`, `poll_options`, `poll_votes` tables
 
 **Features:**
-- Create/join communities
-- Member management
-- Community posts
-- Real-time updates
+- Create/join communities ✅
+- Member management ✅
+- Community details ✅
+- Search and filter ✅
+- Privacy settings ✅
+- Community rules ✅
+- Post creation ⏳ Pending
+- Comment system ⏳ Pending
+- Reaction system ⏳ Pending
+- Poll system ⏳ Pending
+- Real-time updates ⏳ Pending
 
-**Status:** ✅ Complete
+**Status:** ✅ Core Screens Complete, Advanced Features Pending
 
 ### Events Module
 
@@ -1429,16 +1472,18 @@ interface ReportFormProps {
 
 **Screens:**
 - AdminDashboardScreen ✅
-- UsersManagementScreen ⏳ Pending
-- ReportsManagementScreen ⏳ Pending
+- UsersManagementScreen ✅ (List + Detail)
+- ReportsManagementScreen ✅ (List + Detail)
 - EventsManagementScreen ⏳ Pending
 - SettingsScreen ⏳ Pending
 
 **Routes:**
 ```
 /(admin)/(tabs)              # Dashboard (✅ Complete)
-/(admin)/(tabs)/users        # Users Management (⏳ Pending)
-/(admin)/(tabs)/reports      # Reports Management (⏳ Pending)
+/(admin)/users               # Users List (✅ Complete)
+/(admin)/users/[id]          # User Details (✅ Complete)
+/(admin)/reports             # Reports List (✅ Complete)
+/(admin)/reports/[id]        # Report Details (✅ Complete)
 /(admin)/(tabs)/events       # Events Management (⏳ Pending)
 /(admin)/(tabs)/settings     # System Settings (⏳ Pending)
 ```
@@ -1451,11 +1496,27 @@ interface ReportFormProps {
 - `useAdminReportsByDistrict()` - Reports by district distribution
 - `useAdminActivityLogs(filters?)` - Recent admin activity
 - `useAdminLogActivity()` - Mutation for logging admin actions
+- `useAdminUsers(filters?)` - Users list with search and filters
+- `useAdminUser(id)` - Single user details
+- `useAdminUserStatistics(id)` - User activity statistics
+- `useAdminUpdateUser()` - Update user mutation
+- `useAdminActivateUser()` - Activate user mutation
+- `useAdminDeactivateUser()` - Deactivate user mutation
+- `useAdminSuspendUser()` - Suspend user mutation
+- `useAdminRestoreUser()` - Restore user mutation
+- `useAdminDeleteUser()` - Delete user mutation
+- `useAdminAssignRole()` - Assign role mutation
+- `useAdminResetPassword()` - Reset password mutation
+- `useAdminReports(filters?)` - Reports list with search and filters
+- `useAdminReport(id)` - Single report details
+- `useAdminAssignReport()` - Assign report to operator mutation
+- `useAdminUpdateReportStatus()` - Update report status mutation
+- `useAdminUpdateReportPriority()` - Update report priority mutation
 
-**Repository:** `AdminRepository` (37 methods)
+**Repository:** `AdminRepository` (45 methods)
 - Dashboard: 4 methods ✅
-- Users Management: 8 methods ⏳
-- Reports Management: 4 methods ⏳
+- Users Management: 11 methods ✅
+- Reports Management: 5 methods ✅
 - Communities Management: 4 methods ⏳
 - Events Management: 5 methods ⏳
 - Recycling Centers Management: 4 methods ⏳
@@ -1481,7 +1542,38 @@ interface ReportFormProps {
 - Auto-refresh (60s interval)
 - Admin theme (purple #6D28D9)
 
-**Status:** 🚧 Dashboard Complete, Management Screens Pending
+**Users Management Features:**
+- Users list with search and role filters
+- User details with statistics
+- Activate/Deactivate users
+- Suspend users with reason
+- Restore suspended users
+- Delete users permanently
+- Assign roles (Citizen, Operator, Administrator, Guest)
+- Reset passwords
+- View user statistics (reports, events, communities, eco points)
+- Confirmation dialogs for destructive actions
+- Pull-to-refresh
+- Skeleton loading
+- Empty states
+
+**Reports Management Features:**
+- Reports list with search and filters (status, priority, category)
+- Report details with full information
+- Assign/Reassign operators to reports
+- Update report status (with confirmation)
+- Update report priority
+- View report images
+- View report location with Google Maps integration
+- View reporter information
+- View assigned operator
+- View resolution notes
+- Status and priority selector modals
+- Pull-to-refresh
+- Skeleton loading
+- Empty states
+
+**Status:** 🚧 Dashboard Complete, Users Management Complete, Reports Management Complete, Other Management Screens Pending
 
 ---
 
@@ -1499,7 +1591,14 @@ Root
 ├── (citizen)                 # Citizen app
 │   ├── home
 │   ├── reports
-│   ├── communities
+│   ├── communities           # Community tab
+│   ├── community/[id]        # Community detail
+│   ├── community/create      # Create community
+│   ├── community/my-communities
+│   ├── community/[id]/edit   # Edit community
+│   ├── community/[id]/members
+│   ├── community/[id]/settings
+│   ├── community/invitations
 │   ├── events
 │   ├── recycling-centers
 │   └── profile
@@ -1886,7 +1985,7 @@ EcoCiudad/
 **Phase 2: Core Features**
 - ✅ Citizen dashboard
 - ✅ Environmental reports module
-- ✅ Community module
+- 🚧 Community module (Core screens ✅, Advanced features ⏳)
 - ✅ Events module
 
 **Phase 3: Extended Features**
@@ -2274,14 +2373,15 @@ eas update --branch production --message "Bug fixes"
 1. Authentication Module
 2. Citizen Dashboard Module
 3. Environmental Reports Module
-4. Community Module (Data layer only - UI pending)
+4. Community Module - Core Screens ✅ (Posts, Comments, Reactions, Polls pending)
 5. Events Module
 6. Recycling Centers Module
 7. Operator Panel Module
-8. Administrator Panel Module - Dashboard ✅
+8. Administrator Panel Module - Dashboard ✅ + Users Management ✅ + Reports Management ✅
 
 **🚧 In Progress:**
-- Administrator Panel - Management screens (Users, Reports, Communities, Events, Recycling Centers, Achievements, Settings)
+- Community Module - Advanced features (Posts, Comments, Reactions, Polls, Real-time)
+- Administrator Panel - Management screens (Communities, Events, Recycling Centers, Achievements, Settings)
 - Unit and integration tests
 - API documentation
 - User guides
@@ -2375,20 +2475,28 @@ eas update --branch production --message "Bug fixes"
 ### Recommended Next Prompt
 
 ```
-Continue development of EcoCiudad by implementing the remaining Administrator Panel screens:
+Continue development of EcoCiudad by implementing:
 
-1. Users Management Screen (list, detail, activate/deactivate, role assignment)
-2. Reports Management Screen (list, assign to operators, change status/priority)
-3. Communities Management Screen (list, approve, suspend, delete)
-4. Events Management Screen (list, create, update, cancel, delete)
-5. Recycling Centers Management Screen (list, create, update, delete)
-6. Achievements Management Screen (list, create, update, delete)
-7. System Settings Screen (view and update settings)
+1. Community Module - Advanced Features:
+   - Post creation and detail screens
+   - Comment system UI
+   - Reaction system UI
+   - Poll system UI
+   - Real-time subscriptions
+   - Community invitations (accept/reject)
+   - Image upload for posts
+
+2. Administrator Panel - Remaining Management Screens:
+   - Communities Management (list, approve, suspend, delete)
+   - Events Management (list, create, update, cancel, delete)
+   - Recycling Centers Management (list, create, update, delete)
+   - Achievements Management (list, create, update, delete)
+   - System Settings (view and update settings)
 
 Follow Clean Architecture and Atomic Design principles.
 Reuse existing domain layer (entities, repositories, use cases already exist).
 Implement data layer methods (currently stubbed in AdminRepositoryImpl).
-Follow patterns from Operator Panel and Citizen modules.
+Follow patterns from Operator Panel, Citizen modules, and Admin Users/Reports Management.
 Maintain type safety and code quality.
 ```
 
@@ -2419,7 +2527,11 @@ Maintain type safety and code quality.
 **Admin Module:**
 - `ADMIN_MODULE.md` - Complete admin module documentation
 - `app/(admin)/(tabs)/index.tsx` - Admin dashboard screen
-- `src/presentation/hooks/use-admin-queries.hook.ts` - Admin hooks
+- `app/(admin)/users/index.tsx` - Users list screen
+- `app/(admin)/users/[id].tsx` - User details screen
+- `app/(admin)/reports/index.tsx` - Reports list screen
+- `app/(admin)/reports/[id].tsx` - Report details screen
+- `src/presentation/hooks/use-admin-queries.hook.ts` - 23 admin hooks (7 dashboard + 11 users + 5 reports)
 - `src/data/datasources/remote/admin.remote-datasource.ts` - Admin data source
 - `src/data/repositories/admin.repository.impl.ts` - Admin repository
 - `src/domain/entities/admin.entity.ts` - Admin entities
@@ -2427,6 +2539,24 @@ Maintain type safety and code quality.
 - `src/domain/use-cases/admin.use-cases.ts` - Admin use cases
 - `src/constants/admin.constants.ts` - Admin constants
 - `supabase/migrations/006_admin_module.sql` - Admin database migration
+
+**Community Module:**
+- `COMMUNITY_MODULE.md` - Complete community module documentation
+- `app/(citizen)/(tabs)/community.tsx` - Communities home screen
+- `app/(citizen)/community/[id].tsx` - Community details screen
+- `app/(citizen)/community/create.tsx` - Create community screen
+- `app/(citizen)/community/[id]/edit.tsx` - Edit community screen
+- `app/(citizen)/community/[id]/members.tsx` - Community members screen
+- `app/(citizen)/community/my-communities.tsx` - My communities screen
+- `app/(citizen)/community/[id]/settings.tsx` - Community settings screen
+- `src/presentation/hooks/use-community-queries.hook.ts` - 29 community hooks
+- `src/data/datasources/remote/community.datasource.ts` - Community data source
+- `src/data/repositories/community.repository.impl.ts` - Community repository
+- `src/domain/entities/community.ts` - Community entities
+- `src/domain/repositories/community.repository.ts` - Community repository interface
+- `src/domain/use-cases/community.use-cases.ts` - Community use cases
+- `src/constants/community.constants.ts` - Community constants
+- `supabase/migrations/002_community_module.sql` - Community database migration
 
 ### Getting Started
 
@@ -2487,19 +2617,23 @@ EcoCiudad is a production-ready application with a solid architecture, comprehen
 - ✅ Atomic Design component library
 - ✅ Complete feature set for citizens and operators
 - ✅ Admin dashboard with statistics and analytics
+- ✅ Admin Users Management with full CRUD operations
+- ✅ Admin Reports Management with assignment and status updates
+- ✅ Community module with core screens
 - ✅ Type-safe codebase
 - ✅ Scalable and maintainable code
 - ✅ Professional documentation
 
 **Ready for:**
-- Admin management screens implementation
-- App Store submission (after admin completion)
+- Community advanced features (Posts, Comments, Reactions, Polls)
+- Admin remaining management screens (Communities, Events, Recycling Centers, Achievements, Settings)
+- App Store submission (after completion)
 - Production deployment
 - User testing
 - Feature expansion
 
 ---
 
-**Document Version:** 1.1.0  
+**Document Version:** 1.4.0  
 **Last Updated:** July 1, 2026  
 **Maintained by:** Development Team

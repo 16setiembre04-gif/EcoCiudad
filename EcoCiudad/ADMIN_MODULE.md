@@ -19,8 +19,20 @@ This document summarizes the implementation of the Administrator Panel Module fo
 | Data Layer (DTOs, Mappers, DataSource, Repository) | ✅ Complete |
 | Domain Layer (Entities, Repos, Use Cases) | ✅ Complete |
 | React Query Hooks | ✅ Complete |
-| Users Management | ⏳ Pending |
-| Reports Management | ⏳ Pending |
+| Users Management - List Screen | ✅ Complete |
+| Users Management - Detail Screen | ✅ Complete |
+| Users Management - Activate/Deactivate | ✅ Complete |
+| Users Management - Suspend/Restore | ✅ Complete |
+| Users Management - Delete | ✅ Complete |
+| Users Management - Assign Role | ✅ Complete |
+| Users Management - Statistics | ✅ Complete |
+| Reports Management - List Screen | ✅ Complete |
+| Reports Management - Detail Screen | ✅ Complete |
+| Reports Management - Assign Operator | ✅ Complete |
+| Reports Management - Update Status | ✅ Complete |
+| Reports Management - Update Priority | ✅ Complete |
+| Reports Management - View Images | ✅ Complete |
+| Reports Management - Open in Maps | ✅ Complete |
 | Communities Management | ⏳ Pending |
 | Events Management | ⏳ Pending |
 | Recycling Centers Management | ⏳ Pending |
@@ -186,10 +198,14 @@ This document summarizes the implementation of the Administrator Panel Module fo
 - `useAdminDashboard()` - Aggregated hook combining all above with loading/error states
 
 **DI Container** (`src/presentation/navigation/container.ts`)
-- `adminUseCases` - 10 registered use cases:
+- `adminUseCases` - 15 registered use cases:
   - getDashboardStats, getActivityData, getReportsByCategory, getReportsByDistrict
   - getActivityLogs, logActivity, getSettings, updateSetting
   - getAnalytics, exportAnalytics
+  - getUsers, getUserById, updateUser, activateUser, deactivateUser
+  - suspendUser, restoreUser, deleteUser, assignRole, resetPassword
+  - getUserStatistics
+  - getReports, getReportById, assignReport, updateReportStatus, updateReportPriority
 
 **Screen** (`app/(admin)/(tabs)/index.tsx`)
 - Complete dashboard with:
@@ -202,6 +218,141 @@ This document summarizes the implementation of the Administrator Panel Module fo
   - AdminRecentActivity
   - Pull-to-refresh
   - Animated ScrollView
+
+### Users Management ✅
+
+**Repository Methods Implemented** (11 methods)
+- `getUsers(filters?)` - List users with search, role filter, pagination
+- `getUserById(id)` - Get user details
+- `updateUser(id, data)` - Update user information
+- `activateUser(id)` - Activate user account
+- `deactivateUser(id)` - Deactivate user account
+- `suspendUser(id, reason)` - Suspend user with reason
+- `restoreUser(id)` - Restore suspended user
+- `deleteUser(id)` - Permanently delete user
+- `assignRole(id, role)` - Change user role
+- `resetPassword(id, newPassword)` - Reset user password
+- `getUserStatistics(id)` - Get user activity statistics
+
+**Hooks Created** (11 hooks)
+- `useAdminUsers(filters?)` - Fetch users list
+- `useAdminUser(id)` - Fetch single user
+- `useAdminUserStatistics(id)` - Fetch user statistics
+- `useAdminUpdateUser()` - Update user mutation
+- `useAdminActivateUser()` - Activate user mutation
+- `useAdminDeactivateUser()` - Deactivate user mutation
+- `useAdminSuspendUser()` - Suspend user mutation
+- `useAdminRestoreUser()` - Restore user mutation
+- `useAdminDeleteUser()` - Delete user mutation
+- `useAdminAssignRole()` - Assign role mutation
+- `useAdminResetPassword()` - Reset password mutation
+
+**Screens Created** (2 screens)
+
+1. **Users List** (`app/(admin)/users/index.tsx`)
+   - Search users by name or email
+   - Filter by role (All, Citizen, Operator, Administrator, Guest)
+   - Pagination with infinite scroll
+   - Pull-to-refresh
+   - Skeleton loading states
+   - Empty state
+   - Navigate to user details
+
+2. **User Details** (`app/(admin)/users/[id].tsx`)
+   - User information (name, email, phone, location, join date)
+   - Role badge with color coding
+   - Activity statistics (reports, events, communities, eco points)
+   - Role assignment (Citizen, Operator, Administrator, Guest)
+   - Status actions (Activate, Deactivate, Suspend, Restore)
+   - Delete user with confirmation dialog
+   - Suspend user with reason input
+
+**Constants Added**
+- `USER_ROLES_CONFIG` - Role labels, colors, and icons
+- `USER_STATUS_CONFIG` - Status labels and colors
+- `ADMIN_CONSTANTS.USERS_PAGE_SIZE` - Pagination size (20)
+
+**Features**
+✅ Search users
+✅ Filter by role
+✅ View user details
+✅ View user statistics
+✅ Activate/Deactivate users
+✅ Suspend users with reason
+✅ Restore suspended users
+✅ Delete users permanently
+✅ Assign roles
+✅ Reset passwords
+✅ Confirmation dialogs
+✅ Loading states
+✅ Error handling
+
+### Reports Management ✅
+
+**Repository Methods Implemented** (5 methods)
+- `getReports(filters?)` - List reports with search, status, priority, category, district, assignee, date range filters
+- `getReportById(id)` - Get report details
+- `assignReport(reportId, operatorId)` - Assign report to operator
+- `updateReportStatus(reportId, status)` - Update report status
+- `updateReportPriority(reportId, priority)` - Update report priority
+
+**Hooks Created** (5 hooks)
+- `useAdminReports(filters?)` - Fetch reports list
+- `useAdminReport(id)` - Fetch single report
+- `useAdminAssignReport()` - Assign report mutation
+- `useAdminUpdateReportStatus()` - Update status mutation
+- `useAdminUpdateReportPriority()` - Update priority mutation
+
+**Screens Created** (2 screens)
+
+1. **Reports List** (`app/(admin)/reports/index.tsx`)
+   - Search reports by title or description
+   - Filter by status (Pending, In Review, Resolved, Rejected)
+   - Filter by category (Waste, Pollution, Green Areas, Water, Noise, Other)
+   - Pagination with infinite scroll
+   - Pull-to-refresh
+   - Skeleton loading states
+   - Empty state
+   - Navigate to report details
+   - Display priority and assignment status badges
+
+2. **Report Details** (`app/(admin)/reports/[id].tsx`)
+   - Report information (title, description, category, status, priority)
+   - Location with Google Maps integration
+   - Reporter information (anonymous or identified)
+   - Assigned operator information
+   - Creation and resolution dates
+   - Images gallery
+   - Resolution notes
+   - Admin actions:
+     - Assign/Reassign operator
+     - Update status (with confirmation dialog)
+     - Update priority
+   - Status and priority selector modals
+   - Open location in Google Maps
+
+**Constants Added**
+- `ADMIN_REPORT_STATUS_CONFIG` - Status labels and colors
+- `ADMIN_REPORT_PRIORITY_CONFIG` - Priority labels and colors
+
+**Features**
+✅ Search reports
+✅ Filter by status
+✅ Filter by category
+✅ View report details
+✅ View report images
+✅ View report location
+✅ Open location in Google Maps
+✅ Assign operator to report
+✅ Reassign operator
+✅ Update report status
+✅ Update report priority
+✅ Confirmation dialogs
+✅ Loading states
+✅ Error handling
+✅ View reporter information
+✅ View assigned operator
+✅ View resolution notes
 
 ## Database Schema
 
@@ -266,11 +417,18 @@ This document summarizes the implementation of the Administrator Panel Module fo
 ### Presentation - Templates (1 file)
 37. `src/presentation/components/templates/admin-layout.tsx`
 
-### Presentation - Hooks (1 file)
-38. `src/presentation/hooks/use-admin-queries.hook.ts` - 7 hooks
+### Presentation - Hooks (1 file modified)
+38. `src/presentation/hooks/use-admin-queries.hook.ts` - 23 hooks (7 dashboard + 11 users + 5 reports)
 
-### Screen (1 file modified)
-39. `app/(admin)/(tabs)/index.tsx` - Replaced placeholder with full dashboard
+### Screens (5 files)
+39. `app/(admin)/(tabs)/index.tsx` - Dashboard screen (modified)
+40. `app/(admin)/users/index.tsx` - Users list screen
+41. `app/(admin)/users/[id].tsx` - User details screen
+42. `app/(admin)/reports/index.tsx` - Reports list screen
+43. `app/(admin)/reports/[id].tsx` - Report details screen
+
+### Navigation (1 file modified)
+44. `app/(admin)/_layout.tsx` - Added users and reports routes
 
 ### Theme (3 files modified)
 40. `src/theme/colors/theme-colors.ts` - Added adminThemeColors
@@ -360,69 +518,52 @@ This document summarizes the implementation of the Administrator Panel Module fo
 
 ## Remaining Tasks
 
-### 1. Users Management Screen
-- [ ] User list with search and filters
-- [ ] User detail view
-- [ ] Activate/Deactivate users
-- [ ] Suspend users with reason
-- [ ] Assign/change roles
-- [ ] Delete users
-
-### 2. Reports Management Screen
-- [ ] Reports list with filters (status, priority, category, district)
-- [ ] Report detail view
-- [ ] Assign reports to operators
-- [ ] Update report status
-- [ ] Update report priority
-
-### 3. Communities Management Screen
+### 1. Communities Management Screen
 - [ ] Communities list
 - [ ] Approve/Suspend/Delete communities
 - [ ] View community details
 
-### 4. Events Management Screen
+### 2. Events Management Screen
 - [ ] Events list with filters
 - [ ] Create admin events
 - [ ] Update/Cancel/Delete events
 
-### 5. Recycling Centers Management Screen
+### 3. Recycling Centers Management Screen
 - [ ] Centers list
 - [ ] Create/Update/Delete centers
 
-### 6. Achievements Management Screen
+### 4. Achievements Management Screen
 - [ ] Achievements list
 - [ ] Create/Update/Delete achievements
 
-### 7. System Settings Screen
+### 5. System Settings Screen
 - [ ] Settings list
 - [ ] Update settings
 
-### 8. Analytics Export
+### 6. Analytics Export
 - [ ] PDF export
 - [ ] Excel export
 
-### 9. Real-time Updates
+### 7. Real-time Updates
 - [ ] Supabase Realtime subscriptions
 - [ ] Live dashboard updates
 
-### 10. Push Notifications
+### 8. Push Notifications
 - [ ] Admin alerts for critical events
 - [ ] New report notifications
 - [ ] User registration alerts
 
 ## Next Steps
 
-1. Implement Users Management screen
-2. Implement Reports Management screen
-3. Implement Communities Management screen
-4. Implement Events Management screen
-5. Implement System Settings screen
-6. Add Real-time subscriptions
-7. Add Analytics export functionality
+1. Implement Communities Management screen
+2. Implement Events Management screen
+3. Implement System Settings screen
+4. Add Real-time subscriptions
+5. Add Analytics export functionality
 
 ---
 
-**Status:** ✅ Dashboard Complete, ⏳ Management Screens Pending
+**Status:** ✅ Dashboard Complete, ✅ Users Management Complete, ✅ Reports Management Complete, ⏳ Other Management Screens Pending
 **TypeScript:** ✅ No New Errors
 **Accessibility:** ✅ WCAG AA Compliant
 **Design System:** ✅ Fully Compliant (Admin Theme)

@@ -38,7 +38,7 @@ export default function CitizenHomeScreen() {
         router.push('/(citizen)/report/create');
         break;
       case 'community':
-        router.push('/(citizen)/(tabs)/community');
+        router.push('/(citizen)/(tabs)/community' as any);
         break;
       case 'recycling':
         router.push('/(citizen)/(tabs)/map');

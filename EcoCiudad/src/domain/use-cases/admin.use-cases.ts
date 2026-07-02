@@ -94,6 +94,32 @@ export class AssignRoleUseCase {
   }
 }
 
+export class RestoreUserUseCase {
+  constructor(private readonly repository: AdminRepository) {}
+  async execute(id: string): Promise<Either<DomainError, User>> {
+    return this.repository.restoreUser(id);
+  }
+}
+
+export class ResetPasswordUseCase {
+  constructor(private readonly repository: AdminRepository) {}
+  async execute(id: string, newPassword: string): Promise<Either<DomainError, void>> {
+    return this.repository.resetPassword(id, newPassword);
+  }
+}
+
+export class GetUserStatisticsUseCase {
+  constructor(private readonly repository: AdminRepository) {}
+  async execute(id: string): Promise<Either<DomainError, {
+    reportCount: number;
+    eventCount: number;
+    communityCount: number;
+    ecoPoints: number;
+  }>> {
+    return this.repository.getUserStatistics(id);
+  }
+}
+
 // Operators Management Use Cases
 export class GetOperatorPerformanceUseCase {
   constructor(private readonly repository: AdminRepository) {}
@@ -114,6 +140,13 @@ export class GetReportsUseCase {
   constructor(private readonly repository: AdminRepository) {}
   async execute(filters?: ReportFilters): Promise<Either<DomainError, Report[]>> {
     return this.repository.getReports(filters);
+  }
+}
+
+export class GetReportByIdUseCase {
+  constructor(private readonly repository: AdminRepository) {}
+  async execute(id: string): Promise<Either<DomainError, Report>> {
+    return this.repository.getReportById(id);
   }
 }
 

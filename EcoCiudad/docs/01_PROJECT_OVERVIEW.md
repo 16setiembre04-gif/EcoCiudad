@@ -305,7 +305,7 @@ To create a smarter, cleaner, and more sustainable urban environment by leveragi
 ### Phase 2: Core Features (Completed)
 - Citizen dashboard
 - Environmental reports module
-- Community module
+- Community module (Core screens ✅, Advanced features ⏳)
 - Events module
 
 ### Phase 3: Extended Features (Completed)
@@ -321,8 +321,8 @@ To create a smarter, cleaner, and more sustainable urban environment by leveragi
 - ✅ Recent activity feed
 - ✅ Quick actions
 - ✅ Admin theme (purple)
-- ⏳ Users management screen
-- ⏳ Reports management screen
+- ✅ Users management screen
+- ✅ Reports management screen
 - ⏳ Communities management screen
 - ⏳ Events management screen
 - ⏳ Recycling centers management screen
