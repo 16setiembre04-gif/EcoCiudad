@@ -1,10 +1,10 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { BarChart } from '@/components/atoms/bar-chart';
+import { type ActivityData } from '@/domain/entities';
+import { BarChart } from '@/presentation/components/atoms/bar-chart';
+import { Card } from '@/presentation/components/atoms/card';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { type ActivityData } from '@/domain/entities';
+import { StyleSheet, View } from 'react-native';
 
 export interface ActivityChartProps {
   data: ActivityData[];

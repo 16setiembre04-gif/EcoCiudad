@@ -1,10 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
+import { REPORT_STATUSES } from '@/constants/report.constants';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { borderRadius } from '@/theme/radius';
-import { REPORT_STATUSES } from '@/constants/report.constants';
+import { StyleSheet, View } from 'react-native';
 import { type StatusIndicatorProps } from './types';
 
 const sizeMap = {

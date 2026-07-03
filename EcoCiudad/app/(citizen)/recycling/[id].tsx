@@ -1,18 +1,18 @@
-import { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Linking, Alert, Share } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { RecyclingCentersLayout } from '@/presentation/components/templates/recycling-centers-layout';
-import { CenterHeader } from '@/presentation/components/organisms/center-header';
-import { CenterGallery } from '@/presentation/components/organisms/center-gallery';
-import { ReviewsSection } from '@/presentation/components/organisms/reviews-section';
+import { Divider } from '@/presentation/components/atoms/divider';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { MaterialList } from '@/presentation/components/molecules/material-list';
 import { OpeningHoursCard } from '@/presentation/components/molecules/opening-hours-card';
-import { ThemedText } from '@/components/atoms/text';
-import { Divider } from '@/components/atoms/divider';
-import { Icon } from '@/components/atoms/icon';
-import { useRecyclingCenterDetails, useCenterReviews, useIsCenterFavorite, useToggleCenterFavorite, useMarkReviewHelpful } from '@/presentation/hooks';
+import { CenterGallery } from '@/presentation/components/organisms/center-gallery';
+import { CenterHeader } from '@/presentation/components/organisms/center-header';
+import { ReviewsSection } from '@/presentation/components/organisms/reviews-section';
+import { RecyclingCentersLayout } from '@/presentation/components/templates/recycling-centers-layout';
+import { useCenterReviews, useIsCenterFavorite, useMarkReviewHelpful, useRecyclingCenterDetails, useToggleCenterFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { Alert, Linking, ScrollView, Share, StyleSheet, View } from 'react-native';
 
 export default function RecyclingCenterDetailsScreen() {
   const theme = useTheme();

@@ -1,8 +1,8 @@
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { Icon } from '@/components/atoms/icon';
+import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type ImageThumbnailProps } from './types';
 
 export function ImageThumbnail({

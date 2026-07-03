@@ -1,6 +1,6 @@
-import { View, FlatList, StyleSheet } from 'react-native';
-import { ImageThumbnail } from '@/components/atoms/image-thumbnail';
+import { ImageThumbnail } from '@/presentation/components/atoms/image-thumbnail';
 import { spacing } from '@/theme/spacing';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { type ImageGalleryProps } from './types';
 
 export function ImageGallery({ images, onImagePress, style }: ImageGalleryProps) {

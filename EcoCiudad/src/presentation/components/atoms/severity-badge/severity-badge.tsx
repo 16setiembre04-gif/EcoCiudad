@@ -1,6 +1,6 @@
-import { View, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
 import { REPORT_SEVERITIES } from '@/constants/report.constants';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { StyleSheet, View } from 'react-native';
 import { type SeverityBadgeProps } from './types';
 
 export function SeverityBadge({ severity, style }: SeverityBadgeProps) {

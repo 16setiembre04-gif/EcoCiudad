@@ -1,5 +1,5 @@
-import { Badge } from '@/components/atoms/badge';
 import { EVENT_STATUSES } from '@/constants/event.constants';
+import { Badge } from '@/presentation/components/atoms/badge';
 import { type EventBadgeProps } from './types';
 
 export function EventBadge({ status, size = 'md', style }: EventBadgeProps) {

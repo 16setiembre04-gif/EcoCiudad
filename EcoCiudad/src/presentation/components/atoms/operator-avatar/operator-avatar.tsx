@@ -1,7 +1,7 @@
-import { View, StyleSheet } from 'react-native';
-import { Avatar } from '@/components/atoms/avatar';
-import { Badge } from '@/components/atoms/badge';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Badge } from '@/presentation/components/atoms/badge';
 import { useTheme } from '@/theme/context';
+import { StyleSheet, View } from 'react-native';
 import { type OperatorAvatarProps } from './types';
 
 export function OperatorAvatar({

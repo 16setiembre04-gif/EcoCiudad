@@ -1,4 +1,4 @@
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
 
 export interface OnboardingScreen {
   id: string;

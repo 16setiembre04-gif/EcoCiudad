@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { HorizontalBarChart } from '@/components/atoms/horizontal-bar-chart';
+import { REPORT_CATEGORY_CONFIG } from '@/constants';
+import { type ReportsByCategory } from '@/domain/entities';
+import { Card } from '@/presentation/components/atoms/card';
+import { HorizontalBarChart } from '@/presentation/components/atoms/horizontal-bar-chart';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { type ReportsByCategory } from '@/domain/entities';
-import { REPORT_CATEGORY_CONFIG } from '@/constants';
+import { StyleSheet } from 'react-native';
 
 export interface CategoryChartProps {
   data: ReportsByCategory[];

@@ -1,10 +1,10 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { OperatorAvatar } from '@/components/atoms/operator-avatar';
-import { Icon } from '@/components/atoms/icon';
+import { Card } from '@/presentation/components/atoms/card';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { OperatorAvatar } from '@/presentation/components/atoms/operator-avatar';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type OperatorCardProps } from './types';
 
 export function OperatorCard({

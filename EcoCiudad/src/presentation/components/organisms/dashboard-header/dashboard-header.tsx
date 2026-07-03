@@ -1,10 +1,10 @@
-import { View, Pressable } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Avatar } from '@/components/atoms/avatar';
-import { Icon } from '@/components/atoms/icon';
-import { Badge } from '@/components/atoms/badge';
-import { spacing } from '@/theme/spacing';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { Pressable, View } from 'react-native';
 import { DashboardHeaderProps } from './types';
 
 export function DashboardHeader({

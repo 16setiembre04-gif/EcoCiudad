@@ -1,11 +1,11 @@
-import { View, FlatList, StyleSheet } from 'react-native';
-import { ReportCard } from '@/components/molecules/report-card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Skeleton } from '@/components/atoms/skeleton';
-import { Card } from '@/components/atoms/card';
+import { Card } from '@/presentation/components/atoms/card';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { type IconName } from '@/presentation/components/atoms/icon';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { ReportCard } from '@/presentation/components/molecules/report-card';
 import { spacing } from '@/theme/spacing';
-import { type IconName } from '@/components/atoms/icon';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 export interface RecentReportItem {
   id: string;

@@ -1,4 +1,4 @@
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
 
 export const EVENT_CATEGORIES = {
   cleanup: { label: 'Cleanup', icon: 'recycle' as IconName, color: '#22C55E' },

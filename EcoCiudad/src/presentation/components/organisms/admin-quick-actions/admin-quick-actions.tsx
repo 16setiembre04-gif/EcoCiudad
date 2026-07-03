@@ -1,9 +1,9 @@
-import { View, Pressable, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { spacing } from '@/theme/spacing';
 import { ADMIN_QUICK_ACTIONS } from '@/constants';
+import { Card } from '@/presentation/components/atoms/card';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { spacing } from '@/theme/spacing';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 export interface AdminQuickActionsProps {
   onActionPress: (key: string) => void;

@@ -1,5 +1,5 @@
+import { type CommunityCardProps } from '@/presentation/components/molecules/community-card';
 import { type ViewStyle } from 'react-native';
-import { type CommunityCardProps } from '@/components/molecules/community-card';
 
 export interface CommunityFeedItem extends CommunityCardProps {
   id: string;

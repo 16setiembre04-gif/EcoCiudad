@@ -29,7 +29,7 @@
       "@/providers/*": ["./src/providers/*"],
       "@/hooks/*": ["./src/presentation/hooks/*"],
       "@/stores/*": ["./src/presentation/stores/*"],
-      "@/components/*": ["./src/presentation/components/*"]
+      "@/presentation/components/*": ["./src/presentation/components/*"]
     }
   },
   "include": [

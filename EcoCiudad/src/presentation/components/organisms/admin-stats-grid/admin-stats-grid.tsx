@@ -1,9 +1,9 @@
-import { View, StyleSheet } from 'react-native';
-import { StatCard } from '@/components/atoms/stat-card';
-import { Skeleton } from '@/components/atoms/skeleton';
-import { spacing } from '@/theme/spacing';
 import { type DashboardStats } from '@/domain/entities';
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { StatCard } from '@/presentation/components/atoms/stat-card';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 
 export interface AdminStatsGridProps {
   stats: DashboardStats | undefined;

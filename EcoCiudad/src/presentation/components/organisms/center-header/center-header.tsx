@@ -1,14 +1,13 @@
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { RatingStars } from '@/components/atoms/rating-stars';
-import { OpenStatus } from '@/components/atoms/open-status';
-import { DistanceBadge } from '@/components/atoms/distance-badge';
-import { FavoriteIcon } from '@/components/atoms/favorite-icon';
-import { NavigationIcon } from '@/components/atoms/navigation-icon';
+import { DistanceBadge } from '@/presentation/components/atoms/distance-badge';
+import { FavoriteIcon } from '@/presentation/components/atoms/favorite-icon';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { NavigationIcon } from '@/presentation/components/atoms/navigation-icon';
+import { OpenStatus } from '@/presentation/components/atoms/open-status';
+import { RatingStars } from '@/presentation/components/atoms/rating-stars';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { borderRadius } from '@/theme/radius';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type CenterHeaderProps } from './types';
 
 export function CenterHeader({

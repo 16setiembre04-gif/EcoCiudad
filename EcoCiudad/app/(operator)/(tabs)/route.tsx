@@ -1,13 +1,13 @@
-import { useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import Animated from 'react-native-reanimated';
+import { Header } from '@/presentation/components/organisms/header';
+import { RoutePlanner } from '@/presentation/components/organisms/route-planner';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { Header } from '@/components/organisms/header';
-import { RoutePlanner } from '@/components/organisms/route-planner';
-import { useTodayRoute, useOptimizeRoute } from '@/presentation/hooks';
+import { useOptimizeRoute, useTodayRoute } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { StyleSheet } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export default function OperatorRouteScreen() {
   const theme = useTheme();

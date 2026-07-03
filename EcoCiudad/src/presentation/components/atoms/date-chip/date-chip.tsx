@@ -1,4 +1,4 @@
-import { Chip } from '@/components/atoms/chip';
+import { Chip } from '@/presentation/components/atoms/chip';
 import { type DateChipProps } from './types';
 
 function formatDate(date: Date, compact: boolean): string {

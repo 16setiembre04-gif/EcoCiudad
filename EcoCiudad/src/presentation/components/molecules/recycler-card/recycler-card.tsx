@@ -1,12 +1,12 @@
-import { View } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Chip } from '@/components/atoms/chip';
-import { Icon } from '@/components/atoms/icon';
-import { Divider } from '@/components/atoms/divider';
-import { RecyclerCardProps } from './types';
-import { spacing } from '@/theme/spacing';
+import { Card } from '@/presentation/components/atoms/card';
+import { Chip } from '@/presentation/components/atoms/chip';
+import { Divider } from '@/presentation/components/atoms/divider';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { View } from 'react-native';
+import { RecyclerCardProps } from './types';
 
 export function RecyclerCard({
   name,

@@ -1,10 +1,10 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { Skeleton } from '@/components/atoms/skeleton';
-import { AdminActivityItem } from '@/components/molecules/admin-activity-item';
-import { spacing } from '@/theme/spacing';
 import { type AdminActivityLog } from '@/domain/entities';
+import { Card } from '@/presentation/components/atoms/card';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { AdminActivityItem } from '@/presentation/components/molecules/admin-activity-item';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 
 export interface AdminRecentActivityProps {
   activity: AdminActivityLog[];

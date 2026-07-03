@@ -1,10 +1,9 @@
-import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
-import { CategoryChip } from '@/components/atoms/category-chip';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { REPORT_CATEGORIES, REPORT_STATUSES, REPORT_SEVERITIES } from '@/constants/report.constants';
-import { spacing } from '@/theme/spacing';
+import { REPORT_CATEGORIES, REPORT_STATUSES } from '@/constants/report.constants';
+import { CategoryChip } from '@/presentation/components/atoms/category-chip';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { type ReportFiltersProps } from './types';
 
 export function ReportFilters({

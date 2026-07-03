@@ -1,5 +1,5 @@
-import { Chip } from '@/components/atoms/chip';
 import { REPORT_CATEGORIES } from '@/constants/report.constants';
+import { Chip } from '@/presentation/components/atoms/chip';
 import { type CategoryChipProps } from './types';
 
 export function CategoryChip({ category, selected, onPress, style }: CategoryChipProps) {

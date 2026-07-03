@@ -1,9 +1,9 @@
-import { View, StyleSheet } from 'react-native';
-import { TimelineDot } from '@/components/atoms/timeline-dot';
-import { ThemedText } from '@/components/atoms/text';
 import { REPORT_STATUSES } from '@/constants/report.constants';
-import { spacing } from '@/theme/spacing';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { TimelineDot } from '@/presentation/components/atoms/timeline-dot';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type StatusTimelineProps } from './types';
 
 const STATUS_ORDER = ['pending', 'in_review', 'resolved'] as const;

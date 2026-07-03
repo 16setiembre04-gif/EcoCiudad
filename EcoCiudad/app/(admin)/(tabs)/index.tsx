@@ -1,19 +1,19 @@
-import { useCallback, useState } from 'react';
-import { View, StyleSheet, RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
-import Animated from 'react-native-reanimated';
-import { AdminLayout } from '@/presentation/components/templates/admin-layout';
-import { AdminDashboardHeader } from '@/presentation/components/organisms/admin-dashboard-header';
-import { AdminStatsGrid } from '@/presentation/components/organisms/admin-stats-grid';
-import { AdminQuickActions } from '@/presentation/components/organisms/admin-quick-actions';
-import { AdminRecentActivity } from '@/presentation/components/organisms/admin-recent-activity';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { ActivityChart } from '@/presentation/components/molecules/activity-chart';
 import { CategoryChart } from '@/presentation/components/molecules/category-chart';
 import { DistrictChart } from '@/presentation/components/molecules/district-chart';
-import { SectionHeader } from '@/components/atoms/section-header';
+import { AdminDashboardHeader } from '@/presentation/components/organisms/admin-dashboard-header';
+import { AdminQuickActions } from '@/presentation/components/organisms/admin-quick-actions';
+import { AdminRecentActivity } from '@/presentation/components/organisms/admin-recent-activity';
+import { AdminStatsGrid } from '@/presentation/components/organisms/admin-stats-grid';
+import { AdminLayout } from '@/presentation/components/templates/admin-layout';
 import { useAdminDashboard, useAuth } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { RefreshControl, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export default function AdminDashboardScreen() {
   const theme = useTheme();

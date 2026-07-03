@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { Icon } from '@/components/atoms/icon';
+import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { Pressable, StyleSheet } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { type FavoriteIconProps } from './types';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

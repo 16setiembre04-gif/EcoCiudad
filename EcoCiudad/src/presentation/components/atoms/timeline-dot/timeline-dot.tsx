@@ -1,6 +1,6 @@
-import { View, StyleSheet } from 'react-native';
-import { Icon } from '@/components/atoms/icon';
+import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { StyleSheet, View } from 'react-native';
 import { type TimelineDotProps } from './types';
 
 export function TimelineDot({ variant, style }: TimelineDotProps) {

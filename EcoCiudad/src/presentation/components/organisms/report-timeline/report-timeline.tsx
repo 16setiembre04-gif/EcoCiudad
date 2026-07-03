@@ -1,9 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import { StatusTimeline } from '@/components/molecules/status-timeline';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { ThemedText } from '@/components/atoms/text';
-import { spacing } from '@/theme/spacing';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { StatusTimeline } from '@/presentation/components/molecules/status-timeline';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type ReportTimelineProps } from './types';
 
 export function ReportTimeline({ entries, currentStatus, style }: ReportTimelineProps) {

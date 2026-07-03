@@ -1,11 +1,11 @@
-import { View, Pressable, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Avatar } from '@/components/atoms/avatar';
-import { RatingStars } from '@/components/atoms/rating-stars';
-import { Icon } from '@/components/atoms/icon';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Card } from '@/presentation/components/atoms/card';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { RatingStars } from '@/presentation/components/atoms/rating-stars';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { type ReviewCardProps } from './types';
 
 export function ReviewCard({

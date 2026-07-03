@@ -1,8 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import { MaterialChip } from '@/components/atoms/material-chip';
-import { ThemedText } from '@/components/atoms/text';
+import { MaterialChip } from '@/presentation/components/atoms/material-chip';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type MaterialListProps } from './types';
 
 export function MaterialList({

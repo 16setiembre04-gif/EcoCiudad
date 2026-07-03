@@ -1,21 +1,21 @@
-import { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { type ReportStatus } from '@/domain/entities';
+import { Button } from '@/presentation/components/atoms/button';
+import { Card } from '@/presentation/components/atoms/card';
+import { CategoryChip } from '@/presentation/components/atoms/category-chip';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { Input } from '@/presentation/components/atoms/input';
+import { PriorityBadge } from '@/presentation/components/atoms/priority-badge';
+import { StatusIndicator } from '@/presentation/components/atoms/status-indicator';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
+import { Header } from '@/presentation/components/organisms/header';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { Header } from '@/components/organisms/header';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { Button } from '@/components/atoms/button';
-import { Input } from '@/components/atoms/input';
-import { PriorityBadge } from '@/components/atoms/priority-badge';
-import { StatusIndicator } from '@/components/atoms/status-indicator';
-import { CategoryChip } from '@/components/atoms/category-chip';
-import { ImageGallery } from '@/components/molecules/image-gallery';
-import { useReportDetails, useResolveReport, useRejectReport, useUpdateReportStatus } from '@/presentation/hooks';
+import { useRejectReport, useReportDetails, useResolveReport, useUpdateReportStatus } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { type ReportStatus } from '@/domain/entities';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function OperatorReportDetailsScreen() {
   const theme = useTheme();

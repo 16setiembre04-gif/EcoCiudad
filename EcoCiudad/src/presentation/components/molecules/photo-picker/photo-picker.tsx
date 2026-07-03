@@ -1,11 +1,11 @@
-import { View, Pressable, StyleSheet } from 'react-native';
-import { ImageThumbnail } from '@/components/atoms/image-thumbnail';
-import { Icon } from '@/components/atoms/icon';
-import { ThemedText } from '@/components/atoms/text';
-import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
-import { borderRadius } from '@/theme/radius';
 import { IMAGE_UPLOAD_CONFIG } from '@/constants/report.constants';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ImageThumbnail } from '@/presentation/components/atoms/image-thumbnail';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTheme } from '@/theme/context';
+import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { type PhotoPickerProps } from './types';
 
 export function PhotoPicker({

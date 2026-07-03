@@ -1,13 +1,13 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { MaterialChip } from '@/components/atoms/material-chip';
-import { DistanceBadge } from '@/components/atoms/distance-badge';
-import { RatingStars } from '@/components/atoms/rating-stars';
-import { OpenStatus } from '@/components/atoms/open-status';
-import { FavoriteIcon } from '@/components/atoms/favorite-icon';
+import { Card } from '@/presentation/components/atoms/card';
+import { DistanceBadge } from '@/presentation/components/atoms/distance-badge';
+import { FavoriteIcon } from '@/presentation/components/atoms/favorite-icon';
+import { MaterialChip } from '@/presentation/components/atoms/material-chip';
+import { OpenStatus } from '@/presentation/components/atoms/open-status';
+import { RatingStars } from '@/presentation/components/atoms/rating-stars';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type CenterCardProps } from './types';
 
 export function CenterCard({

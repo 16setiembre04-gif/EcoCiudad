@@ -1,4 +1,4 @@
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
 
 export const COMMUNITY_CATEGORIES = {
   environmental: { label: 'Environmental', icon: 'leaf' as IconName, color: '#22C55E' },

@@ -1,15 +1,15 @@
-import { useCallback } from 'react';
-import { View, StyleSheet, RefreshControl } from 'react-native';
-import { useRouter } from 'expo-router';
-import Animated from 'react-native-reanimated';
-import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { OperatorDashboardHeader } from '@/presentation/components/organisms/operator-dashboard-header';
-import { AssignedReportsList } from '@/presentation/components/organisms/assigned-reports-list';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { ActivityCard } from '@/presentation/components/molecules/activity-card';
-import { SectionHeader } from '@/components/atoms/section-header';
+import { AssignedReportsList } from '@/presentation/components/organisms/assigned-reports-list';
+import { OperatorDashboardHeader } from '@/presentation/components/organisms/operator-dashboard-header';
+import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
 import { useOperatorDashboard } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { RefreshControl, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export default function OperatorDashboardScreen() {
   const theme = useTheme();

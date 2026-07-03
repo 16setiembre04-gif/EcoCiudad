@@ -1,9 +1,9 @@
-import { View, Pressable, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Avatar } from '@/components/atoms/avatar';
-import { Icon } from '@/components/atoms/icon';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { type OperatorDashboardHeaderProps } from './types';
 
 export function OperatorDashboardHeader({

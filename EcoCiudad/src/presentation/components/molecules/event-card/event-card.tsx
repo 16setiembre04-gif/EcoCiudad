@@ -1,16 +1,16 @@
-import { View, Pressable, Image, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { EventBadge } from '@/components/atoms/event-badge';
-import { DateChip } from '@/components/atoms/date-chip';
-import { RewardChip } from '@/components/atoms/reward-chip';
-import { CapacityBadge } from '@/components/atoms/capacity-badge';
-import { LocationBadge } from '@/components/atoms/location-badge';
-import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
-import { borderRadius } from '@/theme/radius';
 import { EVENT_CATEGORIES } from '@/constants/event.constants';
+import { CapacityBadge } from '@/presentation/components/atoms/capacity-badge';
+import { Card } from '@/presentation/components/atoms/card';
+import { DateChip } from '@/presentation/components/atoms/date-chip';
+import { EventBadge } from '@/presentation/components/atoms/event-badge';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { LocationBadge } from '@/presentation/components/atoms/location-badge';
+import { RewardChip } from '@/presentation/components/atoms/reward-chip';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTheme } from '@/theme/context';
+import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type EventCardProps } from './types';
 
 export function EventCard({

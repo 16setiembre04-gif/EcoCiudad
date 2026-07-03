@@ -1,4 +1,4 @@
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
 
 export const REPORT_CATEGORIES = {
   waste: { label: 'Waste', icon: 'leaf' as IconName, color: '#22C55E' },

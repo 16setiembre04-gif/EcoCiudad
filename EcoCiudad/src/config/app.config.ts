@@ -21,7 +21,3 @@ export const mapsConfig = {
     longitudeDelta: 0.0421,
   },
 } as const;
-
-export const firebaseConfig = {
-  projectId: env.firebaseProjectId,
-} as const;

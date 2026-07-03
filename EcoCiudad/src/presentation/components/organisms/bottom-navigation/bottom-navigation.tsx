@@ -1,9 +1,9 @@
-import { View, Pressable } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { Badge } from '@/components/atoms/badge';
-import { spacing } from '@/theme/spacing';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { Pressable, View } from 'react-native';
 import { BottomNavigationProps } from './types';
 
 export function BottomNavigation({

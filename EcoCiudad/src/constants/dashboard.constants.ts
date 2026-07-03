@@ -1,5 +1,5 @@
-import { type IconName } from '@/components/atoms/icon';
-import { type QuickActionItem } from '@/components/organisms/quick-actions';
+import { type IconName } from '@/presentation/components/atoms/icon';
+import { type QuickActionItem } from '@/presentation/components/organisms/quick-actions';
 
 export const DASHBOARD_QUICK_ACTIONS: QuickActionItem[] = [
   { key: 'report', label: 'Report Issue', icon: 'report' as IconName },

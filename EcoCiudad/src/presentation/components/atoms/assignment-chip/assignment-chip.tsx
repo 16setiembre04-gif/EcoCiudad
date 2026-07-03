@@ -1,4 +1,4 @@
-import { Chip } from '@/components/atoms/chip';
+import { Chip } from '@/presentation/components/atoms/chip';
 import { useTheme } from '@/theme/context';
 import { type AssignmentChipProps } from './types';
 

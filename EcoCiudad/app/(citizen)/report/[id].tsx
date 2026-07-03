@@ -1,22 +1,22 @@
-import { useCallback, useState } from 'react';
-import { View, StyleSheet, ScrollView, Share, Alert, TextInput } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import { DashboardTemplate } from '@/presentation/components/templates';
-import { Header } from '@/presentation/components/organisms/header';
 import { Button } from '@/presentation/components/atoms/button';
-import { ThemedText } from '@/presentation/components/atoms/text';
-import { StatusBadge } from '@/presentation/components/atoms/status-badge';
 import { CategoryChip } from '@/presentation/components/atoms/category-chip';
-import { SeverityBadge } from '@/components/atoms/severity-badge';
-import { ImageGallery } from '@/components/molecules/image-gallery';
-import { StatusTimeline } from '@/components/molecules/status-timeline';
-import { Icon } from '@/components/atoms/icon';
-import { useReport, useReportComments, useReportTimeline, useAddReportComment } from '@/presentation/hooks';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { SeverityBadge } from '@/presentation/components/atoms/severity-badge';
+import { StatusBadge } from '@/presentation/components/atoms/status-badge';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
+import { StatusTimeline } from '@/presentation/components/molecules/status-timeline';
+import { Header } from '@/presentation/components/organisms/header';
+import { DashboardTemplate } from '@/presentation/components/templates';
+import { useAddReportComment, useReport, useReportComments, useReportTimeline } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Alert, ScrollView, Share, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {

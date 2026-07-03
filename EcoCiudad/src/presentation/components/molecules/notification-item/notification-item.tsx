@@ -1,11 +1,11 @@
-import { View } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { Badge } from '@/components/atoms/badge';
-import { NotificationItemProps } from './types';
-import { spacing } from '@/theme/spacing';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Card } from '@/presentation/components/atoms/card';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { View } from 'react-native';
+import { NotificationItemProps } from './types';
 
 export function NotificationItem({
   title,

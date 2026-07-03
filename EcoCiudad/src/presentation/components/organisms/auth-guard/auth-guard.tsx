@@ -1,10 +1,10 @@
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { Redirect } from 'expo-router';
+import { type UserRole } from '@/domain/entities';
+import { ThemedText } from '@/presentation/components/atoms';
 import { useAuthStore } from '@/presentation/stores/auth.store';
 import { useTheme } from '@/theme/context';
-import { ThemedText } from '@/components/atoms';
-import { type UserRole } from '@/domain/entities';
 import { spacing } from '@/theme/spacing';
+import { Redirect } from 'expo-router';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 interface AuthGuardProps {
   children: React.ReactNode;

@@ -1,12 +1,12 @@
-import { View } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Badge } from '@/components/atoms/badge';
-import { Icon } from '@/components/atoms/icon';
-import { Divider } from '@/components/atoms/divider';
-import { TruckStatusCardProps } from './types';
-import { spacing } from '@/theme/spacing';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Card } from '@/presentation/components/atoms/card';
+import { Divider } from '@/presentation/components/atoms/divider';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { View } from 'react-native';
+import { TruckStatusCardProps } from './types';
 
 const statusConfig = {
   available: { color: 'success' as const, label: 'Available' },

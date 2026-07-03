@@ -1,9 +1,9 @@
-import { View, FlatList } from 'react-native';
-import { SearchBar } from '@/components/molecules/search-bar';
-import { CommunityCard } from '@/components/molecules/community-card';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Loader } from '@/components/atoms/loader';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { Loader } from '@/presentation/components/atoms/loader';
+import { CommunityCard } from '@/presentation/components/molecules/community-card';
+import { SearchBar } from '@/presentation/components/molecules/search-bar';
 import { spacing } from '@/theme/spacing';
+import { FlatList, View } from 'react-native';
 import { CommunityFeedProps } from './types';
 
 export function CommunityFeed({

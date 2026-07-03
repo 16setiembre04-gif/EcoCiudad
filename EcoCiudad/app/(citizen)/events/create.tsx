@@ -1,21 +1,21 @@
-import { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import { EventsLayout } from '@/presentation/components/templates/events-layout';
-import { Header } from '@/presentation/components/organisms/header';
+import { EVENT_CATEGORIES, EVENT_CONSTANTS } from '@/constants/event.constants';
+import { type EventCategory, type GeoLocation } from '@/domain/entities';
 import { Button } from '@/presentation/components/atoms/button';
+import { Chip } from '@/presentation/components/atoms/chip';
 import { Input } from '@/presentation/components/atoms/input';
-import { ThemedText } from '@/components/atoms/text';
-import { Chip } from '@/components/atoms/chip';
-import { PhotoPicker } from '@/components/molecules/photo-picker';
-import { LocationSelector } from '@/components/molecules/location-selector';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { LocationSelector } from '@/presentation/components/molecules/location-selector';
+import { PhotoPicker } from '@/presentation/components/molecules/photo-picker';
+import { Header } from '@/presentation/components/organisms/header';
+import { EventsLayout } from '@/presentation/components/templates/events-layout';
 import { useCreateEvent } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { EVENT_CATEGORIES, EVENT_CONSTANTS } from '@/constants/event.constants';
-import { type EventCategory, type GeoLocation } from '@/domain/entities';
+import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CreateEventScreen() {
   const theme = useTheme();

@@ -11,11 +11,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
-    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
-    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
-    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
-  });
+  'Inter-Regular': require('../assets/fonts/Inter_28pt-Regular.ttf'),
+  'Inter-Medium': require('../assets/fonts/Inter_28pt-Medium.ttf'),
+  'Inter-SemiBold': require('../assets/fonts/Inter_28pt-SemiBold.ttf'),
+  'Inter-Bold': require('../assets/fonts/Inter_28pt-Bold.ttf'),
+});
 
   useEffect(() => {
     if (loaded || error) {

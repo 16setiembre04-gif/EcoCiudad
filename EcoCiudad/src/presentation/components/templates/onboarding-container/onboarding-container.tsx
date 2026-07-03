@@ -1,15 +1,15 @@
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, ScrollView, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
-import { Button } from '@/components/atoms/button';
-import { ThemedText } from '@/components/atoms/text';
-import { ProgressIndicator } from '@/components/molecules/progress-indicator';
-import { OnboardingScreen } from '@/components/organisms/onboarding-screen';
 import { onboardingScreens } from '@/domain/entities/onboarding.entity';
+import { Button } from '@/presentation/components/atoms/button';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { ProgressIndicator } from '@/presentation/components/molecules/progress-indicator';
+import { OnboardingScreen } from '@/presentation/components/organisms/onboarding-screen';
+import { animations } from '@/theme/animations';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { animations } from '@/theme/animations';
+import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 

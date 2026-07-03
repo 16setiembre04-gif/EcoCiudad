@@ -1,10 +1,10 @@
-import { View, FlatList, StyleSheet } from 'react-native';
-import { RecyclerCard } from '@/components/molecules/recycler-card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Skeleton } from '@/components/atoms/skeleton';
-import { Card } from '@/components/atoms/card';
+import { Card } from '@/presentation/components/atoms/card';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { RecyclerCard } from '@/presentation/components/molecules/recycler-card';
 import { spacing } from '@/theme/spacing';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 export interface RecyclingCenterItem {
   id: string;

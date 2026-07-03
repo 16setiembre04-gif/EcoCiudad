@@ -1,5 +1,5 @@
-import { type ViewStyle, type TextStyle } from 'react-native';
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
+import { type TextStyle, type ViewStyle } from 'react-native';
 
 export interface FormFieldProps {
   label: string;

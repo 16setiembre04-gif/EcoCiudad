@@ -1,10 +1,10 @@
-import { View, StyleSheet } from 'react-native';
-import { Button } from '@/components/atoms/button';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
+import { Button } from '@/presentation/components/atoms/button';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type EventRegistrationProps } from './types';
 
 export function EventRegistration({

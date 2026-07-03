@@ -1,10 +1,10 @@
-import { View, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { ADMIN_ACTIVITY_ACTIONS } from '@/constants';
 import { type AdminActivityLog } from '@/domain/entities';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 
 export interface AdminActivityItemProps {
   activity: AdminActivityLog;

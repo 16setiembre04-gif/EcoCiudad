@@ -1,6 +1,6 @@
+import { type IconName } from '@/presentation/components/atoms/icon';
 import { type ReactNode } from 'react';
 import { type ViewStyle } from 'react-native';
-import { type IconName } from '@/components/atoms/icon';
 
 export interface HeaderProps {
   title: string;

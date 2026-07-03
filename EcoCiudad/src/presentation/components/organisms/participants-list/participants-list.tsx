@@ -1,9 +1,9 @@
-import { View, FlatList, StyleSheet } from 'react-native';
-import { ParticipantCard } from '@/components/molecules/participant-card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Skeleton } from '@/components/atoms/skeleton';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { ParticipantCard } from '@/presentation/components/molecules/participant-card';
 import { spacing } from '@/theme/spacing';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { type ParticipantsListProps } from './types';
 
 export function ParticipantsList({

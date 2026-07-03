@@ -1,11 +1,9 @@
-import { View, FlatList, Pressable, Image, StyleSheet } from 'react-native';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Icon } from '@/components/atoms/icon';
-import { ThemedText } from '@/components/atoms/text';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 import { type CenterGalleryProps } from './types';
 
 export function CenterGallery({

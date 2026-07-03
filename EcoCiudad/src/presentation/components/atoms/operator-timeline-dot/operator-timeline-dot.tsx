@@ -1,7 +1,7 @@
-import { View, StyleSheet } from 'react-native';
-import { Icon } from '@/components/atoms/icon';
-import { useTheme } from '@/theme/context';
 import { OPERATOR_ACTIONS } from '@/constants/operator.constants';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { useTheme } from '@/theme/context';
+import { StyleSheet, View } from 'react-native';
 import { type OperatorTimelineDotProps } from './types';
 
 export function OperatorTimelineDot({

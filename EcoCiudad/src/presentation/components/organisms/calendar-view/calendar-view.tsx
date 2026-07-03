@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { useMemo, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { type CalendarViewProps } from './types';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

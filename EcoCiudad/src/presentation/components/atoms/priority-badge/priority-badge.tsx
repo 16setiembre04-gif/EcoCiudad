@@ -1,5 +1,5 @@
-import { Badge } from '@/components/atoms/badge';
 import { REPORT_PRIORITIES } from '@/constants/operator.constants';
+import { Badge } from '@/presentation/components/atoms/badge';
 import { type PriorityBadgeProps } from './types';
 
 export function PriorityBadge({ priority, size = 'md', style }: PriorityBadgeProps) {

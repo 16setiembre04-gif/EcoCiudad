@@ -1,5 +1,5 @@
+import { type IconName } from '@/presentation/components/atoms/icon';
 import { type ViewStyle } from 'react-native';
-import { type IconName } from '@/components/atoms/icon';
 
 export interface ReportCardProps {
   title: string;

@@ -1,11 +1,11 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Avatar } from '@/components/atoms/avatar';
-import { Badge } from '@/components/atoms/badge';
+import { PARTICIPANT_STATUSES } from '@/constants/event.constants';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Card } from '@/presentation/components/atoms/card';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { PARTICIPANT_STATUSES } from '@/constants/event.constants';
+import { StyleSheet, View } from 'react-native';
 import { type ParticipantCardProps } from './types';
 
 export function ParticipantCard({ participant, onPress, containerStyle }: ParticipantCardProps) {

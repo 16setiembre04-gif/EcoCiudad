@@ -1,12 +1,12 @@
-import { View, StyleSheet } from 'react-native';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { PriorityBadge } from '@/components/atoms/priority-badge';
-import { StatusIndicator } from '@/components/atoms/status-indicator';
-import { CategoryChip } from '@/components/atoms/category-chip';
+import { Card } from '@/presentation/components/atoms/card';
+import { CategoryChip } from '@/presentation/components/atoms/category-chip';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { PriorityBadge } from '@/presentation/components/atoms/priority-badge';
+import { StatusIndicator } from '@/presentation/components/atoms/status-indicator';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 import { type AssignedReportCardProps } from './types';
 
 export function AssignedReportCard({

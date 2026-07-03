@@ -1,8 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import { StatCard } from '@/components/atoms/stat-card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { Skeleton } from '@/components/atoms/skeleton';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { StatCard } from '@/presentation/components/atoms/stat-card';
 import { spacing } from '@/theme/spacing';
+import { StyleSheet, View } from 'react-native';
 
 export interface DashboardStat {
   label: string;

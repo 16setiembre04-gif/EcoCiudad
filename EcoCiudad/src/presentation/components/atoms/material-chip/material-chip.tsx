@@ -1,5 +1,5 @@
-import { Chip } from '@/components/atoms/chip';
 import { RECYCLING_MATERIALS } from '@/constants/recycling.constants';
+import { Chip } from '@/presentation/components/atoms/chip';
 import { type MaterialChipProps } from './types';
 
 export function MaterialChip({ material, selected, onPress, style }: MaterialChipProps) {

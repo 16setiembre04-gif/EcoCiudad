@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
-import { FormField } from '@/components/molecules/form-field';
-import { Button } from '@/components/atoms/button';
-import { ThemedText } from '@/components/atoms/text';
-import { Chip } from '@/components/atoms/chip';
-import { Divider } from '@/components/atoms/divider';
-import { spacing } from '@/theme/spacing';
+import { Button } from '@/presentation/components/atoms/button';
+import { Chip } from '@/presentation/components/atoms/chip';
+import { Divider } from '@/presentation/components/atoms/divider';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { FormField } from '@/presentation/components/molecules/form-field';
 import { useTheme } from '@/theme/context';
-import { ReportFormProps, ReportFormData } from './types';
+import { spacing } from '@/theme/spacing';
+import { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { ReportFormData, ReportFormProps } from './types';
 
 const defaultCategories = [
   { value: 'waste', label: 'Waste', icon: 'recycle' as const },

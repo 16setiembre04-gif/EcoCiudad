@@ -1,8 +1,8 @@
-import { View, Pressable } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { spacing } from '@/theme/spacing';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { Pressable, View } from 'react-native';
 import { HeaderProps } from './types';
 
 export function Header({

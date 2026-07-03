@@ -1,7 +1,5 @@
-import { View, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/atoms/text';
-import { Badge } from '@/components/atoms/badge';
 import { REPORT_STATUSES } from '@/constants/report.constants';
+import { Badge } from '@/presentation/components/atoms/badge';
 import { type StatusBadgeProps } from './types';
 
 export function StatusBadge({ status, size = 'md', style }: StatusBadgeProps) {

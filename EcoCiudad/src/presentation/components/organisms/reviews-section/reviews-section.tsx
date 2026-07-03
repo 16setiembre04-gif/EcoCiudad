@@ -1,11 +1,11 @@
-import { View, FlatList, StyleSheet } from 'react-native';
-import { ReviewCard } from '@/components/molecules/review-card';
-import { SectionHeader } from '@/components/atoms/section-header';
-import { Button } from '@/components/atoms/button';
-import { EmptyState } from '@/components/atoms/empty-state';
-import { Skeleton } from '@/components/atoms/skeleton';
-import { Card } from '@/components/atoms/card';
+import { Button } from '@/presentation/components/atoms/button';
+import { Card } from '@/presentation/components/atoms/card';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { Skeleton } from '@/presentation/components/atoms/skeleton';
+import { ReviewCard } from '@/presentation/components/molecules/review-card';
 import { spacing } from '@/theme/spacing';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { type ReviewsSectionProps } from './types';
 
 export function ReviewsSection({

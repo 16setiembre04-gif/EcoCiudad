@@ -1,17 +1,17 @@
-import { useCallback } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import { EventsLayout } from '@/presentation/components/templates/events-layout';
+import { Button } from '@/presentation/components/atoms/button';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { RewardCard } from '@/presentation/components/molecules/reward-card';
 import { Header } from '@/presentation/components/organisms/header';
-import { Button } from '@/components/atoms/button';
-import { ThemedText } from '@/components/atoms/text';
-import { Icon } from '@/components/atoms/icon';
-import { RewardCard } from '@/components/molecules/reward-card';
-import { useEvent, useMarkAttendance, useEventAttendance } from '@/presentation/hooks';
+import { EventsLayout } from '@/presentation/components/templates/events-layout';
+import { useEvent, useEventAttendance, useMarkAttendance } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
-import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { spacing } from '@/theme/spacing';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 export default function EventAttendanceScreen() {
   const theme = useTheme();

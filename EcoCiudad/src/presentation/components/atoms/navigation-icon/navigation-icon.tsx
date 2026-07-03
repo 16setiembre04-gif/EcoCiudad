@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet } from 'react-native';
-import { Icon } from '@/components/atoms/icon';
+import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { Pressable, StyleSheet } from 'react-native';
 import { type NavigationIconProps } from './types';
 
 export function NavigationIcon({

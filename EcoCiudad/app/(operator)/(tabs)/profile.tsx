@@ -1,19 +1,18 @@
-import { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import Animated from 'react-native-reanimated';
+import { Avatar } from '@/presentation/components/atoms/avatar';
+import { Card } from '@/presentation/components/atoms/card';
+import { Chip } from '@/presentation/components/atoms/chip';
+import { Icon } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { PerformanceCard } from '@/presentation/components/molecules/performance-card';
+import { Header } from '@/presentation/components/organisms/header';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { Header } from '@/components/organisms/header';
-import { Card } from '@/components/atoms/card';
-import { ThemedText } from '@/components/atoms/text';
-import { Avatar } from '@/components/atoms/avatar';
-import { Icon } from '@/components/atoms/icon';
-import { Chip } from '@/components/atoms/chip';
-import { PerformanceCard } from '@/components/molecules/performance-card';
-import { useOperatorStats, useOperatorPerformance } from '@/presentation/hooks';
+import { useOperatorPerformance, useOperatorStats } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function OperatorProfileScreen() {
   const theme = useTheme();

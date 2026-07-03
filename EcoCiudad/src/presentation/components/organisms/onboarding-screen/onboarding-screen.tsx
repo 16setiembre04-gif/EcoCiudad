@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
-import { Icon, type IconName } from '@/components/atoms/icon';
-import { ThemedText } from '@/components/atoms/text';
+import { Icon, type IconName } from '@/presentation/components/atoms/icon';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { animations } from '@/theme/animations';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { animations } from '@/theme/animations';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 interface OnboardingScreenProps {
   icon: IconName;

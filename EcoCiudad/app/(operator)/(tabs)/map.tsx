@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import * as Location from 'expo-location';
-import Animated from 'react-native-reanimated';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { Header } from '@/presentation/components/organisms/header';
+import { MapContainer } from '@/presentation/components/organisms/map-container';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { Header } from '@/components/organisms/header';
-import { MapContainer } from '@/components/organisms/map-container';
-import { ThemedText } from '@/components/atoms/text';
 import { useAssignedReports } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import * as Location from 'expo-location';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 
 export default function OperatorMapScreen() {
   const theme = useTheme();

@@ -20,7 +20,7 @@ config.resolver.alias = {
   '^@/providers/(.+)': path.resolve(__dirname, 'src/providers/$1'),
   '^@/hooks/(.+)': path.resolve(__dirname, 'src/presentation/hooks/$1'),
   '^@/stores/(.+)': path.resolve(__dirname, 'src/presentation/stores/$1'),
-  '^@/components/(.+)': path.resolve(__dirname, 'src/presentation/components/$1'),
+  '^@/presentation/components/(.+)': path.resolve(__dirname, 'src/presentation/components/$1'),
 };
 
 module.exports = withNativeWind(config, { input: './src/global.css' });

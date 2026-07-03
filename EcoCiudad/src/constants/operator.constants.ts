@@ -1,4 +1,4 @@
-import { type IconName } from '@/components/atoms/icon';
+import { type IconName } from '@/presentation/components/atoms/icon';
 
 export const REPORT_PRIORITIES = {
   low: { label: 'Low', color: '#22C55E', icon: 'info' as IconName },

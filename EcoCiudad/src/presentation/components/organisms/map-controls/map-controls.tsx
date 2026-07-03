@@ -1,8 +1,8 @@
-import { View, Pressable } from 'react-native';
-import { Icon } from '@/components/atoms/icon';
-import { Badge } from '@/components/atoms/badge';
-import { spacing } from '@/theme/spacing';
+import { Badge } from '@/presentation/components/atoms/badge';
+import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { spacing } from '@/theme/spacing';
+import { Pressable, View } from 'react-native';
 import { MapControlsProps } from './types';
 
 export function MapControls({
