@@ -1,21 +1,19 @@
 -- ============================================================================
 -- Events Module - Database Migration
+-- Migration: 003_events_module.sql
 -- ============================================================================
 
 -- Add new columns to events table
-ALTER TABLE events ADD COLUMN IF NOT EXISTS banner_url TEXT;
-ALTER TABLE events ADD COLUMN IF NOT EXISTS eco_points_reward INTEGER NOT NULL DEFAULT 10;
-ALTER TABLE events ADD COLUMN IF NOT EXISTS requirements TEXT[];
-ALTER TABLE events ADD COLUMN IF NOT EXISTS community_id UUID REFERENCES communities(id) ON DELETE SET NULL;
-ALTER TABLE events ADD COLUMN IF NOT EXISTS status event_status NOT NULL DEFAULT 'upcoming';
-ALTER TABLE events ADD COLUMN IF NOT EXISTS is_virtual BOOLEAN NOT NULL DEFAULT FALSE;
-ALTER TABLE events ADD COLUMN IF NOT EXISTS meeting_link TEXT;
+ALTER TABLE public.events ADD COLUMN banner_url TEXT;
+ALTER TABLE public.events ADD COLUMN requirements TEXT[];
+ALTER TABLE public.events ADD COLUMN is_virtual BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE public.events ADD COLUMN meeting_link TEXT;
 
 -- Create event_reminders table
-CREATE TABLE IF NOT EXISTS event_reminders (
+CREATE TABLE public.event_reminders (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  event_id UUID NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   reminder_before INTEGER NOT NULL,
   reminder_type TEXT NOT NULL CHECK (reminder_type IN ('push', 'email', 'sms')),
   sent_at TIMESTAMPTZ,
@@ -24,31 +22,31 @@ CREATE TABLE IF NOT EXISTS event_reminders (
 );
 
 -- Create indexes for event_reminders
-CREATE INDEX IF NOT EXISTS idx_event_reminders_event_id ON event_reminders(event_id);
-CREATE INDEX IF NOT EXISTS idx_event_reminders_user_id ON event_reminders(user_id);
-CREATE INDEX IF NOT EXISTS idx_event_reminders_sent_at ON event_reminders(sent_at);
+CREATE INDEX idx_event_reminders_event_id ON public.event_reminders(event_id);
+CREATE INDEX idx_event_reminders_user_id ON public.event_reminders(user_id);
+CREATE INDEX idx_event_reminders_sent_at ON public.event_reminders(sent_at);
 
 -- Add reminder_enabled column to event_attendees
-ALTER TABLE event_attendees ADD COLUMN IF NOT EXISTS reminder_enabled BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE public.event_attendees ADD COLUMN reminder_enabled BOOLEAN NOT NULL DEFAULT TRUE;
 
 -- Enable RLS on event_reminders
-ALTER TABLE event_reminders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_reminders ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for event_reminders
 CREATE POLICY "Users can view own reminders"
-  ON event_reminders FOR SELECT
+  ON public.event_reminders FOR SELECT
   USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can create own reminders"
-  ON event_reminders FOR INSERT
+  ON public.event_reminders FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own reminders"
-  ON event_reminders FOR UPDATE
+  ON public.event_reminders FOR UPDATE
   USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can delete own reminders"
-  ON event_reminders FOR DELETE
+  ON public.event_reminders FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Function to get nearby events
@@ -57,11 +55,11 @@ CREATE OR REPLACE FUNCTION get_nearby_events(
   lng DOUBLE PRECISION,
   radius_km INTEGER DEFAULT 50
 )
-RETURNS SETOF events AS $$
+RETURNS SETOF public.events AS $$
 BEGIN
   RETURN QUERY
   SELECT *
-  FROM events
+  FROM public.events
   WHERE status = 'upcoming'
     AND start_date >= NOW()
     AND (
@@ -80,13 +78,13 @@ CREATE OR REPLACE FUNCTION send_event_reminders()
 RETURNS void AS $$
 DECLARE
   reminder RECORD;
-  event_record events%ROWTYPE;
+  event_record public.events%ROWTYPE;
   time_until_event INTERVAL;
 BEGIN
   FOR reminder IN
     SELECT er.*, e.start_date, e.title
-    FROM event_reminders er
-    JOIN events e ON er.event_id = e.id
+    FROM public.event_reminders er
+    JOIN public.events e ON er.event_id = e.id
     WHERE er.sent_at IS NULL
       AND e.status = 'upcoming'
       AND e.start_date > NOW()
@@ -94,11 +92,11 @@ BEGIN
     time_until_event := reminder.start_date - NOW();
     
     IF EXTRACT(EPOCH FROM time_until_event) / 60 <= reminder.reminder_before THEN
-      UPDATE event_reminders
+      UPDATE public.event_reminders
       SET sent_at = NOW()
       WHERE id = reminder.id;
       
-      INSERT INTO notifications (user_id, type, title, body, data)
+      INSERT INTO public.notifications (user_id, type, title, body, data)
       VALUES (
         reminder.user_id,
         'event_reminder',

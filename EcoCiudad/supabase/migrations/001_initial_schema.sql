@@ -1,11 +1,10 @@
 -- ============================================================================
--- EcoCiudad Database Schema
--- PostgreSQL + Supabase with Row Level Security
+-- EcoCiudad Database Schema - Initial Setup
+-- Migration: 001_initial_schema.sql
 -- ============================================================================
 
--- Enable UUID extension
+-- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE EXTENSION IF NOT EXISTS cube;
 CREATE EXTENSION IF NOT EXISTS earthdistance;
 
@@ -20,6 +19,9 @@ CREATE TYPE event_category AS ENUM ('cleanup', 'planting', 'education', 'communi
 CREATE TYPE event_status AS ENUM ('upcoming', 'ongoing', 'completed', 'cancelled');
 CREATE TYPE notification_type AS ENUM ('report_update', 'event_reminder', 'achievement', 'points', 'system');
 CREATE TYPE collection_status AS ENUM ('scheduled', 'in_progress', 'completed', 'cancelled');
+CREATE TYPE community_privacy AS ENUM ('public', 'private');
+CREATE TYPE community_category AS ENUM ('environmental', 'recycling', 'conservation', 'education', 'cleanup', 'gardening', 'sustainability', 'other');
+CREATE TYPE member_role AS ENUM ('owner', 'admin', 'moderator', 'member');
 
 -- ============================================================================
 -- USERS (extends Supabase auth.users)
@@ -120,24 +122,27 @@ CREATE INDEX idx_reports_location ON public.reports USING gist (
 CREATE TABLE public.communities (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
-  description TEXT,
-  icon_url TEXT,
+  description TEXT NOT NULL,
+  category community_category NOT NULL,
+  privacy community_privacy NOT NULL DEFAULT 'public',
   cover_image_url TEXT,
-  owner_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  is_public BOOLEAN NOT NULL DEFAULT TRUE,
+  logo_url TEXT,
+  department TEXT,
+  district TEXT,
   max_members INTEGER,
-  latitude DOUBLE PRECISION,
-  longitude DOUBLE PRECISION,
-  address TEXT,
+  rules TEXT[],
+  member_count INTEGER NOT NULL DEFAULT 0,
+  post_count INTEGER NOT NULL DEFAULT 0,
+  owner_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX idx_communities_category ON public.communities(category);
+CREATE INDEX idx_communities_privacy ON public.communities(privacy);
 CREATE INDEX idx_communities_owner_id ON public.communities(owner_id);
-CREATE INDEX idx_communities_is_public ON public.communities(is_public);
-CREATE INDEX idx_communities_location ON public.communities USING gist (
-  ll_to_earth(latitude, longitude)
-) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
+CREATE INDEX idx_communities_created_at ON public.communities(created_at DESC);
+CREATE INDEX idx_communities_member_count ON public.communities(member_count DESC);
 
 -- ============================================================================
 -- COMMUNITY MEMBERS
@@ -147,10 +152,8 @@ CREATE TABLE public.community_members (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   community_id UUID NOT NULL REFERENCES public.communities(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'moderator', 'member')),
+  role member_role NOT NULL DEFAULT 'member',
   joined_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(community_id, user_id)
 );
 
@@ -242,89 +245,6 @@ CREATE INDEX idx_recycling_centers_is_verified ON public.recycling_centers(is_ve
 CREATE INDEX idx_recycling_centers_rating ON public.recycling_centers(rating DESC);
 
 -- ============================================================================
--- RECYCLERS
--- ============================================================================
-
-CREATE TABLE public.recyclers (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  business_name TEXT,
-  is_business BOOLEAN NOT NULL DEFAULT FALSE,
-  tax_id TEXT,
-  phone TEXT,
-  email TEXT,
-  address TEXT,
-  latitude DOUBLE PRECISION,
-  longitude DOUBLE PRECISION,
-  service_area_km INTEGER,
-  accepted_materials TEXT[] NOT NULL DEFAULT '{}',
-  rating DECIMAL(2,1) CHECK (rating BETWEEN 0 AND 5),
-  total_collections INTEGER NOT NULL DEFAULT 0,
-  is_verified BOOLEAN NOT NULL DEFAULT FALSE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_recyclers_profile_id ON public.recyclers(profile_id);
-CREATE INDEX idx_recyclers_is_business ON public.recyclers(is_business);
-CREATE INDEX idx_recyclers_is_verified ON public.recyclers(is_verified);
-CREATE INDEX idx_recyclers_location ON public.recyclers USING gist (
-  ll_to_earth(latitude, longitude)
-) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
-
--- ============================================================================
--- COLLECTION TRUCKS
--- ============================================================================
-
-CREATE TABLE public.collection_trucks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  plate_number TEXT UNIQUE NOT NULL,
-  model TEXT NOT NULL,
-  capacity_kg INTEGER NOT NULL,
-  current_load_kg INTEGER NOT NULL DEFAULT 0,
-  status TEXT NOT NULL DEFAULT 'available' CHECK (status IN ('available', 'in_route', 'maintenance', 'offline')),
-  operator_id UUID REFERENCES public.operators(id) ON DELETE SET NULL,
-  latitude DOUBLE PRECISION,
-  longitude DOUBLE PRECISION,
-  last_location_update TIMESTAMPTZ,
-  fuel_level DECIMAL(5,2),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_collection_trucks_plate_number ON public.collection_trucks(plate_number);
-CREATE INDEX idx_collection_trucks_status ON public.collection_trucks(status);
-CREATE INDEX idx_collection_trucks_operator_id ON public.collection_trucks(operator_id);
-CREATE INDEX idx_collection_trucks_location ON public.collection_trucks USING gist (
-  ll_to_earth(latitude, longitude)
-) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
-
--- ============================================================================
--- ROUTES
--- ============================================================================
-
-CREATE TABLE public.routes (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  description TEXT,
-  truck_id UUID NOT NULL REFERENCES public.collection_trucks(id) ON DELETE CASCADE,
-  operator_id UUID NOT NULL REFERENCES public.operators(id) ON DELETE CASCADE,
-  status collection_status NOT NULL DEFAULT 'scheduled',
-  start_time TIMESTAMPTZ,
-  end_time TIMESTAMPTZ,
-  total_distance_km DECIMAL(8,2),
-  total_collected_kg DECIMAL(8,2),
-  waypoints JSONB NOT NULL DEFAULT '[]'::jsonb,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_routes_truck_id ON public.routes(truck_id);
-CREATE INDEX idx_routes_operator_id ON public.routes(operator_id);
-CREATE INDEX idx_routes_status ON public.routes(status);
-CREATE INDEX idx_routes_start_time ON public.routes(start_time);
-
--- ============================================================================
 -- NOTIFICATIONS
 -- ============================================================================
 
@@ -414,7 +334,7 @@ CREATE INDEX idx_eco_points_transactions_created_at ON public.eco_points_transac
 CREATE TABLE public.favorites (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  target_type TEXT NOT NULL CHECK (target_type IN ('report', 'event', 'community', 'recycling_center', 'recycler')),
+  target_type TEXT NOT NULL CHECK (target_type IN ('report', 'event', 'community', 'recycling_center')),
   target_id UUID NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(user_id, target_type, target_id)
@@ -465,8 +385,7 @@ BEGIN
   FOR t IN
     SELECT unnest(ARRAY[
       'profiles', 'operators', 'administrators', 'reports', 'communities',
-      'community_members', 'events', 'event_attendees', 'recycling_centers',
-      'recyclers', 'collection_trucks', 'routes', 'notifications',
+      'events', 'event_attendees', 'recycling_centers', 'notifications',
       'achievements', 'user_achievements', 'user_settings'
     ])
   LOOP
@@ -548,7 +467,6 @@ CREATE TRIGGER on_event_attendee_change
 -- ROW LEVEL SECURITY
 -- ============================================================================
 
--- Enable RLS on all tables
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.operators ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.administrators ENABLE ROW LEVEL SECURITY;
@@ -558,9 +476,6 @@ ALTER TABLE public.community_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.event_attendees ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.recycling_centers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.recyclers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.collection_trucks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.routes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_achievements ENABLE ROW LEVEL SECURITY;
@@ -638,7 +553,7 @@ CREATE POLICY "Admins can manage all reports"
 
 CREATE POLICY "Public communities are viewable by everyone"
   ON public.communities FOR SELECT
-  USING (is_public = true OR auth.uid() = owner_id);
+  USING (privacy = 'public' OR auth.uid() = owner_id);
 
 CREATE POLICY "Authenticated users can create communities"
   ON public.communities FOR INSERT
@@ -667,7 +582,7 @@ CREATE POLICY "Community members are viewable by community members"
     OR EXISTS (
       SELECT 1 FROM public.communities c
       WHERE c.id = community_members.community_id
-      AND c.is_public = true
+      AND c.privacy = 'public'
     )
   );
 
@@ -677,7 +592,7 @@ CREATE POLICY "Users can join public communities"
     auth.uid() = user_id
     AND EXISTS (
       SELECT 1 FROM public.communities
-      WHERE id = community_id AND is_public = true
+      WHERE id = community_id AND privacy = 'public'
     )
   );
 
@@ -748,79 +663,6 @@ CREATE POLICY "Recycling centers are viewable by everyone"
 
 CREATE POLICY "Admins can manage recycling centers"
   ON public.recycling_centers FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.administrators
-      WHERE id = auth.uid()
-    )
-  );
-
--- ============================================================================
--- RECYCLERS POLICIES
--- ============================================================================
-
-CREATE POLICY "Recyclers are viewable by everyone"
-  ON public.recyclers FOR SELECT
-  USING (true);
-
-CREATE POLICY "Users can create own recycler profile"
-  ON public.recyclers FOR INSERT
-  WITH CHECK (auth.uid() = profile_id);
-
-CREATE POLICY "Users can update own recycler profile"
-  ON public.recyclers FOR UPDATE
-  USING (auth.uid() = profile_id);
-
--- ============================================================================
--- COLLECTION TRUCKS POLICIES
--- ============================================================================
-
-CREATE POLICY "Operators can view assigned trucks"
-  ON public.collection_trucks FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.operators
-      WHERE id = auth.uid() AND id = operator_id
-    )
-    OR EXISTS (
-      SELECT 1 FROM public.administrators
-      WHERE id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Admins can manage all trucks"
-  ON public.collection_trucks FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.administrators
-      WHERE id = auth.uid()
-    )
-  );
-
--- ============================================================================
--- ROUTES POLICIES
--- ============================================================================
-
-CREATE POLICY "Operators can view own routes"
-  ON public.routes FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.operators
-      WHERE id = auth.uid() AND id = operator_id
-    )
-  );
-
-CREATE POLICY "Operators can update own routes"
-  ON public.routes FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.operators
-      WHERE id = auth.uid() AND id = operator_id
-    )
-  );
-
-CREATE POLICY "Admins can manage all routes"
-  ON public.routes FOR ALL
   USING (
     EXISTS (
       SELECT 1 FROM public.administrators
@@ -921,7 +763,6 @@ CREATE POLICY "Users can update own settings"
 -- VIEWS
 -- ============================================================================
 
--- User stats view
 CREATE OR REPLACE VIEW public.user_stats AS
 SELECT
   p.id,
@@ -939,7 +780,6 @@ LEFT JOIN public.user_achievements ua ON ua.user_id = p.id AND ua.is_completed =
 LEFT JOIN public.community_members cm ON cm.user_id = p.id
 GROUP BY p.id, p.display_name, p.eco_points, p.level;
 
--- Active reports view
 CREATE OR REPLACE VIEW public.active_reports AS
 SELECT
   r.*,
@@ -950,7 +790,6 @@ JOIN public.profiles p ON p.id = r.reporter_id
 WHERE r.status IN ('pending', 'in_review')
 ORDER BY r.created_at DESC;
 
--- Upcoming events view
 CREATE OR REPLACE VIEW public.upcoming_events AS
 SELECT
   e.*,
@@ -966,7 +805,6 @@ ORDER BY e.start_date ASC;
 -- SEED DATA
 -- ============================================================================
 
--- Insert default achievements
 INSERT INTO public.achievements (name, description, category, points_reward, criteria) VALUES
   ('First Report', 'Submit your first environmental report', 'reporting', 50, '{"type": "reports", "count": 1}'::jsonb),
   ('Eco Warrior', 'Submit 10 environmental reports', 'reporting', 200, '{"type": "reports", "count": 10}'::jsonb),

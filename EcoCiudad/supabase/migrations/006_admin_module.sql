@@ -1,5 +1,6 @@
 -- ============================================================================
 -- EcoCiudad Admin Module
+-- Migration: 006_admin_module.sql
 -- Dashboard views, activity logs, system settings
 -- ============================================================================
 
@@ -265,3 +266,7 @@ CREATE POLICY "Admins can update system settings"
 CREATE POLICY "Public settings are viewable by everyone"
   ON public.system_settings FOR SELECT
   USING (is_public = TRUE);
+
+-- ============================================================================
+-- COMPLETED
+-- ============================================================================
