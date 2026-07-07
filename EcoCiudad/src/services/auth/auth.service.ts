@@ -37,8 +37,16 @@ export interface AuthSession {
 
 class AuthService {
   async signUp(params: SignUpParams): Promise<Either<AuthenticationError | UnexpectedError, User>> {
+    logger.info('[AuthService] signUp called', { 
+      email: params.email, 
+      displayName: params.displayName, 
+      role: params.role 
+    });
+    
     try {
-      const { data, error } = await supabase.auth.signUp({
+      logger.info('[AuthService] Calling supabase.auth.signUp()');
+      
+      const signUpData = {
         email: params.email,
         password: params.password,
         options: {
@@ -47,14 +55,27 @@ class AuthService {
             role: params.role,
           },
         },
-      });
+      };
+      
+      logger.info('[AuthService] SignUp data prepared', signUpData);
+      
+      const { data, error } = await supabase.auth.signUp(signUpData);
 
       if (error) {
-        logger.error('Sign up failed', error.message);
+        logger.error('[AuthService] Sign up failed', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+          code: (error as any).code,
+          details: (error as any).details,
+          hint: (error as any).hint,
+          fullError: JSON.stringify(error, null, 2)
+        });
         return { left: new AuthenticationError({ message: error.message }) };
       }
 
       if (!data.user) {
+        logger.error('[AuthService] No user returned from signUp', { data });
         return { left: new UnexpectedError() };
       }
 
@@ -68,10 +89,15 @@ class AuthService {
         updatedAt: new Date(data.user.updated_at ?? Date.now()),
       };
 
-      logger.info('User signed up successfully', { userId: user.id, role: user.role });
+      logger.info('[AuthService] User signed up successfully', { userId: user.id, role: user.role });
       return { right: user };
-    } catch (error) {
-      logger.error('Sign up error', error);
+    } catch (error: any) {
+      logger.error('[AuthService] Sign up exception', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        fullError: JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
+      });
       return { left: new UnexpectedError() };
     }
   }
