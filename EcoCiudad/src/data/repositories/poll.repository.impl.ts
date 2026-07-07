@@ -1,6 +1,6 @@
 // Poll Repository Implementation
 
-import { Either, left, right } from '@/domain/entities';
+import { Either, left, right } from '@/domain/repositories';
 import { Poll, PollOption, PollVote } from '@/domain/entities/community';
 import { IPollRepository } from '@/domain/repositories/poll.repository';
 import { CommunityRemoteDataSource } from '@/data/datasources/remote/community.datasource';

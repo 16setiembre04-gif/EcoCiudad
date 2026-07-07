@@ -6,10 +6,13 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AppProviders } from '@/providers';
+import { logger } from '@/services/logger';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  logger.info('[RootLayout] Component rendered');
+  
   const [loaded, error] = useFonts({
   'Inter-Regular': require('../assets/fonts/Inter_28pt-Regular.ttf'),
   'Inter-Medium': require('../assets/fonts/Inter_28pt-Medium.ttf'),
@@ -18,15 +21,19 @@ export default function RootLayout() {
 });
 
   useEffect(() => {
+    logger.info('[RootLayout] useEffect triggered', { loaded, error: !!error });
     if (loaded || error) {
+      logger.info('[RootLayout] Hiding splash screen');
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
   if (!loaded && !error) {
+    logger.info('[RootLayout] Waiting for fonts to load');
     return null;
   }
 
+  logger.info('[RootLayout] Rendering AppProviders');
   return (
     <AppProviders>
       <GestureHandlerRootView style={{ flex: 1 }}>

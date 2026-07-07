@@ -3,6 +3,7 @@ import { type DomainError, UnexpectedError, NotFoundError } from '../../domain/e
 import { type Either, type ReportRepository, type ReportFilters } from '../../domain/repositories';
 import { type ReportRemoteDataSource } from '../datasources/remote';
 import { ReportMapper } from '../mappers';
+import { type ReportDTO } from '../dto';
 
 export class ReportRepositoryImpl implements ReportRepository {
   constructor(private readonly dataSource: ReportRemoteDataSource) {}
@@ -104,7 +105,7 @@ export class ReportRepositoryImpl implements ReportRepository {
 
   onReportChange(reportId: string, callback: (report: Report) => void): () => void {
     const subscription = this.dataSource.onReportChange(reportId, (payload) => {
-      const dto = (payload as { new: Record<string, unknown> }).new as unknown as import('../../dto').ReportDTO;
+      const dto = (payload as { new: Record<string, unknown> }).new as unknown as ReportDTO;
       callback(ReportMapper.toDomain(dto));
     });
     return () => {

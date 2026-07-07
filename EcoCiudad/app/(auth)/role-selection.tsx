@@ -9,12 +9,14 @@ import { spacing } from '@/theme/spacing';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useTranslation } from '@/localization';
 
 const AnimatedCard = Animated.createAnimatedComponent(Card);
 
 function RoleSelectionContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const citizenScale = useSharedValue(1);
   const operatorScale = useSharedValue(1);
@@ -49,10 +51,10 @@ function RoleSelectionContent() {
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Animated.View entering={FadeInDown.duration(animations.duration.slow)} style={styles.header}>
         <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-          Welcome to EcoCiudad
+          {t('auth.welcome')}
         </ThemedText>
         <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-          Choose your role to get started
+          {t('auth.chooseRole')}
         </ThemedText>
       </Animated.View>
 
@@ -67,16 +69,16 @@ function RoleSelectionContent() {
             onPress={handleCitizenPress}
             style={styles.roleContent}
             accessibilityRole="button"
-            accessibilityLabel="Continue as Citizen"
+            accessibilityLabel={t('auth.citizen')}
           >
             <View style={[styles.iconContainer, { backgroundColor: theme.colors.primaryLight }]}>
               <Icon name="user" size={48} color={theme.colors.primary} />
             </View>
             <ThemedText type="title" style={[styles.roleTitle, { color: theme.colors.textPrimary }]}>
-              Citizen
+              {t('auth.citizen')}
             </ThemedText>
             <ThemedText type="bodySmall" style={[styles.roleDescription, { color: theme.colors.textSecondary }]}>
-              Report issues, join communities, and earn eco points
+              {t('auth.citizenDescription')}
             </ThemedText>
           </Pressable>
         </AnimatedCard>
@@ -91,16 +93,16 @@ function RoleSelectionContent() {
             onPress={handleOperatorPress}
             style={styles.roleContent}
             accessibilityRole="button"
-            accessibilityLabel="Continue as Operator"
+            accessibilityLabel={t('auth.operator')}
           >
             <View style={[styles.iconContainer, { backgroundColor: theme.colors.secondaryLight }]}>
               <Icon name="truck" size={48} color={theme.colors.secondary} />
             </View>
             <ThemedText type="title" style={[styles.roleTitle, { color: theme.colors.textPrimary }]}>
-              Operator
+              {t('auth.operator')}
             </ThemedText>
             <ThemedText type="bodySmall" style={[styles.roleDescription, { color: theme.colors.textSecondary }]}>
-              Manage reports, coordinate routes, and oversee operations
+              {t('auth.operatorDescription')}
             </ThemedText>
           </Pressable>
         </AnimatedCard>

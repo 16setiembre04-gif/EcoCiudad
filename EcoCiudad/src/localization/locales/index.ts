@@ -1,77 +1,11 @@
-export const locales = {
-  en: {
-    common: {
-      loading: 'Loading...',
-      error: 'An error occurred',
-      retry: 'Retry',
-      cancel: 'Cancel',
-      confirm: 'Confirm',
-      save: 'Save',
-      delete: 'Delete',
-      edit: 'Edit',
-      close: 'Close',
-      back: 'Back',
-      next: 'Next',
-      submit: 'Submit',
-      search: 'Search',
-      filter: 'Filter',
-      sort: 'Sort',
-    },
-    auth: {
-      login: 'Login',
-      logout: 'Logout',
-      register: 'Register',
-      email: 'Email',
-      password: 'Password',
-      forgotPassword: 'Forgot password?',
-      signIn: 'Sign in',
-      signUp: 'Sign up',
-    },
-    errors: {
-      network: 'Network error. Please check your connection.',
-      auth: 'Invalid credentials. Please try again.',
-      notFound: 'Resource not found.',
-      validation: 'Please check your input.',
-      unexpected: 'An unexpected error occurred.',
-    },
-  },
-  es: {
-    common: {
-      loading: 'Cargando...',
-      error: 'Ocurrió un error',
-      retry: 'Reintentar',
-      cancel: 'Cancelar',
-      confirm: 'Confirmar',
-      save: 'Guardar',
-      delete: 'Eliminar',
-      edit: 'Editar',
-      close: 'Cerrar',
-      back: 'Atrás',
-      next: 'Siguiente',
-      submit: 'Enviar',
-      search: 'Buscar',
-      filter: 'Filtrar',
-      sort: 'Ordenar',
-    },
-    auth: {
-      login: 'Iniciar sesión',
-      logout: 'Cerrar sesión',
-      register: 'Registrarse',
-      email: 'Correo electrónico',
-      password: 'Contraseña',
-      forgotPassword: '¿Olvidaste tu contraseña?',
-      signIn: 'Iniciar sesión',
-      signUp: 'Registrarse',
-    },
-    errors: {
-      network: 'Error de red. Por favor verifica tu conexión.',
-      auth: 'Credenciales inválidas. Por favor intenta de nuevo.',
-      notFound: 'Recurso no encontrado.',
-      validation: 'Por favor verifica tu entrada.',
-      unexpected: 'Ocurrió un error inesperado.',
-    },
-  },
-} as const;
+export { default as es } from './es';
+export { default as en } from './en';
 
-export type Locale = keyof typeof locales;
-export type TranslationKey = typeof locales.en;
+export type Locale = 'es' | 'en';
+
+export const locales = {
+  es: () => import('./es'),
+  en: () => import('./en'),
+};
+
+export const defaultLocale: Locale = 'es';

@@ -1,8 +1,8 @@
 // Post Use Cases
 
-import { Either } from '@/domain/entities';
-import { Post, PostFilters, Comment, Reaction, ReactionType, Bookmark } from '@/domain/entities/community';
-import { IPostRepository } from '@/domain/repositories/post.repository';
+import { Either } from '@/domain/repositories';
+import { Post, Comment, Reaction, ReactionType, Bookmark } from '@/domain/entities/community';
+import { IPostRepository, PostFilters } from '@/domain/repositories/post.repository';
 
 export class GetPostsUseCase {
   constructor(private repository: IPostRepository) {}

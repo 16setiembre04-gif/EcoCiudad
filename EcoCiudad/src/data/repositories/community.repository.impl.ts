@@ -1,6 +1,6 @@
 // Community Repository Implementation
 
-import { Either, left, right } from '@/domain/entities';
+import { Either, left, right } from '@/domain/repositories';
 import { 
   Community, 
   CommunityMember, 

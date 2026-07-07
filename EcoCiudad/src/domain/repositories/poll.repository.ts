@@ -1,6 +1,6 @@
 // Poll Repository Interface
 
-import { Either } from '@/domain/entities';
+import { Either } from '@/domain/repositories';
 import { Poll, PollOption, PollVote } from '@/domain/entities/community';
 
 export interface IPollRepository {

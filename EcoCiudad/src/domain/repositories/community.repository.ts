@@ -1,6 +1,6 @@
 // Community Repository Interface
 
-import { Either } from '@/domain/entities';
+import { Either } from '@/domain/repositories';
 import { 
   Community, 
   CommunityMember, 

@@ -4,7 +4,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  runOnJS,
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -16,6 +15,7 @@ import { useTheme } from '@/theme/context';
 import { useSession } from '@/presentation/hooks';
 import { spacing } from '@/theme/spacing';
 import { animations } from '@/theme/animations';
+import { logger } from '@/services/logger';
 
 export default function SplashScreen() {
   const theme = useTheme();
@@ -23,12 +23,17 @@ export default function SplashScreen() {
   const colorScheme = useColorScheme();
   const { isInitialized } = useSession();
 
+  logger.info('[SplashScreen] Component mounted', { isInitialized });
+
   const logoOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.8);
   const textOpacity = useSharedValue(0);
   const textTranslateY = useSharedValue(20);
 
+  // Animaciones de entrada
   useEffect(() => {
+    logger.info('[SplashScreen] Starting animations');
+    
     logoOpacity.value = withTiming(1, {
       duration: animations.duration.slow,
     });
@@ -39,8 +44,6 @@ export default function SplashScreen() {
 
     textOpacity.value = withTiming(1, {
       duration: animations.duration.slow,
-    }, () => {
-      runOnJS(navigateToApp)();
     });
 
     textTranslateY.value = withTiming(0, {
@@ -48,15 +51,28 @@ export default function SplashScreen() {
     });
   }, []);
 
-  const navigateToApp = () => {
+  // Navegación reactiva cuando la inicialización está completa
+  useEffect(() => {
+    logger.info('[SplashScreen] Checking initialization status', { isInitialized });
+    
     if (!isInitialized) {
+      logger.info('[SplashScreen] Not initialized yet, waiting...');
       return;
     }
 
-    // For now, always show role selection
-    // TODO: Check if user has completed onboarding and is authenticated
-    router.replace('/(auth)/role-selection');
-  };
+    logger.info('[SplashScreen] Initialization complete, navigating to role-selection in 500ms');
+    
+    // Esperar un poco para que las animaciones se completen visualmente
+    const timer = setTimeout(() => {
+      logger.info('[SplashScreen] Navigating to /(auth)/role-selection');
+      router.replace('/(auth)/role-selection');
+    }, 500);
+
+    return () => {
+      logger.info('[SplashScreen] Cleanup: clearing navigation timer');
+      clearTimeout(timer);
+    };
+  }, [isInitialized, router]);
 
   const logoAnimatedStyle = useAnimatedStyle(() => ({
     opacity: logoOpacity.value,

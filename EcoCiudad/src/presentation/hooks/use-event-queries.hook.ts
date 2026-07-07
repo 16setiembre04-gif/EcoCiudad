@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type EventFilters, type EventStatus } from '@/domain/repositories';
-import { type Event, type EventParticipant, type EventAttendance, type EventReminder } from '@/domain/entities';
+import { type EventFilters } from '@/domain/repositories';
+import { type Event, type EventStatus, type EventParticipant, type EventAttendance, type EventReminder } from '@/domain/entities';
 import { container } from '@/presentation/navigation/container';
 import { useAuthStore } from '@/presentation/stores';
 import { QUERY_KEYS, EVENT_CONSTANTS } from '@/constants';

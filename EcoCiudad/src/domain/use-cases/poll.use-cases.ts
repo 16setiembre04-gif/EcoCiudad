@@ -1,6 +1,6 @@
 // Poll Use Cases
 
-import { Either } from '@/domain/entities';
+import { Either } from '@/domain/repositories';
 import { Poll, PollOption, PollVote } from '@/domain/entities/community';
 import { IPollRepository } from '@/domain/repositories/poll.repository';
 

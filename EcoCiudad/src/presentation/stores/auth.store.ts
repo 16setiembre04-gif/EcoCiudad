@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { type User, type UserRole } from '@/domain/entities';
+import { logger } from '@/services/logger';
 
 interface AuthState {
   user: User | null;
@@ -31,20 +32,35 @@ const initialState = {
 export const useAuthStore = create<AuthState>((set, get) => ({
   ...initialState,
   
-  setUser: (user) => set({ 
-    user, 
-    isAuthenticated: !!user, 
-    isLoading: false,
-    error: null,
-  }),
+  setUser: (user) => {
+    logger.info('[AuthStore] setUser called', { user: user?.displayName, isAuthenticated: !!user });
+    set({ 
+      user, 
+      isAuthenticated: !!user, 
+      isLoading: false,
+      error: null,
+    });
+  },
   
-  setLoading: (isLoading) => set({ isLoading }),
+  setLoading: (isLoading) => {
+    logger.info('[AuthStore] setLoading', { isLoading });
+    set({ isLoading });
+  },
   
-  setInitialized: (isInitialized) => set({ isInitialized }),
+  setInitialized: (isInitialized) => {
+    logger.info('[AuthStore] setInitialized', { isInitialized });
+    set({ isInitialized });
+  },
   
-  setError: (error) => set({ error, isLoading: false }),
+  setError: (error) => {
+    logger.error('[AuthStore] setError', { error });
+    set({ error, isLoading: false });
+  },
   
-  reset: () => set(initialState),
+  reset: () => {
+    logger.info('[AuthStore] reset called');
+    set(initialState);
+  },
   
   hasRole: (role) => {
     const { user } = get();

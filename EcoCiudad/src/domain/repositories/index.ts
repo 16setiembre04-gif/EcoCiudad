@@ -1,4 +1,5 @@
 export { type Either, type AuthRepository, type CitizenSignUpData } from './auth.repository';
+export { left, right } from './either.utils';
 export { type ReportRepository, type ReportFilters } from './report.repository';
 export { type EventRepository, type EventFilters } from './event.repository';
 export { type RecyclingCenterRepository, type RecyclingCenterFilters } from './recycling-center.repository';

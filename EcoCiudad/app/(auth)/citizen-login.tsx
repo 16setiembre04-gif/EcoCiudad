@@ -12,12 +12,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function CitizenLoginContent() {
   const theme = useTheme();
   const { signIn, isLoading, error, clearError } = useAuth();
+  const { t } = useTranslation();
 
   const shakeValue = useSharedValue(0);
 
@@ -71,10 +73,10 @@ function CitizenLoginContent() {
             <ThemedText style={styles.logoText}>🌿</ThemedText>
           </View>
           <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Welcome Back
+            {t('citizenLogin.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Sign in to your citizen account
+            {t('citizenLogin.subtitle')}
           </ThemedText>
         </AnimatedView>
 
@@ -84,8 +86,8 @@ function CitizenLoginContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('auth.email')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -105,6 +107,7 @@ function CitizenLoginContent() {
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
               <PasswordField
+                label={t('auth.password')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -125,7 +128,7 @@ function CitizenLoginContent() {
           <View style={styles.forgotPassword}>
             <Link href="/(auth)/forgot-password" asChild>
               <Button variant="ghost" size="sm">
-                Forgot Password?
+                {t('auth.forgotPassword')}
               </Button>
             </Link>
           </View>
@@ -140,16 +143,16 @@ function CitizenLoginContent() {
             iconName="arrow-right"
             iconPosition="right"
           >
-            Sign In
+            {t('auth.signIn')}
           </Button>
 
           <View style={styles.registerContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Don't have an account?{' '}
+              {t('auth.noAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/citizen-register" asChild>
               <Button variant="ghost" size="sm">
-                Sign Up
+                {t('auth.signUp')}
               </Button>
             </Link>
           </View>
@@ -157,7 +160,7 @@ function CitizenLoginContent() {
           <View style={styles.changeRoleContainer}>
             <Link href="/(auth)/role-selection" asChild>
               <Button variant="ghost" size="sm">
-                Change Role
+                {t('auth.changeRole')}
               </Button>
             </Link>
           </View>

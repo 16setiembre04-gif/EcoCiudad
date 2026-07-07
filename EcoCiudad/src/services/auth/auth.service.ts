@@ -261,23 +261,33 @@ class AuthService {
   }
 
   async getSession(): Promise<Either<UnexpectedError, AuthSession | null>> {
+    logger.info('[AuthService] getSession() called');
+    
     try {
+      logger.info('[AuthService] Calling supabase.auth.getSession()');
       const { data: { session }, error } = await supabase.auth.getSession();
+      logger.info('[AuthService] supabase.auth.getSession() resolved', { hasSession: !!session, error: error?.message });
 
       if (error) {
-        logger.error('Get session failed', error.message);
+        logger.error('[AuthService] Get session failed', error.message);
         return { left: new UnexpectedError() };
       }
 
       if (!session) {
+        logger.info('[AuthService] No active session found');
         return { right: null };
       }
 
+      logger.info('[AuthService] Session found, getting profile for user:', session.user.id);
       const profile = await this.getProfile(session.user.id);
+      logger.info('[AuthService] getProfile() resolved', { hasProfile: !!profile.right });
+      
       if (profile.left) {
+        logger.error('[AuthService] Failed to get profile');
         return { left: profile.left };
       }
 
+      logger.info('[AuthService] Session and profile loaded successfully');
       return {
         right: {
           user: profile.right!,
@@ -286,17 +296,26 @@ class AuthService {
         },
       };
     } catch (error) {
-      logger.error('Get session error', error);
+      logger.error('[AuthService] Get session error', error);
       return { left: new UnexpectedError() };
     }
   }
 
   onAuthStateChange(callback: (event: string, session: unknown) => void) {
-    return supabase.auth.onAuthStateChange(callback);
+    logger.info('[AuthService] onAuthStateChange() called, setting up listener');
+    
+    const result = supabase.auth.onAuthStateChange((event, session) => {
+      logger.info('[AuthService] Auth state change event:', event);
+      callback(event, session);
+    });
+    
+    logger.info('[AuthService] onAuthStateChange() listener setup complete');
+    return result;
   }
 
   private async getProfile(userId: string): Promise<Either<UnexpectedError, User>> {
     try {
+      logger.info('[AuthService] Getting profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -304,10 +323,11 @@ class AuthService {
         .single();
 
       if (error || !data) {
-        logger.error('Get profile failed', error?.message);
+        logger.error('[AuthService] Get profile failed', error?.message);
         return { left: new UnexpectedError() };
       }
 
+      logger.info('[AuthService] Profile loaded successfully', { displayName: data.display_name });
       const user: User = {
         id: data.id,
         email: data.email,
@@ -326,7 +346,7 @@ class AuthService {
 
       return { right: user };
     } catch (error) {
-      logger.error('Get profile error', error);
+      logger.error('[AuthService] Get profile error', error);
       return { left: new UnexpectedError() };
     }
   }

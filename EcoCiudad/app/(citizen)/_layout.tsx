@@ -23,6 +23,7 @@ export default function CitizenLayout() {
         <Stack.Screen name="community/[id]/edit" />
         <Stack.Screen name="community/[id]/members" />
         <Stack.Screen name="community/[id]/settings" />
+        <Stack.Screen name="settings" />
         <Stack.Screen name="profile" />
       </Stack>
     </AuthGuard>

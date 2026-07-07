@@ -1,6 +1,6 @@
 // Post Repository Implementation
 
-import { Either, left, right } from '@/domain/entities';
+import { Either, left, right } from '@/domain/repositories';
 import { Post, Comment, Reaction, ReactionType, Bookmark } from '@/domain/entities/community';
 import { IPostRepository, PostFilters } from '@/domain/repositories/post.repository';
 import { CommunityRemoteDataSource } from '@/data/datasources/remote/community.datasource';

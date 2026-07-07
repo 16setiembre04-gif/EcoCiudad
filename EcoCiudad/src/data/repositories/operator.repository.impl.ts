@@ -10,7 +10,7 @@ import {
   type OperatorRepository,
   type OperatorReportFilters,
 } from '@/domain/repositories';
-import { type Either, left, right } from '@/domain/entities';
+import { type Either, left, right } from '@/domain/repositories';
 import { type DomainError } from '@/domain/errors';
 import { OperatorDatasource } from '@/data/datasources/operator.datasource';
 import { ReportMapper, OperatorMapper } from '@/data/mappers';

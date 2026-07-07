@@ -1,15 +1,14 @@
 // Community Use Cases
 
-import { Either } from '@/domain/entities';
+import { Either } from '@/domain/repositories';
 import { 
   Community, 
   CommunityMember, 
-  CommunityFilters,
   CommunityPrivacy,
   CommunityCategory,
   MemberRole 
 } from '@/domain/entities/community';
-import { ICommunityRepository } from '@/domain/repositories/community.repository';
+import { ICommunityRepository, CommunityFilters } from '@/domain/repositories/community.repository';
 
 export class GetCommunitiesUseCase {
   constructor(private repository: ICommunityRepository) {}

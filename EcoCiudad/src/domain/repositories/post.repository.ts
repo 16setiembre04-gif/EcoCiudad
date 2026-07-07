@@ -1,6 +1,6 @@
 // Post Repository Interface
 
-import { Either } from '@/domain/entities';
+import { Either } from '@/domain/repositories';
 import { Post, PostType, Comment, Reaction, ReactionType, Bookmark } from '@/domain/entities/community';
 
 export interface PostFilters {
