@@ -9,7 +9,6 @@ import { Chip } from '@/presentation/components/atoms/chip';
 import { useMyEvents, useEventFavorites, useToggleFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { type EventStatus } from '@/domain/entities';
 
 type TabKey = 'upcoming' | 'completed' | 'cancelled';
 

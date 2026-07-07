@@ -41,7 +41,7 @@ export default function CitizenHomeScreen() {
         router.push('/(citizen)/(tabs)/community' as any);
         break;
       case 'recycling':
-        router.push('/(citizen)/(tabs)/map');
+        router.push('/(citizen)/recycling/map');
         break;
       case 'events':
         router.push('/(citizen)/(tabs)/events');
@@ -61,11 +61,11 @@ export default function CitizenHomeScreen() {
     <DashboardTemplate
       header={
         <DashboardHeader
-          userName={user?.displayName ?? 'Citizen'}
+          userName={user?.displayName ?? 'Ciudadano'}
           greeting={greeting}
           avatarUri={user?.avatarUrl}
-          onProfilePress={() => router.push('/(citizen)/profile')}
-          onNotificationsPress={() => router.push('/(citizen)/notifications')}
+          onProfilePress={() => router.push('/(citizen)/(tabs)/profile' as any)}
+          onNotificationsPress={() => router.push('/(citizen)/settings')}
         />
       }
     >
@@ -115,7 +115,7 @@ export default function CitizenHomeScreen() {
           <RecyclingCentersList
             centers={recyclingCenters}
             isLoading={isLoading}
-            onViewAllPress={() => router.push('/(citizen)/(tabs)/map')}
+            onViewAllPress={() => router.push('/(citizen)/recycling/map')}
           />
         </Animated.View>
 

@@ -92,7 +92,7 @@ export default function ReportDetailScreen() {
           title="Report Detail"
           onBackPress={() => router.back()}
           rightIcon="share"
-          onRightPress={handleShare}
+          onRightIconPress={handleShare}
         />
       }
     >

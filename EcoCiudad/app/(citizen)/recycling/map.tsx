@@ -18,7 +18,7 @@ export default function RecyclingCentersMapScreen() {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | undefined>();
   const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>();
 
-  const { data: centers, isLoading } = useRecyclingCenters({
+  const { data: centers } = useRecyclingCenters({
     latitude: userLocation?.latitude,
     longitude: userLocation?.longitude,
     material: selectedMaterial,

@@ -16,12 +16,11 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function OperatorProfileScreen() {
   const theme = useTheme();
-  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const [performancePeriod, setPerformancePeriod] = useState<'day' | 'week' | 'month' | 'year'>('week');
 
-  const { data: stats, isLoading: statsLoading } = useOperatorStats();
-  const { data: performance, isLoading: performanceLoading } = useOperatorPerformance(performancePeriod);
+  const { data: stats } = useOperatorStats();
+  const { data: performance } = useOperatorPerformance(performancePeriod);
 
   if (!user) {
     return (

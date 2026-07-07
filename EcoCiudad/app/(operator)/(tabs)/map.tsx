@@ -15,7 +15,7 @@ export default function OperatorMapScreen() {
   const router = useRouter();
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | undefined>();
 
-  const { data: reports, isLoading } = useAssignedReports();
+  const { data: reports } = useAssignedReports();
 
   useEffect(() => {
     (async () => {
@@ -48,7 +48,7 @@ export default function OperatorMapScreen() {
     >
       <View style={styles.container}>
         <MapContainer
-          centers={reports ?? []}
+          reports={reports ?? []}
           userLocation={userLocation}
           onMarkerPress={handleMarkerPress}
           style={styles.map}

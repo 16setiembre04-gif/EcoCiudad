@@ -17,7 +17,6 @@ export default function RecyclingCentersHomeScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>();
-  const [showMap, setShowMap] = useState(false);
 
   const {
     allCenters,
@@ -61,7 +60,7 @@ export default function RecyclingCentersHomeScreen() {
           title="Recycling Centers"
           showBackButton={false}
           rightIcon="map"
-          onRightPress={handleMapPress}
+          onRightIconPress={handleMapPress}
         />
       }
     >

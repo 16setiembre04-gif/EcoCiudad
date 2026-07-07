@@ -25,7 +25,7 @@ export default function OperatorReportDetailsScreen() {
   const { data: report, isLoading } = useReportDetails(id);
   const { mutate: resolveReport, isPending: isResolving } = useResolveReport();
   const { mutate: rejectReport, isPending: isRejecting } = useRejectReport();
-  const { mutate: updateStatus, isPending: isUpdating } = useUpdateReportStatus();
+  const { mutate: updateStatus } = useUpdateReportStatus();
 
   const [notes, setNotes] = useState('');
   const [showResolveForm, setShowResolveForm] = useState(false);
@@ -81,20 +81,6 @@ export default function OperatorReportDetailsScreen() {
       }
     );
   }, [id, notes, rejectReport, router]);
-
-  const handleStatusChange = useCallback((status: ReportStatus) => {
-    updateStatus(
-      { reportId: id, status },
-      {
-        onSuccess: () => {
-          Alert.alert('Success', 'Status updated successfully');
-        },
-        onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to update status');
-        },
-      }
-    );
-  }, [id, updateStatus]);
 
   if (isLoading || !report) {
     return (

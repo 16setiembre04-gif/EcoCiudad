@@ -115,9 +115,7 @@ export class OperatorDatasource {
 
   async updateReportStatus(
     reportId: string,
-    status: string,
-    operatorId: string,
-    notes?: string
+    status: string
   ): Promise<ReportDTO> {
     const { data, error } = await supabase
       .from('reports')
@@ -132,7 +130,6 @@ export class OperatorDatasource {
 
   async resolveReport(
     reportId: string,
-    operatorId: string,
     notes: string,
     resolutionPhotos?: string[]
   ): Promise<ReportDTO> {
@@ -155,7 +152,6 @@ export class OperatorDatasource {
 
   async rejectReport(
     reportId: string,
-    operatorId: string,
     reason: string
   ): Promise<ReportDTO> {
     const { data, error } = await supabase
@@ -366,7 +362,6 @@ export class OperatorDatasource {
   }
 
   async optimizeRoute(
-    operatorId: string,
     reportIds: string[]
   ): Promise<ReportDTO[]> {
     // Simple optimization: sort by priority and location proximity

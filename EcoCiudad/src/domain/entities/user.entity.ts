@@ -11,6 +11,8 @@ export interface User extends BaseEntity {
   avatarUrl?: string;
   role: UserRole;
   isEmailVerified: boolean;
+  ecoPoints?: number;
+  level?: number;
 }
 
 export type UserRole = 'citizen' | 'operator' | 'admin';

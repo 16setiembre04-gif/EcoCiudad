@@ -46,7 +46,7 @@ export default function ReportsScreen() {
           title="My Reports"
           showBackButton={false}
           rightIcon="plus"
-          onRightPress={handleCreatePress}
+          onRightIconPress={handleCreatePress}
         />
       }
     >

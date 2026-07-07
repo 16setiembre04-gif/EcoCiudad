@@ -63,7 +63,7 @@ export default function EventsHomeScreen() {
           title="Events"
           showBackButton={false}
           rightIcon="plus"
-          onRightPress={handleCreatePress}
+          onRightIconPress={handleCreatePress}
         />
       }
     >

@@ -82,7 +82,11 @@ export class CommunityMemberMapper {
       userId: dto.user_id,
       role: dto.role as MemberRole,
       joinedAt: new Date(dto.joined_at),
-      user: dto.user,
+      user: dto.user ? {
+        id: dto.user.id,
+        displayName: dto.user.display_name,
+        avatarUrl: dto.user.avatar_url,
+      } : undefined,
     };
   }
 
@@ -93,7 +97,11 @@ export class CommunityMemberMapper {
       user_id: domain.userId,
       role: domain.role,
       joined_at: domain.joinedAt.toISOString(),
-      user: domain.user,
+      user: domain.user ? {
+        id: domain.user.id,
+        display_name: domain.user.displayName,
+        avatar_url: domain.user.avatarUrl,
+      } : undefined,
     };
   }
 }

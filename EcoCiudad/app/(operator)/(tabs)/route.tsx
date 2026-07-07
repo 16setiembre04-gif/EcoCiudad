@@ -10,11 +10,10 @@ import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 export default function OperatorRouteScreen() {
-  const theme = useTheme();
   const router = useRouter();
 
   const { data: route, isLoading, refetch } = useTodayRoute();
-  const { mutate: optimizeRoute, isPending: isOptimizing } = useOptimizeRoute();
+  const { mutate: optimizeRoute } = useOptimizeRoute();
 
   const handleOptimize = useCallback(() => {
     if (!route || route.length === 0) return;

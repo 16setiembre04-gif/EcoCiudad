@@ -13,7 +13,7 @@ import { EmptyState } from '@/presentation/components/atoms/empty-state';
 import { useAdminReports } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { REPORT_CATEGORIES, REPORT_STATUSES } from '@/constants';
+import { REPORT_CATEGORIES } from '@/constants';
 import { type Report, type ReportStatus, type ReportCategory } from '@/domain/entities';
 import { type ReportFilters as ReportFiltersType } from '@/domain/repositories';
 

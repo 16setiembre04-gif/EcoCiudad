@@ -37,7 +37,6 @@ export default function AdminUserDetailScreen() {
   const activateMutation = useAdminActivateUser();
   const deactivateMutation = useAdminDeactivateUser();
   const suspendMutation = useAdminSuspendUser();
-  const restoreMutation = useAdminRestoreUser();
   const deleteMutation = useAdminDeleteUser();
   const assignRoleMutation = useAdminAssignRole();
 
