@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
-import { type Report, type Event, type RecyclingCenter } from '@/domain/entities';
+import { type Report, type Event, type RecyclingCenter, type Community } from '@/domain/entities';
 import { useReports } from './use-reports.hook';
 import { useEvents } from './use-events.hook';
 import { useRecyclingCenters } from './use-recycling-centers.hook';
+import { useCommunities } from './use-community-queries.hook';
 import { useAuthStore } from '@/presentation/stores';
 import { type DashboardStat } from '@/presentation/components/organisms/statistics-section';
 import { type RecentReportItem } from '@/presentation/components/organisms/recent-reports';
-import { type UpcomingEventItem } from '@/presentation/components/organisms/upcoming-events';
 import { type RecyclingCenterItem } from '@/presentation/components/organisms/recycling-centers-list';
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function mapReportStatus(status: string): 'pending' | 'in-review' | 'resolved' | 'rejected' {
@@ -30,15 +30,28 @@ function mapCategoryToIcon(category: string): 'leaf' | 'water' | 'tree' | 'noise
   return map[category] ?? 'help';
 }
 
+function calculateLevelProgress(points: number): { level: number; progress: number; pointsForNextLevel: number } {
+  const pointsPerLevel = 100;
+  const level = Math.floor(points / pointsPerLevel) + 1;
+  const pointsInCurrentLevel = points % pointsPerLevel;
+  const progress = pointsInCurrentLevel / pointsPerLevel;
+  const pointsForNextLevel = pointsPerLevel - pointsInCurrentLevel;
+  return { level, progress, pointsForNextLevel };
+}
+
 export function useDashboard() {
   const user = useAuthStore((state) => state.user);
 
   const { data: reports, isLoading: reportsLoading, isRefetching: reportsRefetching, refetch: refetchReports } = useReports();
   const { data: upcomingEvents, isLoading: upcomingLoading, isRefetching: upcomingRefetching, refetch: refetchEvents } = useEvents();
   const { data: centers, isLoading: centersLoading, isRefetching: centersRefetching, refetch: refetchCenters } = useRecyclingCenters();
+  const { data: communities, isLoading: communitiesLoading, isRefetching: communitiesRefetching, refetch: refetchCommunities } = useCommunities({});
 
-  const isRefreshing = reportsRefetching || upcomingRefetching || centersRefetching;
-  const isLoading = reportsLoading || upcomingLoading || centersLoading;
+  const isRefreshing = reportsRefetching || upcomingRefetching || centersRefetching || communitiesRefetching;
+  const isLoading = reportsLoading || upcomingLoading || centersLoading || communitiesLoading;
+
+  const ecoPoints = user?.ecoPoints ?? 0;
+  const levelInfo = useMemo(() => calculateLevelProgress(ecoPoints), [ecoPoints]);
 
   const stats = useMemo<DashboardStat[]>(() => {
     if (!reports || !user) return [];
@@ -47,12 +60,12 @@ export function useDashboard() {
     const resolved = userReports.filter((r) => r.status === 'resolved').length;
 
     return [
-      { label: 'Reports', value: userReports.length, iconName: 'report' as const },
-      { label: 'Resolved', value: resolved, iconName: 'success' as const, color: '#22C55E' },
-      { label: 'Eco Points', value: 0, iconName: 'eco-points' as const },
-      { label: 'Level', value: 1, iconName: 'achievement' as const },
+      { label: 'Reportes', value: userReports.length, iconName: 'report' as const },
+      { label: 'Resueltos', value: resolved, iconName: 'success' as const, color: '#22C55E' },
+      { label: 'Eco Puntos', value: ecoPoints, iconName: 'eco-points' as const },
+      { label: 'Nivel', value: levelInfo.level, iconName: 'achievement' as const },
     ];
-  }, [reports, user]);
+  }, [reports, user, ecoPoints, levelInfo.level]);
 
   const recentReports = useMemo<RecentReportItem[]>(() => {
     if (!reports) return [];
@@ -62,23 +75,14 @@ export function useDashboard() {
       description: r.description,
       status: mapReportStatus(r.status),
       category: mapCategoryToIcon(r.category),
-      location: r.location.address ?? 'Unknown location',
+      location: r.location.address ?? 'Sin ubicación',
       date: formatDate(r.createdAt),
     }));
   }, [reports]);
 
-  const upcomingEventsList = useMemo<UpcomingEventItem[]>(() => {
+  const upcomingEventsList = useMemo<Event[]>(() => {
     if (!upcomingEvents) return [];
-    return upcomingEvents.slice(0, 5).map((e: Event) => ({
-      id: e.id,
-      title: e.title,
-      date: formatDate(e.startDate),
-      location: e.location.address,
-      category: e.category,
-      attendees: e.currentAttendees,
-      maxAttendees: e.maxAttendees,
-      imageUrl: e.imageUrl,
-    }));
+    return upcomingEvents.slice(0, 5);
   }, [upcomingEvents]);
 
   const recyclingCentersList = useMemo<RecyclingCenterItem[]>(() => {
@@ -93,10 +97,22 @@ export function useDashboard() {
     }));
   }, [centers]);
 
+  const communitiesList = useMemo(() => {
+    if (!communities) return [];
+    return communities.slice(0, 5).map((c: Community) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description,
+      memberCount: c.memberCount,
+      imageUrl: c.coverImageUrl,
+    }));
+  }, [communities]);
+
   const refreshAll = () => {
     refetchReports();
     refetchEvents();
     refetchCenters();
+    refetchCommunities();
   };
 
   return {
@@ -104,9 +120,14 @@ export function useDashboard() {
     recentReports,
     upcomingEvents: upcomingEventsList,
     recyclingCenters: recyclingCentersList,
+    communities: communitiesList,
     isLoading,
     isRefreshing,
     refreshAll,
     user,
+    ecoPoints,
+    level: levelInfo.level,
+    progress: levelInfo.progress,
+    pointsForNextLevel: levelInfo.pointsForNextLevel,
   };
 }

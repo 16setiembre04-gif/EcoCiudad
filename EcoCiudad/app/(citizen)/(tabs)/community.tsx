@@ -11,11 +11,13 @@ import { Button } from '@/presentation/components/atoms/button';
 import { useCommunities, useMyCommunities, useJoinCommunity } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { type Community } from '@/domain/entities/community';
 
 export default function CommunitiesHomeScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -46,8 +48,8 @@ export default function CommunitiesHomeScreen() {
     async (communityId: string) => {
       try {
         await joinMutation.mutateAsync(communityId);
-      } catch (error) {
-        console.error('Failed to join community:', error);
+      } catch {
+        // handled by mutation
       }
     },
     [joinMutation]
@@ -78,7 +80,7 @@ export default function CommunitiesHomeScreen() {
                   onPress={() => handleJoinPress(item.id)}
                   loading={joinMutation.isPending}
                 >
-                  Join
+                  {t('communities.join')}
                 </Button>
               ) : undefined
             }
@@ -86,7 +88,7 @@ export default function CommunitiesHomeScreen() {
         </View>
       );
     },
-    [myCommunityIds, handleCommunityPress, handleJoinPress, joinMutation.isPending]
+    [myCommunityIds, handleCommunityPress, handleJoinPress, joinMutation.isPending, t]
   );
 
   if (isLoading) {
@@ -101,7 +103,7 @@ export default function CommunitiesHomeScreen() {
     <CommunityTemplate
       header={
         <Header
-          title="Communities"
+          title={t('communities.title')}
           rightIcon="plus"
           onRightIconPress={handleCreatePress}
         />
@@ -111,14 +113,14 @@ export default function CommunitiesHomeScreen() {
           <SearchBar
             value={search}
             onChangeText={setSearch}
-            placeholder="Search communities..."
+            placeholder={t('communities.searchPlaceholder')}
           />
           <Button
             variant="outlined"
             size="md"
             onPress={handleMyCommunitiesPress}
           >
-            My Communities
+            {t('communities.myCommunities')}
           </Button>
         </View>
       }
@@ -139,8 +141,8 @@ export default function CommunitiesHomeScreen() {
         ListEmptyComponent={
           <EmptyState
             iconName="community"
-            title="No communities found"
-            description="Try adjusting your search or create a new community"
+            title={t('communities.noCommunitiesFound')}
+            description={t('communities.trySearch')}
           />
         }
       />

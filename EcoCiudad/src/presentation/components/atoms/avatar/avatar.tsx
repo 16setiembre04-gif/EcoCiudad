@@ -1,6 +1,7 @@
 import { View, Text, Image, type ViewStyle } from 'react-native';
 import { useTheme } from '@/theme/context';
 import { sizes } from '@/theme/sizes';
+import { useTranslation } from '@/localization';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -24,6 +25,7 @@ function getInitials(name: string): string {
 
 export function Avatar({ uri, name, size = 'md', style }: AvatarProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const dimension = sizeMap[size];
   const fontSize = dimension * 0.4;
 
@@ -44,7 +46,7 @@ export function Avatar({ uri, name, size = 'md', style }: AvatarProps) {
         <Image
           source={{ uri }}
           style={{ width: dimension, height: dimension }}
-          accessibilityLabel={name ? `Avatar of ${name}` : 'User avatar'}
+          accessibilityLabel={name ? t('common.avatarOf', { name }) : t('common.userAvatar')}
         />
       </View>
     );
@@ -63,7 +65,7 @@ export function Avatar({ uri, name, size = 'md', style }: AvatarProps) {
         },
         style,
       ]}
-      accessibilityLabel={name ? `Avatar of ${name}` : 'User avatar'}
+      accessibilityLabel={name ? t('common.avatarOf', { name }) : t('common.userAvatar')}
     >
       <Text
         style={{

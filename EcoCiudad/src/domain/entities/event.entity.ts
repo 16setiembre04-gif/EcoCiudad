@@ -1,15 +1,13 @@
 import { BaseEntity } from './base.entity';
+import { GeoLocation } from './report.entity';
+import { type User } from './user.entity';
 
 export interface Event extends BaseEntity {
   title: string;
   description: string;
   startDate: Date;
   endDate: Date;
-  location: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
+  location: GeoLocation;
   organizerId: string;
   maxAttendees?: number;
   currentAttendees: number;
@@ -30,6 +28,7 @@ export type EventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 export interface EventParticipant extends BaseEntity {
   eventId: string;
   userId: string;
+  user?: User;
   status: ParticipantStatus;
   registeredAt: Date;
   attendedAt?: Date;

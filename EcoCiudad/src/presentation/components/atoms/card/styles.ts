@@ -37,5 +37,8 @@ export const getCardStyles = (
     },
   };
 
-  return { ...baseStyles, ...variantStyles[variant] };
+  return {
+    ...baseStyles,
+    ...variantStyles[variant],
+  };
 };

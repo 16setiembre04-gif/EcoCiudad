@@ -2,6 +2,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 export interface AdminDashboardHeaderProps {
@@ -16,12 +17,13 @@ export function AdminDashboardHeader({
   notificationCount = 0,
 }: AdminDashboardHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return t('common.goodMorning');
+    if (hour < 18) return t('common.goodAfternoon');
+    return t('common.goodEvening');
   };
 
   return (
@@ -35,24 +37,26 @@ export function AdminDashboardHeader({
             {adminName}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.primary}>
-            Platform Administrator
+            {t('common.platformAdministrator')}
           </ThemedText>
         </View>
-        <Pressable
-          onPress={onNotificationsPress}
-          style={[styles.notificationButton, { backgroundColor: theme.colors.surfaceVariant }]}
-          accessibilityRole="button"
-          accessibilityLabel="Notifications"
-        >
-          <Icon name="bell" size={22} color={theme.colors.textPrimary} />
-          {notificationCount > 0 && (
-            <View style={[styles.badge, { backgroundColor: theme.colors.error }]}>
-              <ThemedText style={{ color: '#FFFFFF', fontSize: 10, fontWeight: '600' }}>
-                {notificationCount > 9 ? '9+' : notificationCount}
-              </ThemedText>
-            </View>
-          )}
-        </Pressable>
+        {onNotificationsPress && (
+          <Pressable
+            onPress={onNotificationsPress}
+            style={[styles.notificationButton, { backgroundColor: theme.colors.surfaceVariant }]}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.notifications')}
+          >
+            <Icon name="bell" size={22} color={theme.colors.textPrimary} />
+            {notificationCount > 0 && (
+              <View style={[styles.badge, { backgroundColor: theme.colors.error }]}>
+                <ThemedText style={{ color: '#FFFFFF', fontSize: 10, fontWeight: '600' }}>
+                  {notificationCount > 9 ? '9+' : notificationCount}
+                </ThemedText>
+              </View>
+            )}
+          </Pressable>
+        )}
       </View>
     </View>
   );

@@ -3,6 +3,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type LocationSelectorProps } from './types';
 
@@ -13,6 +14,7 @@ export function LocationSelector({
   style,
 }: LocationSelectorProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.container, style]}>
@@ -20,7 +22,7 @@ export function LocationSelector({
         style={[styles.button, { backgroundColor: theme.colors.surfaceVariant }]}
         onPress={onPickLocation}
         accessibilityRole="button"
-        accessibilityLabel={location ? 'Change location' : 'Pick location'}
+        accessibilityLabel={location ? t('common.changeLocation') : t('common.pickLocation')}
       >
         <Icon name="location" size={20} color={theme.colors.primary} />
         <View style={styles.textContainer}>
@@ -30,7 +32,7 @@ export function LocationSelector({
             </ThemedText>
           ) : (
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Tap to select location on map
+              {t('common.tapToSelectLocation')}
             </ThemedText>
           )}
         </View>
@@ -41,10 +43,10 @@ export function LocationSelector({
           onPress={onClear}
           style={styles.clearButton}
           accessibilityRole="button"
-          accessibilityLabel="Clear location"
+          accessibilityLabel={t('common.clearLocation')}
         >
           <ThemedText type="bodySmall" color={theme.colors.error}>
-            Clear
+            {t('common.clear')}
           </ThemedText>
         </Pressable>
       )}

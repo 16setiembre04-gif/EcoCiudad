@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { AdminActivityItem } from '@/presentation/components/molecules/admin-activity-item';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 
 export interface AdminRecentActivityProps {
@@ -13,10 +14,12 @@ export interface AdminRecentActivityProps {
 }
 
 export function AdminRecentActivity({ activity, isLoading, onViewAllPress }: AdminRecentActivityProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <SectionHeader title="Recent Activity" />
+        <SectionHeader title={t('common.recentActivity')} />
         <Card variant="elevated" padding="lg">
           {Array.from({ length: 5 }).map((_, i) => (
             <View key={i} style={styles.skeletonRow}>
@@ -39,8 +42,8 @@ export function AdminRecentActivity({ activity, isLoading, onViewAllPress }: Adm
   return (
     <View style={styles.container}>
       <SectionHeader
-        title="Recent Activity"
-        actionLabel="View All"
+        title={t('common.recentActivity')}
+        actionLabel={t('common.viewAll')}
         onActionPress={onViewAllPress}
       />
       <Card variant="elevated" padding="lg" style={styles.card}>

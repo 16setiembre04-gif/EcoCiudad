@@ -8,6 +8,7 @@ import { useEvent, useEventAttendance, useMarkAttendance } from '@/presentation/
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
@@ -16,6 +17,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 export default function EventAttendanceScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: event } = useEvent(id);
@@ -27,32 +29,32 @@ export default function EventAttendanceScreen() {
   const handleMarkAttendance = useCallback(() => {
     if (!id) return;
     Alert.alert(
-      'Mark Attendance',
-      'Confirm your attendance at this event?',
+      t('common.markAttendance'),
+      t('common.confirmAttendanceQuestion'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Confirm',
+          text: t('common.confirm'),
           onPress: () => {
             markAttendance(id, {
               onSuccess: () => {
-                Alert.alert('Success', `You earned +${event?.ecoPointsReward ?? 10} eco points!`);
+                Alert.alert(t('common.success'), t('common.registeredMessage', { points: event?.ecoPointsReward ?? 10 }));
               },
               onError: (error) => {
-                Alert.alert('Error', error.message || 'Failed to mark attendance');
+                Alert.alert(t('common.error'), error.message || t('common.failedToMarkAttendance'));
               },
             });
           },
         },
       ],
     );
-  }, [id, event, markAttendance]);
+  }, [id, event, markAttendance, t]);
 
   return (
     <EventsLayout
       header={
         <Header
-          title="Attendance"
+          title={t('common.markAttendance')}
           onBackPress={() => router.back()}
         />
       }
@@ -65,18 +67,18 @@ export default function EventAttendanceScreen() {
             </View>
 
             <ThemedText type="headline" style={styles.successTitle}>
-              Attendance Confirmed!
+              {t('common.attendanceConfirmed')}
             </ThemedText>
 
             <ThemedText type="body" color={theme.colors.textSecondary} style={styles.successSubtitle}>
-              You attended {event?.title ?? 'this event'}
+              {t('common.registeredMessage', { points: event?.ecoPointsReward ?? 10 })}
             </ThemedText>
 
             <View style={styles.rewardContainer}>
               <RewardCard
                 points={attendance.ecoPointsEarned}
-                title="Eco Points Earned"
-                description="Points have been added to your account"
+                title={t('common.ecoPointsEarned')}
+                description={t('common.pointsAdded')}
                 earned
               />
             </View>
@@ -84,12 +86,12 @@ export default function EventAttendanceScreen() {
             <View style={[styles.qrPlaceholder, { backgroundColor: theme.colors.surfaceVariant }]}>
               <Icon name="check" size={48} color={theme.colors.textSecondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Certificate Placeholder
+                {t('common.certificatePlaceholder')}
               </ThemedText>
             </View>
 
             <ThemedText type="caption" color={theme.colors.textSecondary} style={styles.dateText}>
-              Attended on {attendance.attendedAt.toLocaleDateString('en-US', {
+              {t('events.attendedOn')} {attendance.attendedAt.toLocaleDateString('es-ES', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -106,7 +108,7 @@ export default function EventAttendanceScreen() {
               onPress={() => router.back()}
               iconName="arrow-left"
             >
-              Back to Event
+              {t('common.backToEvent')}
             </Button>
           </Animated.View>
         ) : (
@@ -114,23 +116,23 @@ export default function EventAttendanceScreen() {
             <View style={[styles.qrContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
               <Icon name="check" size={64} color={theme.colors.textSecondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary} style={styles.qrText}>
-                QR Code Placeholder
+                {t('common.qrCodePlaceholder')}
               </ThemedText>
             </View>
 
             <ThemedText type="title" style={styles.pendingTitle}>
-              Mark Your Attendance
+              {t('common.markYourAttendance')}
             </ThemedText>
 
             <ThemedText type="body" color={theme.colors.textSecondary} style={styles.pendingSubtitle}>
-              Confirm your attendance to earn eco points
+              {t('common.earnPointsByAttending')}
             </ThemedText>
 
             <View style={styles.rewardPreview}>
               <RewardCard
                 points={event?.ecoPointsReward ?? 10}
-                title="Attendance Reward"
-                description="Earn these points by attending"
+                title={t('common.attendanceReward')}
+                description={t('common.earnPointsByAttending')}
               />
             </View>
 
@@ -143,7 +145,7 @@ export default function EventAttendanceScreen() {
               iconName="check"
               iconPosition="right"
             >
-              Confirm Attendance
+              {t('common.confirmAttendance')}
             </Button>
           </Animated.View>
         )}

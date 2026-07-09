@@ -5,11 +5,13 @@ import { Card } from '@/presentation/components/atoms/card';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type ParticipantCardProps } from './types';
 
 export function ParticipantCard({ participant, onPress, containerStyle }: ParticipantCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const statusConfig = PARTICIPANT_STATUSES[participant.status];
 
   return (
@@ -26,10 +28,10 @@ export function ParticipantCard({ participant, onPress, containerStyle }: Partic
       />
       <View style={styles.info}>
         <ThemedText type="body" numberOfLines={1}>
-          {participant.user?.displayName ?? 'Unknown User'}
+          {participant.user?.displayName ?? t('common.unknownUser')}
         </ThemedText>
         <ThemedText type="caption" color={theme.colors.textSecondary}>
-          Joined {participant.registeredAt.toLocaleDateString()}
+          {t('common.joined')} {participant.registeredAt.toLocaleDateString()}
         </ThemedText>
       </View>
       <Badge variant="tonal" color={statusConfig.color as any} size="sm">

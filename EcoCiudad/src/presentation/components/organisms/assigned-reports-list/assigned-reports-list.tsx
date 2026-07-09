@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { AssignedReportCard } from '@/presentation/components/molecules/assigned-report-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type AssignedReportsListProps } from './types';
 
@@ -12,14 +13,17 @@ export function AssignedReportsList({
   isLoading = false,
   onReportPress,
   onViewAllPress,
-  title = 'Assigned Reports',
+  title,
   horizontal = false,
   style,
 }: AssignedReportsListProps) {
+  const { t } = useTranslation();
+  const displayTitle = title ?? t('common.assignedReports');
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={displayTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <View style={horizontal ? styles.skeletonHorizontal : styles.skeletonVertical}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="md" style={horizontal ? styles.skeletonCardH : styles.skeletonCardV}>
@@ -36,12 +40,12 @@ export function AssignedReportsList({
   if (reports.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} />
+        <SectionHeader title={displayTitle} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="tasks"
-            title="No assigned reports"
-            description="You don't have any reports assigned to you"
+            title={t('common.noAssignedReports')}
+            description={t('common.noReportsAssignedToYou')}
           />
         </View>
       </View>
@@ -51,7 +55,7 @@ export function AssignedReportsList({
   if (horizontal) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={displayTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <FlatList
           data={reports}
           keyExtractor={(item) => item.id}
@@ -73,7 +77,7 @@ export function AssignedReportsList({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+      <SectionHeader title={displayTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
       <FlatList
         data={reports}
         keyExtractor={(item) => item.id}

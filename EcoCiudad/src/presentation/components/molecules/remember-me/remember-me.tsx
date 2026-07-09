@@ -3,10 +3,12 @@ import { Checkbox } from '@/presentation/components/atoms/checkbox';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { type RememberMeProps } from './types';
 
 export function RememberMe({ checked, onCheckedChange }: RememberMeProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Pressable
@@ -21,7 +23,7 @@ export function RememberMe({ checked, onCheckedChange }: RememberMeProps) {
         size="sm"
       />
       <ThemedText type="bodySmall" style={{ color: theme.colors.textSecondary }}>
-        Remember me
+        {t('common.rememberMe')}
       </ThemedText>
     </Pressable>
   );

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { View, FlatList, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CommunityTemplate } from '@/presentation/components/templates';
@@ -10,11 +10,12 @@ import { useMyCommunities } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { type Community } from '@/domain/entities/community';
-import { useState } from 'react';
+import { useTranslation } from '@/localization';
 
 export default function MyCommunitiesScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: communities, isLoading, refetch } = useMyCommunities();
@@ -43,7 +44,7 @@ export default function MyCommunitiesScreen() {
   return (
     <CommunityTemplate
       header={
-        <Header title="My Communities" showBackButton />
+        <Header title={t('common.myCommunities')} showBackButton />
       }
     >
       <FlatList
@@ -73,8 +74,8 @@ export default function MyCommunitiesScreen() {
         ListEmptyComponent={
           <EmptyState
             iconName="community"
-            title="No communities yet"
-            description="Join or create a community to get started"
+            title={t('common.noCommunitiesYet')}
+            description={t('common.joinOrCreateCommunity')}
           />
         }
       />

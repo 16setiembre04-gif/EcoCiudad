@@ -16,10 +16,12 @@ import { useSession } from '@/presentation/hooks';
 import { spacing } from '@/theme/spacing';
 import { animations } from '@/theme/animations';
 import { logger } from '@/services/logger';
+import { useTranslation } from '@/localization';
 
 export default function SplashScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const { isInitialized } = useSession();
 
@@ -107,7 +109,7 @@ export default function SplashScreen() {
 
         <Animated.View style={[styles.textContainer, textAnimatedStyle]}>
           <ThemedText
-            type="displayLarge"
+            type="display"
             color={theme.colors.textPrimary}
             style={styles.title}
           >
@@ -118,7 +120,7 @@ export default function SplashScreen() {
             color={theme.colors.textSecondary}
             style={styles.subtitle}
           >
-            Building a sustainable future together
+            {t('splash.subtitle')}
           </ThemedText>
         </Animated.View>
       </View>

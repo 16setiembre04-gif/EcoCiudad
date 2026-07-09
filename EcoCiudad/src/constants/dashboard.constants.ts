@@ -2,16 +2,16 @@ import { type IconName } from '@/presentation/components/atoms/icon';
 import { type QuickActionItem } from '@/presentation/components/organisms/quick-actions';
 
 export const DASHBOARD_QUICK_ACTIONS: QuickActionItem[] = [
-  { key: 'report', label: 'Report Issue', icon: 'report' as IconName },
-  { key: 'community', label: 'Community', icon: 'community' },
-  { key: 'recycling', label: 'Recycling Centers', icon: 'recycle' },
-  { key: 'events', label: 'Events', icon: 'calendar' },
+  { key: 'report', label: 'Reportar', icon: 'report' as IconName },
+  { key: 'community', label: 'Comunidad', icon: 'community' },
+  { key: 'recycling', label: 'Centros', icon: 'recycle' },
+  { key: 'events', label: 'Eventos', icon: 'calendar' },
 ];
 
 export const DASHBOARD_GREETINGS = {
-  morning: 'Good morning',
-  afternoon: 'Good afternoon',
-  evening: 'Good evening',
+  morning: 'Buenos días',
+  afternoon: 'Buenas tardes',
+  evening: 'Buenas noches',
 } as const;
 
 export function getGreeting(): string {

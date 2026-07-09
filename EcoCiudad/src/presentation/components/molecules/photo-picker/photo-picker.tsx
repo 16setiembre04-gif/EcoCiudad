@@ -5,6 +5,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type PhotoPickerProps } from './types';
 
@@ -16,6 +17,7 @@ export function PhotoPicker({
   style,
 }: PhotoPickerProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const canAddMore = images.length < maxImages;
 
   return (
@@ -33,17 +35,17 @@ export function PhotoPicker({
             style={[styles.addButton, { borderColor: theme.colors.border }]}
             onPress={onAddImage}
             accessibilityRole="button"
-            accessibilityLabel="Add photo"
+            accessibilityLabel={t('common.addPhoto')}
           >
             <Icon name="camera" size={24} color={theme.colors.textSecondary} />
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              Add Photo
+              {t('common.addPhoto')}
             </ThemedText>
           </Pressable>
         )}
       </View>
       <ThemedText type="caption" color={theme.colors.textSecondary}>
-        {images.length}/{maxImages} photos
+        {t('common.photosCount', { current: images.length, max: maxImages })}
       </ThemedText>
     </View>
   );

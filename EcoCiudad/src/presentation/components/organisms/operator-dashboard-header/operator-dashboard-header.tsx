@@ -3,6 +3,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type OperatorDashboardHeaderProps } from './types';
 
@@ -14,6 +15,7 @@ export function OperatorDashboardHeader({
   containerStyle,
 }: OperatorDashboardHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.surface }, containerStyle]}>
@@ -22,7 +24,7 @@ export function OperatorDashboardHeader({
           style={styles.profileSection}
           onPress={onProfilePress}
           accessibilityRole="button"
-          accessibilityLabel="View profile"
+          accessibilityLabel={t('common.viewProfile')}
         >
           <Avatar name={operatorName} size="md" />
           <View style={styles.profileInfo}>
@@ -30,26 +32,28 @@ export function OperatorDashboardHeader({
               {operatorName}
             </ThemedText>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Environmental Officer
+              {t('common.environmentalOfficer')}
             </ThemedText>
           </View>
         </Pressable>
 
-        <Pressable
-          style={styles.notificationButton}
-          onPress={onNotificationsPress}
-          accessibilityRole="button"
-          accessibilityLabel="View notifications"
-        >
-          <Icon name="bell" size={24} color={theme.colors.textPrimary} />
-          {stats.pendingReports > 0 && (
-            <View style={[styles.badge, { backgroundColor: theme.colors.error }]}>
-              <ThemedText type="caption" style={{ color: theme.colors.onPrimary }}>
-                {stats.pendingReports > 9 ? '9+' : stats.pendingReports}
-              </ThemedText>
-            </View>
-          )}
-        </Pressable>
+        {onNotificationsPress && (
+          <Pressable
+            style={styles.notificationButton}
+            onPress={onNotificationsPress}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.viewNotifications')}
+          >
+            <Icon name="bell" size={24} color={theme.colors.textPrimary} />
+            {stats.pendingReports > 0 && (
+              <View style={[styles.badge, { backgroundColor: theme.colors.error }]}>
+                <ThemedText type="caption" style={{ color: theme.colors.onPrimary }}>
+                  {stats.pendingReports > 9 ? '9+' : stats.pendingReports}
+                </ThemedText>
+              </View>
+            )}
+          </Pressable>
+        )}
       </View>
 
       <View style={styles.statsRow}>
@@ -58,7 +62,7 @@ export function OperatorDashboardHeader({
             {stats.totalAssigned}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Assigned
+            {t('common.assigned')}
           </ThemedText>
         </View>
 
@@ -67,7 +71,7 @@ export function OperatorDashboardHeader({
             {stats.pendingReports}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Pending
+            {t('common.pending')}
           </ThemedText>
         </View>
 
@@ -76,7 +80,7 @@ export function OperatorDashboardHeader({
             {stats.resolvedToday}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Today
+            {t('common.today')}
           </ThemedText>
         </View>
 
@@ -85,7 +89,7 @@ export function OperatorDashboardHeader({
             {stats.averageResolutionTime}h
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Avg Time
+            {t('common.averageTime')}
           </ThemedText>
         </View>
       </View>

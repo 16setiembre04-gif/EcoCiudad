@@ -16,83 +16,83 @@ interface AuthSubscription {
 }
 
 export function SessionProvider({ children }: SessionProviderProps) {
-  logger.info('[SessionProvider] Component rendered');
-  
+  logger.info('[SessionProvider] Componente renderizado');
+
   const { setUser, setInitialized, setLoading } = useAuthStore();
   const subscriptionRef = useRef<AuthSubscription | null>(null);
 
   useEffect(() => {
-    logger.info('[SessionProvider] useEffect triggered');
-    
+    logger.info('[SessionProvider] useEffect disparado');
+
     const initSession = async () => {
-      logger.info('[SessionProvider] initSession() called');
-      logger.info('[SessionProvider] Setting loading to true');
+      logger.info('[SessionProvider] initSession() llamada');
+      logger.info('[SessionProvider] Estableciendo cargando a true');
       setLoading(true);
 
       try {
-        logger.info('[SessionProvider] Calling onAuthStateChange()');
+        logger.info('[SessionProvider] Llamando onAuthStateChange()');
         // Suscribirse a cambios de autenticación
         const result = authService.onAuthStateChange(
           async (event, session) => {
-            logger.info('[SessionProvider] Auth state changed', { event });
+            logger.info('[SessionProvider] Estado de autenticación cambiado', { event });
 
             if (event === 'SIGNED_IN' && session) {
-              logger.info('[SessionProvider] SIGNED_IN event, getting current user');
+              logger.info('[SessionProvider] Evento SIGNED_IN, obteniendo usuario actual');
               const currentResult = await authService.getCurrentUser();
               if (currentResult.right) {
-                logger.info('[SessionProvider] Current user found, setting user');
+                logger.info('[SessionProvider] Usuario actual encontrado, estableciendo usuario');
                 setUser(currentResult.right);
               }
             } else if (event === 'SIGNED_OUT') {
-              logger.info('[SessionProvider] SIGNED_OUT event, clearing user');
+              logger.info('[SessionProvider] Evento SIGNED_OUT, limpiando usuario');
               setUser(null);
             } else if (event === 'TOKEN_REFRESHED') {
-              logger.info('[SessionProvider] TOKEN_REFRESHED event, getting current user');
+              logger.info('[SessionProvider] Evento TOKEN_REFRESHED, obteniendo usuario actual');
               const refreshedResult = await authService.getCurrentUser();
               if (refreshedResult.right) {
-                logger.info('[SessionProvider] Refreshed user found, setting user');
+                logger.info('[SessionProvider] Usuario refrescado encontrado, estableciendo usuario');
                 setUser(refreshedResult.right);
               }
             } else if (event === 'PASSWORD_RECOVERY') {
-              logger.info('[SessionProvider] Password recovery event detected');
+              logger.info('[SessionProvider] Evento de recuperación de contraseña detectado');
             }
           }
         );
 
-        logger.info('[SessionProvider] onAuthStateChange() completed');
+        logger.info('[SessionProvider] onAuthStateChange() completado');
         subscriptionRef.current = result as unknown as AuthSubscription;
 
         // Obtener sesión actual
-        logger.info('[SessionProvider] Calling getSession()');
+        logger.info('[SessionProvider] Llamando getSession()');
         const sessionResult = await authService.getSession();
-        logger.info('[SessionProvider] getSession() resolved', { hasResult: !!sessionResult.right });
-        
+        logger.info('[SessionProvider] getSession() resuelto', { hasResult: !!sessionResult.right });
+
         if (sessionResult.right) {
-          logger.info('[SessionProvider] Session found, setting user');
+          logger.info('[SessionProvider] Sesión encontrada, estableciendo usuario');
           setUser(sessionResult.right.user);
         } else {
-          logger.info('[SessionProvider] No session found, setting user to null');
+          logger.info('[SessionProvider] No se encontró sesión, estableciendo usuario a vacío');
           setUser(null);
         }
 
-        logger.info('[SessionProvider] Setting isInitialized to true');
+        logger.info('[SessionProvider] Estableciendo isInitialized a true');
         setInitialized(true);
-        logger.info('[SessionProvider] Setting loading to false');
+        logger.info('[SessionProvider] Estableciendo cargando a false');
         setLoading(false);
-        logger.info('[SessionProvider] Session initialization complete');
+        logger.info('[SessionProvider] Inicialización de sesión completada');
       } catch (error) {
-        logger.error('[SessionProvider] Session initialization failed', error);
+        logger.error('[SessionProvider] Falló la inicialización de sesión', error);
         setUser(null);
         setInitialized(true);
         setLoading(false);
       }
     };
 
-    logger.info('[SessionProvider] Calling initSession()');
+    logger.info('[SessionProvider] Llamando initSession()');
     initSession();
 
     return () => {
-      logger.info('[SessionProvider] Cleanup called');
+      logger.info('[SessionProvider] Limpieza llamada');
       if (subscriptionRef.current) {
         subscriptionRef.current.data.subscription.unsubscribe();
       }

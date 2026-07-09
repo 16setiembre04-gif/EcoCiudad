@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type AdminActivityLog, type User, type UserRole, type Report, type ReportStatus, type ReportPriority } from '@/domain/entities';
+import { type AdminActivityLog, type User, type UserRole, type ReportStatus, type ReportPriority } from '@/domain/entities';
 import { type AnalyticsFilters, type ActivityLogFilters, type AdminFilters, type ReportFilters } from '@/domain/repositories';
 import { container } from '@/presentation/navigation/container';
 import { QUERY_KEYS, ADMIN_CONSTANTS } from '@/constants';

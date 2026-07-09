@@ -1,26 +1,43 @@
 import { Tabs } from 'expo-router';
-import { Icon } from '@/presentation/components/atoms/icon';
+import { BottomNavigation } from '@/presentation/components/organisms/bottom-navigation';
+import { useTranslation } from '@/localization';
+import { type IconName } from '@/presentation/components/atoms/icon';
+
+interface TabItem {
+  key: string;
+  label: string;
+  icon: IconName;
+}
 
 export default function AdminTabsLayout() {
+  const { t } = useTranslation();
+
+  const tabs: TabItem[] = [
+    { key: 'index', label: t('common.panel'), icon: 'home' },
+  ];
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#6D28D9',
-        tabBarInactiveTintColor: '#64748B',
-        tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: '#E2E8F0',
-        },
+      }}
+      tabBar={({ state, navigation }) => {
+        const activeKey = state.routes[state.index].name;
+        return (
+          <BottomNavigation
+            items={tabs}
+            activeKey={activeKey}
+            onItemPress={(key) => {
+              const route = state.routes.find((r) => r.name === key);
+              if (route) {
+                navigation.navigate(route.name, route.params);
+              }
+            }}
+          />
+        );
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Panel',
-          tabBarIcon: ({ color, size }) => <Icon name="home" size={size} color={String(color)} />,
-        }}
-      />
+      <Tabs.Screen name="index" />
     </Tabs>
   );
 }

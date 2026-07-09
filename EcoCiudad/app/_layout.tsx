@@ -11,29 +11,33 @@ import { logger } from '@/services/logger';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  logger.info('[RootLayout] Component rendered');
-  
+  logger.info('[RootLayout] Componente renderizado');
+
   const [loaded, error] = useFonts({
-  'Inter-Regular': require('../assets/fonts/Inter_28pt-Regular.ttf'),
-  'Inter-Medium': require('../assets/fonts/Inter_28pt-Medium.ttf'),
-  'Inter-SemiBold': require('../assets/fonts/Inter_28pt-SemiBold.ttf'),
-  'Inter-Bold': require('../assets/fonts/Inter_28pt-Bold.ttf'),
-});
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    'Inter-Regular': require('../assets/fonts/Inter_28pt-Regular.ttf'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    'Inter-Medium': require('../assets/fonts/Inter_28pt-Medium.ttf'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    'Inter-SemiBold': require('../assets/fonts/Inter_28pt-SemiBold.ttf'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    'Inter-Bold': require('../assets/fonts/Inter_28pt-Bold.ttf'),
+  });
 
   useEffect(() => {
-    logger.info('[RootLayout] useEffect triggered', { loaded, error: !!error });
+    logger.info('[RootLayout] useEffect disparado', { loaded, error: !!error });
     if (loaded || error) {
-      logger.info('[RootLayout] Hiding splash screen');
+      logger.info('[RootLayout] Ocultando pantalla de inicio');
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
   if (!loaded && !error) {
-    logger.info('[RootLayout] Waiting for fonts to load');
+    logger.info('[RootLayout] Esperando carga de fuentes');
     return null;
   }
 
-  logger.info('[RootLayout] Rendering AppProviders');
+  logger.info('[RootLayout] Renderizando AppProviders');
   return (
     <AppProviders>
       <GestureHandlerRootView style={{ flex: 1 }}>

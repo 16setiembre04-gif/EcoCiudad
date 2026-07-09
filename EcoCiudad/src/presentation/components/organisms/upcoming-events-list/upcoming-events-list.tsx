@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { EventCard } from '@/presentation/components/molecules/event-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type UpcomingEventsListProps } from './types';
 
@@ -15,14 +16,17 @@ export function UpcomingEventsList({
   onEventPress,
   onFavoritePress,
   onViewAllPress,
-  title = 'Upcoming Events',
+  title,
   horizontal = true,
   style,
 }: UpcomingEventsListProps) {
+  const { t } = useTranslation();
+  const sectionTitle = title ?? t('events.upcoming');
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <View style={horizontal ? styles.skeletonHorizontal : styles.skeletonVertical}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="none" style={horizontal ? styles.skeletonCardH : styles.skeletonCardV}>
@@ -42,12 +46,12 @@ export function UpcomingEventsList({
   if (events.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} />
+        <SectionHeader title={sectionTitle} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="calendar"
-            title="No upcoming events"
-            description="Check back later for new environmental events"
+            title={t('events.noUpcomingEvents')}
+            description={t('events.registerFirst')}
           />
         </View>
       </View>
@@ -57,7 +61,7 @@ export function UpcomingEventsList({
   if (horizontal) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <FlatList
           data={events}
           keyExtractor={(item) => item.id}
@@ -82,7 +86,7 @@ export function UpcomingEventsList({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+      <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
       <FlatList
         data={events}
         keyExtractor={(item) => item.id}

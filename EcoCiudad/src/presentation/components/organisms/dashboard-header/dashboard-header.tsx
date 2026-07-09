@@ -4,12 +4,14 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { borderRadius } from '@/theme/radius';
+import { useTranslation } from '@/localization';
 import { Pressable, View } from 'react-native';
 import { DashboardHeaderProps } from './types';
 
 export function DashboardHeader({
   userName,
-  greeting = 'Hello',
+  greeting,
   avatarUri,
   points,
   level,
@@ -20,6 +22,7 @@ export function DashboardHeader({
   testID,
 }: DashboardHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -31,6 +34,7 @@ export function DashboardHeader({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: spacing.md,
         },
         containerStyle,
       ]}
@@ -40,31 +44,51 @@ export function DashboardHeader({
         onPress={onProfilePress}
         style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, flex: 1 }}
         accessibilityRole="button"
-        accessibilityLabel="View profile"
+        accessibilityLabel={t('common.viewProfile')}
       >
-        <Avatar uri={avatarUri} name={userName} size="md" />
+        <Avatar uri={avatarUri} name={userName} size="lg" />
         <View style={{ flex: 1 }}>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            {greeting}
+            {greeting ?? t('common.hello')}
           </ThemedText>
-          <ThemedText type="title" numberOfLines={1}>
+          <ThemedText type="headline" numberOfLines={1} style={{ fontSize: 24, lineHeight: 32 }}>
             {userName}
           </ThemedText>
           {(points !== undefined || level !== undefined) && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.xs }}>
               {level !== undefined && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
-                  <Icon name="achievement" size={14} color={theme.colors.primary} />
-                  <ThemedText type="caption" color={theme.colors.primary}>
-                    Lvl {level}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing.xs,
+                    backgroundColor: theme.colors.primaryContainer,
+                    paddingHorizontal: spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: borderRadius.full,
+                  }}
+                >
+                  <Icon name="achievement" size={12} color={theme.colors.onPrimaryContainer} />
+                  <ThemedText type="caption" color={theme.colors.onPrimaryContainer}>
+                    {t('common.level')} {level}
                   </ThemedText>
                 </View>
               )}
               {points !== undefined && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
-                  <Icon name="eco-points" size={14} color={theme.colors.secondary} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing.xs,
+                    backgroundColor: theme.colors.surfaceVariant,
+                    paddingHorizontal: spacing.sm,
+                    paddingVertical: 2,
+                    borderRadius: borderRadius.full,
+                  }}
+                >
+                  <Icon name="eco-points" size={12} color={theme.colors.secondary} />
                   <ThemedText type="caption" color={theme.colors.textSecondary}>
-                    {points} pts
+                    {points} {t('common.points')}
                   </ThemedText>
                 </View>
               )}
@@ -76,23 +100,21 @@ export function DashboardHeader({
       <Pressable
         onPress={onNotificationsPress}
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 22,
+          width: 48,
+          height: 48,
+          borderRadius: borderRadius.full,
           backgroundColor: theme.colors.surfaceVariant,
           justifyContent: 'center',
           alignItems: 'center',
           position: 'relative',
         }}
         accessibilityRole="button"
-        accessibilityLabel="Notifications"
+        accessibilityLabel={t('common.notifications')}
       >
         <Icon name="bell" size={22} color={theme.colors.textPrimary} />
         {notificationCount > 0 && (
-          <View style={{ position: 'absolute', top: 4, right: 4 }}>
-            <Badge variant="filled" color="error">
-              {notificationCount > 9 ? '9+' : notificationCount}
-            </Badge>
+          <View style={{ position: 'absolute', top: 6, right: 6 }}>
+            <Badge variant="filled" color="error" size="sm" dot />
           </View>
         )}
       </Pressable>

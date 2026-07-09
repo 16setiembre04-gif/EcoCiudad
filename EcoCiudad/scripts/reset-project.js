@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* global console, process, require */
+/* eslint-disable @typescript-eslint/no-require-imports */
 
 /**
  * This script is used to reset the project to a blank state.

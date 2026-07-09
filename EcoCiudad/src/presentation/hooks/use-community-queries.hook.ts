@@ -120,7 +120,7 @@ export function useJoinCommunity() {
 
   return useMutation({
     mutationFn: async (communityId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.communityUseCases.joinCommunity.execute(communityId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -139,7 +139,7 @@ export function useLeaveCommunity() {
 
   return useMutation({
     mutationFn: async (communityId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.communityUseCases.leaveCommunity.execute(communityId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -321,7 +321,7 @@ export function useAddReaction() {
 
   return useMutation({
     mutationFn: async ({ postId, type }: { postId: string; type: ReactionType }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.postUseCases.addReaction.execute(postId, user.id, type);
       if (result.left) throw result.left;
       return result.right;
@@ -340,7 +340,7 @@ export function useRemoveReaction() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.postUseCases.removeReaction.execute(postId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -360,7 +360,7 @@ export function useBookmarkPost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.postUseCases.bookmarkPost.execute(postId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -377,7 +377,7 @@ export function useRemoveBookmark() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.postUseCases.removeBookmark.execute(postId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -437,7 +437,7 @@ export function useVotePoll() {
 
   return useMutation({
     mutationFn: async ({ pollId, optionId }: { pollId: string; optionId: string }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.pollUseCases.votePoll.execute(pollId, optionId, user.id);
       if (result.left) throw result.left;
       return result.right;

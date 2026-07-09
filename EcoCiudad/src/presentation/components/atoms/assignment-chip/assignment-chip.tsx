@@ -1,15 +1,13 @@
 import { Chip } from '@/presentation/components/atoms/chip';
-import { useTheme } from '@/theme/context';
 import { type AssignmentChipProps } from './types';
 
 export function AssignmentChip({
   label,
   count,
-  color,
+  color: _color,
   onPress,
   style,
 }: AssignmentChipProps) {
-  const theme = useTheme();
   const displayLabel = count !== undefined ? `${label} (${count})` : label;
 
   return (

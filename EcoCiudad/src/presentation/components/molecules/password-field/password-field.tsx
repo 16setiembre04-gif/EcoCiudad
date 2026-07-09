@@ -2,14 +2,15 @@ import { useState, useMemo } from 'react';
 import { View } from 'react-native';
 import { Input } from '@/presentation/components/atoms/input';
 import { PasswordStrength } from '@/presentation/components/molecules/password-strength';
+import { useTranslation } from '@/localization';
 import { type PasswordFieldProps } from './types';
 
 export function PasswordField({
   value,
   onChangeText,
   onBlur,
-  label = 'Password',
-  placeholder = 'Enter your password',
+  label,
+  placeholder,
   errorText,
   hasError = false,
   disabled = false,
@@ -17,6 +18,7 @@ export function PasswordField({
   size = 'lg',
   autoComplete = 'password',
 }: PasswordFieldProps) {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
 
   const strength = useMemo(() => {
@@ -27,8 +29,8 @@ export function PasswordField({
   return (
     <View>
       <Input
-        label={label}
-        placeholder={placeholder}
+        label={label ?? t('common.password')}
+        placeholder={placeholder ?? t('common.enterYourPassword')}
         value={value}
         onChangeText={onChangeText}
         onBlur={onBlur}

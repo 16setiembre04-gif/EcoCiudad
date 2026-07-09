@@ -4,6 +4,7 @@ import { Card } from '@/presentation/components/atoms/card';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 
 export interface ActivityChartProps {
@@ -14,12 +15,13 @@ export interface ActivityChartProps {
 
 export function ActivityChart({ data, period }: ActivityChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const chartData = data.map((item) => {
     const date = new Date(item.date);
     const label = period === 'weekly'
-      ? date.toLocaleDateString('en-US', { weekday: 'short' })
-      : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      ? date.toLocaleDateString(t('common.locale'), { weekday: 'short' })
+      : date.toLocaleDateString(t('common.locale'), { month: 'short', day: 'numeric' });
     return {
       label,
       value: item.reports,
@@ -30,14 +32,14 @@ export function ActivityChart({ data, period }: ActivityChartProps) {
   return (
     <Card variant="elevated" padding="lg" style={styles.container}>
       <View style={styles.header}>
-        <ThemedText type="subtitle">Activity Overview</ThemedText>
+        <ThemedText type="subtitle">{t('common.activityOverview')}</ThemedText>
         <View style={styles.periodSelector}>
           <View style={[styles.periodChip, period === 'weekly' && { backgroundColor: theme.colors.primary }]}>
             <ThemedText
               type="caption"
               style={{ color: period === 'weekly' ? theme.colors.onPrimary : theme.colors.textSecondary }}
             >
-              Weekly
+              {t('common.weekly')}
             </ThemedText>
           </View>
           <View style={[styles.periodChip, period === 'monthly' && { backgroundColor: theme.colors.primary }]}>
@@ -45,7 +47,7 @@ export function ActivityChart({ data, period }: ActivityChartProps) {
               type="caption"
               style={{ color: period === 'monthly' ? theme.colors.onPrimary : theme.colors.textSecondary }}
             >
-              Monthly
+              {t('common.monthly')}
             </ThemedText>
           </View>
         </View>
@@ -54,7 +56,7 @@ export function ActivityChart({ data, period }: ActivityChartProps) {
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: theme.colors.primary }]} />
-          <ThemedText type="caption" color={theme.colors.textSecondary}>Reports</ThemedText>
+          <ThemedText type="caption" color={theme.colors.textSecondary}>{t('common.reports')}</ThemedText>
         </View>
       </View>
     </Card>

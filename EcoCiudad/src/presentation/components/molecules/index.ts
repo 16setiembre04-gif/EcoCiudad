@@ -1,3 +1,4 @@
+export * from './eco-points-card';
 export * from './form-field';
 export * from './search-bar';
 export * from './report-card';

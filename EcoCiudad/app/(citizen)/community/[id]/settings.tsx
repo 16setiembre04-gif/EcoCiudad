@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CommunityTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
@@ -11,11 +11,13 @@ import { Loader } from '@/presentation/components/atoms/loader';
 import { useCommunity, useUpdateCommunity, useDeleteCommunity } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { CommunityPrivacy } from '@/domain/entities/community';
 
 export default function CommunitySettingsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: community, isLoading } = useCommunity(id ?? '');
   const updateMutation = useUpdateCommunity();
@@ -44,9 +46,9 @@ export default function CommunitySettingsScreen() {
         data: { rules: rules.length > 0 ? rules : undefined },
       });
     } catch (error) {
-      console.error('Failed to update rules:', error);
+      Alert.alert(t('common.error'), t('errors.failedToUpdateRules'));
     }
-  }, [id, rulesText, updateMutation]);
+  }, [id, rulesText, updateMutation, t]);
 
   const handleDelete = useCallback(async () => {
     if (!id) return;
@@ -54,9 +56,9 @@ export default function CommunitySettingsScreen() {
       await deleteMutation.mutateAsync(id);
       router.replace('/(citizen)/(tabs)/community' as any);
     } catch (error) {
-      console.error('Failed to delete community:', error);
+      Alert.alert(t('common.error'), t('errors.failedToDeleteCommunity'));
     }
-  }, [id, deleteMutation, router]);
+  }, [id, deleteMutation, router, t]);
 
   if (isLoading || !community) {
     return (
@@ -69,30 +71,30 @@ export default function CommunitySettingsScreen() {
   return (
     <CommunityTemplate
       header={
-        <Header title="Settings" showBackButton />
+        <Header title={t('common.settings')} showBackButton />
       }
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Card variant="elevated" padding="lg" style={styles.section}>
           <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-            Privacy
+            {t('common.privacy')}
           </ThemedText>
           <ThemedText type="body" color={theme.colors.textSecondary}>
-            This community is {community.privacy === CommunityPrivacy.PUBLIC ? 'Public' : 'Private'}
+            {t('common.thisCommunityIs')} {community.privacy === CommunityPrivacy.PUBLIC ? t('common.public').toLowerCase() : t('common.private').toLowerCase()}
           </ThemedText>
         </Card>
 
         <Card variant="elevated" padding="lg" style={styles.section}>
           <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-            Rules
+            {t('common.rules')}
           </ThemedText>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            One rule per line (max 10)
+            {t('common.rulesHint')}
           </ThemedText>
           <Input
             value={rulesText}
             onChangeText={setRulesText}
-            placeholder="Rule 1&#10;Rule 2&#10;Rule 3"
+            placeholder={t('common.rulesPlaceholder')}
             multiline
             numberOfLines={5}
           />
@@ -102,16 +104,16 @@ export default function CommunitySettingsScreen() {
             onPress={handleSaveRules}
             loading={updateMutation.isPending}
           >
-            Save Rules
+            {t('common.saveRules')}
           </Button>
         </Card>
 
         <Card variant="elevated" padding="lg" style={styles.section}>
           <ThemedText type="subtitle" style={{ fontWeight: '600', color: theme.colors.error }}>
-            Danger Zone
+            {t('common.dangerZone')}
           </ThemedText>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            Deleting a community is permanent and cannot be undone
+            {t('common.deleteCommunityWarning')}
           </ThemedText>
           <Button
             variant="destructive"
@@ -119,7 +121,7 @@ export default function CommunitySettingsScreen() {
             onPress={handleDelete}
             loading={deleteMutation.isPending}
           >
-            Delete Community
+            {t('common.deleteCommunity')}
           </Button>
         </Card>
       </ScrollView>

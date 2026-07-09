@@ -4,6 +4,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type EventRegistrationProps } from './types';
 
@@ -17,6 +18,7 @@ export function EventRegistration({
   style,
 }: EventRegistrationProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   if (isFull && !isRegistered) {
     return (
@@ -24,11 +26,11 @@ export function EventRegistration({
         <View style={[styles.fullBanner, { backgroundColor: theme.colors.error + '15' }]}>
           <Icon name="error" size={20} color={theme.colors.error} />
           <ThemedText type="bodySmall" style={{ color: theme.colors.error, fontWeight: '600' }}>
-            This event is full
+            {t('common.eventFull')}
           </ThemedText>
         </View>
         <Button variant="outlined" size="lg" fullWidth disabled>
-          No Available Spots
+          {t('common.noAvailableSpots')}
         </Button>
       </View>
     );
@@ -40,7 +42,7 @@ export function EventRegistration({
         <View style={[styles.registeredBanner, { backgroundColor: theme.colors.success + '15' }]}>
           <Icon name="check" size={20} color={theme.colors.success} />
           <ThemedText type="bodySmall" style={{ color: theme.colors.success, fontWeight: '600' }}>
-            You're registered! Earn +{event.ecoPointsReward} eco points by attending.
+            {t('common.registeredEarnPoints', { points: event.ecoPointsReward })}
           </ThemedText>
         </View>
         <Button
@@ -51,7 +53,7 @@ export function EventRegistration({
           loading={isRegistering}
           iconName="close"
         >
-          Cancel Registration
+          {t('common.cancelRegistration')}
         </Button>
       </View>
     );
@@ -68,11 +70,11 @@ export function EventRegistration({
         iconName="check"
         iconPosition="right"
       >
-        Register for Event
+        {t('common.registerForEvent')}
       </Button>
       {event.maxAttendees && (
         <ThemedText type="caption" color={theme.colors.textSecondary} style={styles.spotsLeft}>
-          {event.maxAttendees - event.currentAttendees} spots remaining
+          {t('common.spotsRemaining', { count: event.maxAttendees - event.currentAttendees })}
         </ThemedText>
       )}
     </View>

@@ -11,19 +11,19 @@ export const onboardingScreens: OnboardingScreen[] = [
   {
     id: 'report',
     icon: 'error',
-    title: 'Report Environmental Issues',
-    description: 'Snap a photo and report environmental problems in your area. Help keep our city clean and green.',
+    title: 'Reporta Problemas Ambientales',
+    description: 'Toma una foto y reporta problemas ambientales en tu área. Ayuda a mantener nuestra ciudad limpia y verde.',
   },
   {
     id: 'community',
     icon: 'community',
-    title: 'Join Your Community',
-    description: 'Connect with neighbors, join local initiatives, and work together for a better environment.',
+    title: 'Únete a tu Comunidad',
+    description: 'Conéctate con vecinos, únete a iniciativas locales y trabajen juntos por un mejor medio ambiente.',
   },
   {
     id: 'recycle',
     icon: 'recycle',
-    title: 'Recycle and Earn Eco Points',
-    description: 'Track your recycling efforts, earn points, and unlock rewards for your environmental contributions.',
+    title: 'Recicla y Gana Eco Puntos',
+    description: 'Registra tus esfuerzos de reciclaje, gana puntos y desbloquea recompensas por tus contribuciones ambientales.',
   },
 ];

@@ -9,12 +9,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function VerifyEmailContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
   const { resendVerification, isLoading, error, clearError } = useAuth();
   const [canResend, setCanResend] = useState(false);
@@ -68,7 +70,7 @@ function VerifyEmailContent() {
         await Linking.openURL(mailUrl);
       }
     } catch {
-      // silently fail if mail app cannot be opened
+      // silently fail
     }
   };
 
@@ -79,12 +81,12 @@ function VerifyEmailContent() {
           <ThemedText style={styles.icon}>📧</ThemedText>
         </View>
 
-        <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-          Verify Your Email
+        <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+          {t('verifyEmail.title')}
         </ThemedText>
 
         <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-          We've sent a verification link to:
+          {t('verifyEmail.subtitle')}
         </ThemedText>
 
         <ThemedText type="body" style={[styles.emailText, { color: theme.colors.primary }]}>
@@ -92,7 +94,7 @@ function VerifyEmailContent() {
         </ThemedText>
 
         <ThemedText type="bodySmall" style={[styles.instructions, { color: theme.colors.textSecondary }]}>
-          Please check your inbox and click the verification link to activate your account.
+          {t('verifyEmail.instructions')}
         </ThemedText>
 
         {error && (
@@ -111,7 +113,7 @@ function VerifyEmailContent() {
             onPress={handleOpenMailApp}
             iconName="email"
           >
-            Open Mail App
+            {t('verifyEmail.openMailApp')}
           </Button>
 
           <Button
@@ -123,7 +125,7 @@ function VerifyEmailContent() {
             disabled={isLoading || !canResend}
             iconName="refresh"
           >
-            {canResend ? 'Resend Verification Email' : `Resend in ${countdown}s`}
+            {canResend ? t('verifyEmail.resendButton') : t('verifyEmail.resendIn', { seconds: countdown.toString() })}
           </Button>
 
           <Button
@@ -131,18 +133,18 @@ function VerifyEmailContent() {
             size="md"
             onPress={() => router.push('/(auth)/role-selection')}
           >
-            Back to Login
+            {t('verifyEmail.backToLogin')}
           </Button>
         </AnimatedView>
 
         <AnimatedView entering={FadeInUp.duration(animations.duration.slow).delay(200)} style={[styles.tipContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
           <ThemedText type="button" style={[styles.tipTitle, { color: theme.colors.textSecondary }]}>
-            Didn't receive the email?
+            {t('verifyEmail.didntReceive')}
           </ThemedText>
           <ThemedText type="bodySmall" style={{ color: theme.colors.textSecondary }}>
-            {'\u2022'} Check your spam folder{'\n'}
-            {'\u2022'} Make sure the email address is correct{'\n'}
-            {'\u2022'} Wait a few minutes for the email to arrive
+            {'\u2022'} {t('verifyEmail.tipSpam')}{'\n'}
+            {'\u2022'} {t('verifyEmail.tipCorrect')}{'\n'}
+            {'\u2022'} {t('verifyEmail.tipWait')}
           </ThemedText>
         </AnimatedView>
       </AnimatedView>

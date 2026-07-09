@@ -32,6 +32,9 @@ import {
   GetReportByIdUseCase,
   GetMyReportsUseCase,
   CreateReportUseCase,
+  UpdateReportUseCase,
+  DeleteReportUseCase,
+  UploadReportImageUseCase,
   UpdateReportStatusUseCase,
   GetReportCommentsUseCase,
   AddReportCommentUseCase,
@@ -146,11 +149,13 @@ import {
   AdminUpdateReportPriorityUseCase,
 } from '../../domain/use-cases';
 
+import { UpdateReportStatusUseCase as UpdateOperatorReportStatusUseCase } from '../../domain/use-cases/operator.use-cases';
+
 const authDataSource = new AuthRemoteDataSource(supabase);
 const reportDataSource = new ReportRemoteDataSource(supabase);
 const eventDataSource = new EventRemoteDataSource(supabase);
 const recyclingCenterDataSource = new RecyclingCenterRemoteDataSource(supabase);
-const communityDataSource = new CommunityRemoteDataSource(supabase);
+const communityDataSource = new CommunityRemoteDataSource();
 const operatorDataSource = new OperatorDatasource();
 
 const authRepository = new AuthRepositoryImpl(authDataSource);
@@ -181,6 +186,9 @@ export const container = {
     getReportById: new GetReportByIdUseCase(reportRepository),
     getMyReports: new GetMyReportsUseCase(reportRepository),
     createReport: new CreateReportUseCase(reportRepository),
+    updateReport: new UpdateReportUseCase(reportRepository),
+    deleteReport: new DeleteReportUseCase(reportRepository),
+    uploadImage: new UploadReportImageUseCase(reportRepository),
     updateReportStatus: new UpdateReportStatusUseCase(reportRepository),
     getReportComments: new GetReportCommentsUseCase(reportRepository),
     addReportComment: new AddReportCommentUseCase(reportRepository),
@@ -271,7 +279,7 @@ export const container = {
     getReportDetails: new GetReportDetailsUseCase(operatorRepository),
     assignReport: new AssignReportUseCase(operatorRepository),
     unassignReport: new UnassignReportUseCase(operatorRepository),
-    updateReportStatus: new UpdateReportStatusUseCase(operatorRepository),
+    updateReportStatus: new UpdateOperatorReportStatusUseCase(operatorRepository),
     resolveReport: new ResolveReportUseCase(operatorRepository),
     rejectReport: new RejectReportUseCase(operatorRepository),
     logActivity: new LogOperatorActivityUseCase(operatorRepository),

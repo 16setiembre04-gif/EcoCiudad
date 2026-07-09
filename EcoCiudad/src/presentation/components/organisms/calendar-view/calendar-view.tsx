@@ -3,11 +3,12 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type CalendarViewProps } from './types';
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
 function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
@@ -21,10 +22,11 @@ export function CalendarView({
   events,
   selectedDate,
   onDateSelect,
-  onEventPress,
+  onEventPress: _onEventPress,
   style,
 }: CalendarViewProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -61,7 +63,7 @@ export function CalendarView({
     }
   };
 
-  const monthName = new Date(currentYear, currentMonth).toLocaleDateString('en-US', {
+  const monthName = new Date(currentYear, currentMonth).toLocaleDateString('es-ES', {
     month: 'long',
     year: 'numeric',
   });
@@ -93,7 +95,7 @@ export function CalendarView({
         ]}
         onPress={() => onDateSelect?.(new Date(currentYear, currentMonth, day))}
         accessibilityRole="button"
-        accessibilityLabel={`${monthName} ${day}${hasEvent ? ', has events' : ''}`}
+        accessibilityLabel={`${monthName} ${day}${hasEvent ? ', ' + t('events.hasEvents') : ''}`}
       >
         <ThemedText
           type="bodySmall"
@@ -120,11 +122,11 @@ export function CalendarView({
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
-        <Pressable onPress={handlePrevMonth} accessibilityRole="button" accessibilityLabel="Previous month">
+        <Pressable onPress={handlePrevMonth} accessibilityRole="button" accessibilityLabel={t('events.previousMonth')}>
           <Icon name="chevron-left" size={20} color={theme.colors.textPrimary} />
         </Pressable>
         <ThemedText type="subtitle">{monthName}</ThemedText>
-        <Pressable onPress={handleNextMonth} accessibilityRole="button" accessibilityLabel="Next month">
+        <Pressable onPress={handleNextMonth} accessibilityRole="button" accessibilityLabel={t('events.nextMonth')}>
           <Icon name="chevron-right" size={20} color={theme.colors.textPrimary} />
         </Pressable>
       </View>

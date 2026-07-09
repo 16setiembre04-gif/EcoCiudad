@@ -7,6 +7,7 @@ import { Button, Input, ThemedText } from '@/presentation/components/atoms';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
+import { useTranslation } from '@/localization';
 import { type ForgotPasswordFormProps } from './types';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -17,6 +18,7 @@ export function ForgotPasswordForm({
   error,
 }: ForgotPasswordFormProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const shakeValue = useSharedValue(0);
 
   const {
@@ -58,8 +60,8 @@ export function ForgotPasswordForm({
         name="email"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Email"
-            placeholder="Enter your email"
+            label={t('common.email')}
+            placeholder={t('common.enterYourEmail')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -92,7 +94,7 @@ export function ForgotPasswordForm({
         iconName="send"
         iconPosition="right"
       >
-        Send Reset Link
+        {t('common.sendResetLink')}
       </Button>
     </View>
   );

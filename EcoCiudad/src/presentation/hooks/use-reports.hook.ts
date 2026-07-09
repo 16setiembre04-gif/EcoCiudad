@@ -1,6 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { type ReportFilters } from '@/domain/repositories';
-import { type Report } from '@/domain/entities';
 import { container } from '@/presentation/navigation/container';
 
 export function useReports(filters?: ReportFilters) {
@@ -26,16 +25,4 @@ export function useReport(id: string) {
   });
 }
 
-export function useCreateReport() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (data: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>) => {
-      const result = await container.reportUseCases.createReport.execute(data);
-      if (result.left) throw result.left;
-      return result.right;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reports'] });
-    },
-  });
-}
+

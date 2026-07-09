@@ -1,6 +1,6 @@
 import { REPORT_STATUSES } from '@/constants/report.constants';
 import { ThemedText } from '@/presentation/components/atoms/text';
-import { useTheme } from '@/theme/context';
+import { useTranslation } from '@/localization';
 import { spacing } from '@/theme/spacing';
 import { StyleSheet, View } from 'react-native';
 import { type StatusIndicatorProps } from './types';
@@ -17,7 +17,7 @@ export function StatusIndicator({
   showLabel = true,
   style,
 }: StatusIndicatorProps) {
-  const theme = useTheme();
+  const { t } = useTranslation();
   const config = REPORT_STATUSES[status];
   const sizeConfig = sizeMap[size];
 
@@ -36,7 +36,7 @@ export function StatusIndicator({
       />
       {showLabel && (
         <ThemedText type={sizeConfig.text} style={{ color: config.color, fontWeight: '600' }}>
-          {config.label}
+          {t(config.labelKey)}
         </ThemedText>
       )}
     </View>

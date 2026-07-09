@@ -1,11 +1,9 @@
-import { Pressable, View, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Check } from 'lucide-react-native';
 import { type CheckboxProps, type CheckboxSize } from './types';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
-import { spacing } from '@/theme/spacing';
-import { animations } from '@/theme/animations';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -83,7 +81,7 @@ export function Checkbox({
       {checked && (
         <Check
           size={iconSize}
-          color={disabled ? theme.colors.disabled : theme.colors.onPrimary}
+          color={disabled ? theme.colors.textDisabled : theme.colors.onPrimary}
           strokeWidth={3}
         />
       )}

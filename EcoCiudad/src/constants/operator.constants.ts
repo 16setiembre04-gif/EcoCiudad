@@ -1,21 +1,21 @@
 import { type IconName } from '@/presentation/components/atoms/icon';
 
 export const REPORT_PRIORITIES = {
-  low: { label: 'Low', color: '#22C55E', icon: 'info' as IconName },
-  medium: { label: 'Medium', color: '#F59E0B', icon: 'warning' as IconName },
-  high: { label: 'High', color: '#F97316', icon: 'error' as IconName },
-  critical: { label: 'Critical', color: '#EF4444', icon: 'error' as IconName },
+  low: { labelKey: 'priorities.low', color: '#22C55E', icon: 'info' as IconName },
+  medium: { labelKey: 'priorities.medium', color: '#F59E0B', icon: 'warning' as IconName },
+  high: { labelKey: 'priorities.high', color: '#F97316', icon: 'error' as IconName },
+  critical: { labelKey: 'priorities.critical', color: '#EF4444', icon: 'error' as IconName },
 } as const;
 
 export const OPERATOR_ACTIONS = {
-  report_assigned: { label: 'Report Assigned', icon: 'tasks' as IconName },
-  status_updated: { label: 'Status Updated', icon: 'refresh' as IconName },
-  report_resolved: { label: 'Report Resolved', icon: 'check' as IconName },
-  report_rejected: { label: 'Report Rejected', icon: 'close' as IconName },
-  notes_added: { label: 'Notes Added', icon: 'message' as IconName },
-  photos_uploaded: { label: 'Photos Uploaded', icon: 'image' as IconName },
-  route_started: { label: 'Route Started', icon: 'route' as IconName },
-  route_completed: { label: 'Route Completed', icon: 'success' as IconName },
+  report_assigned: { labelKey: 'operatorActions.reportAssigned', icon: 'tasks' as IconName },
+  status_updated: { labelKey: 'operatorActions.statusUpdated', icon: 'refresh' as IconName },
+  report_resolved: { labelKey: 'operatorActions.reportResolved', icon: 'check' as IconName },
+  report_rejected: { labelKey: 'operatorActions.reportRejected', icon: 'close' as IconName },
+  notes_added: { labelKey: 'operatorActions.notesAdded', icon: 'message' as IconName },
+  photos_uploaded: { labelKey: 'operatorActions.photosUploaded', icon: 'image' as IconName },
+  route_started: { labelKey: 'operatorActions.routeStarted', icon: 'route' as IconName },
+  route_completed: { labelKey: 'operatorActions.routeCompleted', icon: 'success' as IconName },
 } as const;
 
 export const OPERATOR_CONSTANTS = {

@@ -1,7 +1,6 @@
 import { RECYCLING_CENTER_STATUS } from '@/constants/recycling.constants';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
-import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { StyleSheet, View } from 'react-native';
@@ -55,7 +54,6 @@ function isCurrentlyOpen(openingHours: Record<string, string>): 'open' | 'closed
 }
 
 export function OpenStatus({ openingHours, style }: OpenStatusProps) {
-  const theme = useTheme();
   const status = isCurrentlyOpen(openingHours);
   const config = RECYCLING_CENTER_STATUS[status];
 

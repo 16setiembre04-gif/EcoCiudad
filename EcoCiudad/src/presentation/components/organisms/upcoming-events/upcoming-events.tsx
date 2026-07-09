@@ -1,25 +1,15 @@
-import { type EventCategory } from '@/domain/entities';
+import { type Event } from '@/domain/entities';
 import { Card } from '@/presentation/components/atoms/card';
 import { EmptyState } from '@/presentation/components/atoms/empty-state';
 import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { EventCard } from '@/presentation/components/molecules/event-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-export interface UpcomingEventItem {
-  id: string;
-  title: string;
-  date: string;
-  location: string;
-  category: EventCategory;
-  attendees: number;
-  maxAttendees?: number;
-  imageUrl?: string;
-}
-
 export interface UpcomingEventsListProps {
-  events: UpcomingEventItem[];
+  events: Event[];
   isLoading?: boolean;
   onEventPress?: (id: string) => void;
   onViewAllPress?: () => void;
@@ -31,10 +21,12 @@ export function UpcomingEventsList({
   onEventPress,
   onViewAllPress,
 }: UpcomingEventsListProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View>
-        <SectionHeader title="Upcoming Events" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('events.upcoming')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.listContainer}>
           {[0, 1].map((i) => (
             <Card key={i} variant="elevated" padding="lg" style={styles.skeletonCard}>
@@ -51,12 +43,12 @@ export function UpcomingEventsList({
   if (events.length === 0) {
     return (
       <View>
-        <SectionHeader title="Upcoming Events" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('events.upcoming')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="calendar"
-            title="No upcoming events"
-            description="Join community events to earn eco points"
+            title={t('events.noUpcomingEvents')}
+            description={t('events.registerFirst')}
           />
         </View>
       </View>
@@ -65,7 +57,7 @@ export function UpcomingEventsList({
 
   return (
     <View>
-      <SectionHeader title="Upcoming Events" actionLabel="View All" onActionPress={onViewAllPress} />
+      <SectionHeader title={t('events.upcoming')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
       <FlatList
         data={events}
         keyExtractor={(item) => item.id}
@@ -75,13 +67,7 @@ export function UpcomingEventsList({
         renderItem={({ item }) => (
           <View style={styles.cardWrapper}>
             <EventCard
-              title={item.title}
-              date={item.date}
-              location={item.location}
-              category={item.category}
-              attendees={item.attendees}
-              maxAttendees={item.maxAttendees}
-              imageUrl={item.imageUrl}
+              event={item}
               onPress={onEventPress ? () => onEventPress(item.id) : undefined}
               containerStyle={styles.card}
             />

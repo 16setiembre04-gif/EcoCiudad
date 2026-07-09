@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type Report, type ReportComment, type ReportTimelineEntry } from '@/domain/entities';
+import { type Report, type ReportComment } from '@/domain/entities';
 import { type ReportFilters } from '@/domain/repositories';
 import { container } from '@/presentation/navigation/container';
 import { useAuthStore } from '@/presentation/stores';
@@ -11,7 +11,7 @@ export function useMyReports(filters?: ReportFilters) {
   return useQuery({
     queryKey: [QUERY_KEYS.REPORTS, 'my', user?.id, filters],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.reportUseCases.getMyReports.execute(user.id, filters);
       if (result.left) throw result.left;
       return result.right;
@@ -68,7 +68,7 @@ export function useCreateReportWithImages() {
       report: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>;
       images: string[];
     }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
 
       const reportWithUser = {
         ...data.report,
@@ -78,7 +78,59 @@ export function useCreateReportWithImages() {
       const result = await container.reportUseCases.createReport.execute(reportWithUser);
       if (result.left) throw result.left;
 
+      const report = result.right;
+
+      if (data.images.length > 0) {
+        const uploadedUrls = await Promise.all(
+          data.images.map(async (uri) => {
+            const uploadResult = await container.reportUseCases.uploadImage.execute(report.id, uri);
+            if (uploadResult.left) throw uploadResult.left;
+            return uploadResult.right;
+          })
+        );
+
+        const updateResult = await container.reportUseCases.updateReport.execute(report.id, {
+          images: uploadedUrls,
+        });
+        if (updateResult.left) throw updateResult.left;
+
+        return { ...report, images: uploadedUrls };
+      }
+
+      return report;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS, 'my'] });
+    },
+  });
+}
+
+export function useUpdateReport() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Report> }) => {
+      const result = await container.reportUseCases.updateReport.execute(id, data);
+      if (result.left) throw result.left;
       return result.right;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS, 'my'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS, variables.id] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN, 'reports', variables.id] });
+    },
+  });
+}
+
+export function useDeleteReport() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await container.reportUseCases.deleteReport.execute(id);
+      if (result.left) throw result.left;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPORTS] });

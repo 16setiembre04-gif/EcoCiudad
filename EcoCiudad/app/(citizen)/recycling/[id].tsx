@@ -10,6 +10,7 @@ import { RecyclingCentersLayout } from '@/presentation/components/templates/recy
 import { useCenterReviews, useIsCenterFavorite, useMarkReviewHelpful, useRecyclingCenterDetails, useToggleCenterFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { Alert, Linking, ScrollView, Share, StyleSheet, View } from 'react-native';
@@ -17,6 +18,7 @@ import { Alert, Linking, ScrollView, Share, StyleSheet, View } from 'react-nativ
 export default function RecyclingCenterDetailsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: center, isLoading } = useRecyclingCenterDetails(id);
@@ -32,29 +34,29 @@ export default function RecyclingCenterDetailsScreen() {
     try {
       await Linking.openURL(url);
     } catch {
-      Alert.alert('Error', 'Could not open maps application');
+      Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
     }
-  }, [center]);
+  }, [center, t]);
 
   const handleCall = useCallback(async () => {
     if (!center?.phone) return;
     try {
       await Linking.openURL(`tel:${center.phone}`);
     } catch {
-      Alert.alert('Error', 'Could not make phone call');
+      Alert.alert(t('common.error'), t('common.failedToMakeCall'));
     }
-  }, [center]);
+  }, [center, t]);
 
   const handleShare = useCallback(async () => {
     if (!center) return;
     try {
       await Share.share({
-        message: `Check out this recycling center: ${center.name}\n${center.address}`,
+        message: t('common.shareMessageCenter', { name: center.name, address: center.address }),
       });
     } catch {
-      Alert.alert('Error', 'Could not share center');
+      Alert.alert(t('common.error'), t('common.failedToShareCenter'));
     }
-  }, [center]);
+  }, [center, t]);
 
   const handleFavoritePress = useCallback(() => {
     if (!id) return;
@@ -69,7 +71,7 @@ export default function RecyclingCenterDetailsScreen() {
     return (
       <RecyclingCentersLayout>
         <View style={styles.loadingContainer}>
-          <ThemedText>Loading center details...</ThemedText>
+          <ThemedText>{t('common.loadingCenter')}</ThemedText>
         </View>
       </RecyclingCentersLayout>
     );
@@ -90,7 +92,7 @@ export default function RecyclingCenterDetailsScreen() {
 
         {center.description && (
           <View style={styles.section}>
-            <ThemedText type="subtitle">About</ThemedText>
+            <ThemedText type="subtitle">{t('common.about')}</ThemedText>
             <ThemedText type="body" color={theme.colors.textSecondary}>
               {center.description}
             </ThemedText>
@@ -99,7 +101,7 @@ export default function RecyclingCenterDetailsScreen() {
 
         {center.acceptedMaterials.length > 0 && (
           <View style={styles.section}>
-            <ThemedText type="subtitle">Accepted Materials</ThemedText>
+            <ThemedText type="subtitle">{t('common.acceptedMaterials')}</ThemedText>
             <MaterialList materials={center.acceptedMaterials} maxDisplay={10} />
           </View>
         )}
@@ -118,7 +120,7 @@ export default function RecyclingCenterDetailsScreen() {
         <Divider />
 
         <View style={styles.contactSection}>
-          <ThemedText type="subtitle">Contact Information</ThemedText>
+          <ThemedText type="subtitle">{t('common.contactInformation')}</ThemedText>
           {center.phone && (
             <View style={styles.contactRow}>
               <Icon name="phone" size={20} color={theme.colors.primary} />

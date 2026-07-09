@@ -42,7 +42,7 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
   const config = useMemo(() => evaluateStrength(password), [password]);
 
   const barWidth = useAnimatedStyle(() => ({
-    width: withTiming(config.width, { duration: animations.duration.normal }),
+    width: withTiming(config.width as any, { duration: animations.duration.normal }),
   }));
 
   if (!password) return null;
@@ -54,7 +54,7 @@ export function PasswordStrength({ password }: PasswordStrengthProps) {
           style={[
             styles.barFill,
             { backgroundColor: config.color },
-            barWidth,
+            barWidth as any,
           ]}
         />
       </View>

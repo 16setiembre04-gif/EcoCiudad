@@ -1,5 +1,4 @@
 import { BaseEntity } from './base.entity';
-import { type ReportStatus } from './report.entity';
 
 export interface OperatorAssignment extends BaseEntity {
   reportId: string;

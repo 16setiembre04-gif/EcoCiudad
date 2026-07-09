@@ -2,18 +2,18 @@ import { type InputVariant, type InputSize, type InputState } from './types';
 import { type ThemeColors } from '@/theme';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { textStyles } from '@/theme/typography';
 
 interface InputSizeConfig {
   height: number;
   paddingHorizontal: number;
-  fontSize: number;
   iconSize: number;
 }
 
 const sizeConfig: Record<InputSize, InputSizeConfig> = {
-  sm: { height: 40, paddingHorizontal: spacing.md, fontSize: 14, iconSize: 16 },
-  md: { height: 48, paddingHorizontal: spacing.lg, fontSize: 16, iconSize: 20 },
-  lg: { height: 56, paddingHorizontal: spacing.lg, fontSize: 16, iconSize: 24 },
+  sm: { height: 40, paddingHorizontal: spacing.md, iconSize: 16 },
+  md: { height: 48, paddingHorizontal: spacing.lg, iconSize: 20 },
+  lg: { height: 56, paddingHorizontal: spacing.lg, iconSize: 24 },
 };
 
 export const getInputStyles = (
@@ -39,18 +39,19 @@ export const getInputStyles = (
   };
 
   const baseInputWrapper = {
-    height: sizeStyles.height,
-    borderRadius: borderRadius.md,
+    minHeight: sizeStyles.height,
+    borderRadius: borderRadius.lg,
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
+    overflow: 'hidden' as const,
   };
 
   const variantStyles = {
     outlined: {
       inputWrapper: {
         ...baseInputWrapper,
-        backgroundColor: colors.surface,
-        borderWidth: 1.5,
+        backgroundColor: state === 'focused' ? colors.surface : colors.surfaceVariant,
+        borderWidth: state === 'focused' ? 1.5 : 1,
         borderColor: getBorderColor(),
       },
     },
@@ -62,15 +63,17 @@ export const getInputStyles = (
         borderBottomColor: getBorderColor(),
         borderTopLeftRadius: borderRadius.md,
         borderTopRightRadius: borderRadius.md,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
       },
     },
   };
 
   const inputStyle = {
     flex: 1,
-    height: '100%' as const,
-    fontSize: sizeStyles.fontSize,
-    color: state === 'disabled' ? colors.disabled : colors.textPrimary,
+    minHeight: sizeStyles.height,
+    ...textStyles.body,
+    color: state === 'disabled' ? colors.textDisabled : colors.textPrimary,
     paddingHorizontal: sizeStyles.paddingHorizontal,
   };
 
@@ -79,6 +82,7 @@ export const getInputStyles = (
     inputWrapper: variantStyles[variant].inputWrapper,
     input: inputStyle,
     iconSize: sizeStyles.iconSize,
+    iconContainerSize: sizeStyles.height,
   };
 };
 
@@ -93,8 +97,8 @@ export const getLabelStyles = (state: InputState, colors: ThemeColors) => {
   };
 
   return {
+    ...textStyles.bodySmall,
     color: getColor(),
-    fontSize: 14,
     fontWeight: '500' as const,
   };
 };
@@ -109,7 +113,7 @@ export const getHelperTextStyles = (state: InputState, colors: ThemeColors) => {
   };
 
   return {
+    ...textStyles.caption,
     color: getColor(),
-    fontSize: 12,
   };
 };

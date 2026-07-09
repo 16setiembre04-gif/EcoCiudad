@@ -2,6 +2,8 @@ export interface ThemeColors {
   primary: string;
   primaryLight: string;
   onPrimary: string;
+  primaryContainer: string;
+  onPrimaryContainer: string;
   secondary: string;
   secondaryLight: string;
   onSecondary: string;
@@ -14,82 +16,100 @@ export interface ThemeColors {
   divider: string;
   textPrimary: string;
   textSecondary: string;
-  disabled: string;
+  textDisabled: string;
   success: string;
+  successLight: string;
   warning: string;
+  warningLight: string;
   error: string;
   errorLight: string;
   info: string;
+  infoLight: string;
 }
 
 export const citizenThemeColors: ThemeColors = {
-  primary: '#2E7D32',
-  primaryLight: '#A5D6A7',
+  primary: '#10B981',
+  primaryLight: '#D1FAE5',
   onPrimary: '#FFFFFF',
-  secondary: '#66BB6A',
-  secondaryLight: '#C8E6C9',
+  primaryContainer: '#D1FAE5',
+  onPrimaryContainer: '#065F46',
+  secondary: '#059669',
+  secondaryLight: '#A7F3D0',
   onSecondary: '#FFFFFF',
   background: '#F8FAFC',
   surface: '#FFFFFF',
   surfaceVariant: '#F1F5F9',
-  onSurface: '#1E293B',
+  onSurface: '#0F172A',
   onSurfaceVariant: '#64748B',
   border: '#E2E8F0',
-  divider: '#CBD5E1',
-  textPrimary: '#1E293B',
+  divider: '#E2E8F0',
+  textPrimary: '#0F172A',
   textSecondary: '#64748B',
-  disabled: '#94A3B8',
+  textDisabled: '#94A3B8',
   success: '#22C55E',
-  warning: '#FACC15',
+  successLight: '#DCFCE7',
+  warning: '#F59E0B',
+  warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
   info: '#3B82F6',
+  infoLight: '#DBEAFE',
 };
 
 export const operatorThemeColors: ThemeColors = {
-  primary: '#1565C0',
-  primaryLight: '#90CAF9',
+  primary: '#2563EB',
+  primaryLight: '#DBEAFE',
   onPrimary: '#FFFFFF',
-  secondary: '#42A5F5',
-  secondaryLight: '#BBDEFB',
+  primaryContainer: '#DBEAFE',
+  onPrimaryContainer: '#1E40AF',
+  secondary: '#1D4ED8',
+  secondaryLight: '#BFDBFE',
   onSecondary: '#FFFFFF',
   background: '#F8FAFC',
   surface: '#FFFFFF',
   surfaceVariant: '#F1F5F9',
-  onSurface: '#1E293B',
+  onSurface: '#0F172A',
   onSurfaceVariant: '#64748B',
   border: '#E2E8F0',
-  divider: '#CBD5E1',
-  textPrimary: '#1E293B',
+  divider: '#E2E8F0',
+  textPrimary: '#0F172A',
   textSecondary: '#64748B',
-  disabled: '#94A3B8',
+  textDisabled: '#94A3B8',
   success: '#22C55E',
-  warning: '#FACC15',
+  successLight: '#DCFCE7',
+  warning: '#F59E0B',
+  warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
   info: '#3B82F6',
+  infoLight: '#DBEAFE',
 };
 
 export const adminThemeColors: ThemeColors = {
-  primary: '#6D28D9',
-  primaryLight: '#C4B5FD',
+  primary: '#059669',
+  primaryLight: '#D1FAE5',
   onPrimary: '#FFFFFF',
-  secondary: '#8B5CF6',
-  secondaryLight: '#DDD6FE',
+  primaryContainer: '#D1FAE5',
+  onPrimaryContainer: '#065F46',
+  secondary: '#2563EB',
+  secondaryLight: '#DBEAFE',
   onSecondary: '#FFFFFF',
   background: '#F8FAFC',
   surface: '#FFFFFF',
   surfaceVariant: '#F1F5F9',
-  onSurface: '#1E293B',
+  onSurface: '#0F172A',
   onSurfaceVariant: '#64748B',
   border: '#E2E8F0',
-  divider: '#CBD5E1',
-  textPrimary: '#1E293B',
+  divider: '#E2E8F0',
+  textPrimary: '#0F172A',
   textSecondary: '#64748B',
-  disabled: '#94A3B8',
+  textDisabled: '#94A3B8',
   success: '#22C55E',
-  warning: '#FACC15',
+  successLight: '#DCFCE7',
+  warning: '#F59E0B',
+  warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
   info: '#3B82F6',
+  infoLight: '#DBEAFE',
 };

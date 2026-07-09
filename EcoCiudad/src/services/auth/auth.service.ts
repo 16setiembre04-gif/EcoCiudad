@@ -163,10 +163,10 @@ class AuthService {
       if (error) {
         logger.error('Sign in failed', error.message);
         if (error.message.includes('Invalid login credentials')) {
-          return { left: new AuthenticationError({ message: 'Invalid email or password' }) };
+          return { left: new AuthenticationError({ message: 'Correo o contraseña inválidos' }) };
         }
         if (error.message.includes('Email not confirmed')) {
-          return { left: new AuthenticationError({ message: 'Please verify your email before signing in' }) };
+          return { left: new AuthenticationError({ message: 'Por favor verifica tu correo antes de iniciar sesión' }) };
         }
         return { left: new AuthenticationError({ message: error.message }) };
       }

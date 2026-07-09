@@ -1,54 +1,51 @@
 import { Tabs } from 'expo-router';
-import { Icon } from '@/presentation/components/atoms/icon';
+import { BottomNavigation } from '@/presentation/components/organisms/bottom-navigation';
+import { useTranslation } from '@/localization';
+import { type IconName } from '@/presentation/components/atoms/icon';
+
+interface TabItem {
+  key: string;
+  label: string;
+  icon: IconName;
+}
 
 export default function OperatorTabsLayout() {
+  const { t } = useTranslation();
+
+  const tabs: TabItem[] = [
+    { key: 'index', label: t('common.panel'), icon: 'home' },
+    { key: 'reports', label: t('common.reports'), icon: 'report' },
+    { key: 'map', label: t('common.map'), icon: 'map' },
+    { key: 'route', label: t('common.route'), icon: 'route' },
+    { key: 'profile', label: t('common.profile'), icon: 'user' },
+  ];
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#1565C0',
-        tabBarInactiveTintColor: '#64748B',
-        tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: '#E2E8F0',
-        },
+      }}
+      tabBar={({ state, navigation }) => {
+        const activeKey = state.routes[state.index].name;
+        return (
+          <BottomNavigation
+            items={tabs}
+            activeKey={activeKey}
+            onItemPress={(key) => {
+              const route = state.routes.find((r) => r.name === key);
+              if (route) {
+                navigation.navigate(route.name, route.params);
+              }
+            }}
+          />
+        );
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Panel',
-          tabBarIcon: ({ color, size }) => <Icon name="home" size={size} color={String(color)} />,
-        }}
-      />
-      <Tabs.Screen
-        name="reports"
-        options={{
-          title: 'Reportes',
-          tabBarIcon: ({ color, size }) => <Icon name="report" size={size} color={String(color)} />,
-        }}
-      />
-      <Tabs.Screen
-        name="map"
-        options={{
-          title: 'Mapa',
-          tabBarIcon: ({ color, size }) => <Icon name="map" size={size} color={String(color)} />,
-        }}
-      />
-      <Tabs.Screen
-        name="route"
-        options={{
-          title: 'Ruta',
-          tabBarIcon: ({ color, size }) => <Icon name="route" size={size} color={String(color)} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Perfil',
-          tabBarIcon: ({ color, size }) => <Icon name="user" size={size} color={String(color)} />,
-        }}
-      />
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="reports" />
+      <Tabs.Screen name="map" />
+      <Tabs.Screen name="route" />
+      <Tabs.Screen name="profile" />
     </Tabs>
   );
 }

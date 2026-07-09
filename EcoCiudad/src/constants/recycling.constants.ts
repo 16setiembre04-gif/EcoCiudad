@@ -1,18 +1,18 @@
 export const RECYCLING_MATERIALS = {
-  plastic: { label: 'Plastic', icon: 'recycle' as const, color: '#3B82F6' },
-  paper: { label: 'Paper', icon: 'recycle' as const, color: '#8B5CF6' },
-  glass: { label: 'Glass', icon: 'recycle' as const, color: '#06B6D4' },
+  plastic: { label: 'Plástico', icon: 'recycle' as const, color: '#3B82F6' },
+  paper: { label: 'Papel', icon: 'recycle' as const, color: '#8B5CF6' },
+  glass: { label: 'Vidrio', icon: 'recycle' as const, color: '#06B6D4' },
   metal: { label: 'Metal', icon: 'recycle' as const, color: '#6B7280' },
-  electronics: { label: 'Electronics', icon: 'recycle' as const, color: '#EF4444' },
-  organic: { label: 'Organic', icon: 'recycle' as const, color: '#22C55E' },
-  textile: { label: 'Textile', icon: 'recycle' as const, color: '#F59E0B' },
-  battery: { label: 'Battery', icon: 'recycle' as const, color: '#DC2626' },
+  electronics: { label: 'Electrónicos', icon: 'recycle' as const, color: '#EF4444' },
+  organic: { label: 'Orgánico', icon: 'recycle' as const, color: '#22C55E' },
+  textile: { label: 'Textil', icon: 'recycle' as const, color: '#F59E0B' },
+  battery: { label: 'Baterías', icon: 'recycle' as const, color: '#DC2626' },
 } as const;
 
 export const RECYCLING_CENTER_STATUS = {
-  open: { label: 'Open', color: '#22C55E' },
-  closed: { label: 'Closed', color: '#EF4444' },
-  closingSoon: { label: 'Closing Soon', color: '#F59E0B' },
+  open: { label: 'Abierto', color: '#22C55E' },
+  closed: { label: 'Cerrado', color: '#EF4444' },
+  closingSoon: { label: 'Cierra Pronto', color: '#F59E0B' },
 } as const;
 
 export const RECYCLING_CONSTANTS = {

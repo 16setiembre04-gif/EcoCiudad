@@ -3,33 +3,35 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type OpeningHoursCardProps } from './types';
 
-const DAY_NAMES = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-];
-
 export function OpeningHoursCard({ openingHours, style }: OpeningHoursCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const today = new Date().getDay();
+
+  const dayNames = [
+    t('common.sunday'),
+    t('common.monday'),
+    t('common.tuesday'),
+    t('common.wednesday'),
+    t('common.thursday'),
+    t('common.friday'),
+    t('common.saturday'),
+  ];
 
   return (
     <Card variant="elevated" padding="md" style={[styles.container, style]}>
       <View style={styles.header}>
         <Icon name="calendar" size={20} color={theme.colors.primary} />
-        <ThemedText type="subtitle">Opening Hours</ThemedText>
+        <ThemedText type="subtitle">{t('common.openingHours')}</ThemedText>
       </View>
 
       <View style={styles.hoursList}>
-        {DAY_NAMES.map((dayName, index) => {
-          const dayKey = dayName.toLowerCase();
+        {dayNames.map((dayName, index) => {
+          const dayKey = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][index];
           const hours = openingHours[dayKey];
           const isToday = index === today;
           const isClosed = !hours || hours.toLowerCase() === 'closed';
@@ -51,7 +53,7 @@ export function OpeningHoursCard({ openingHours, style }: OpeningHoursCardProps)
                 }}
               >
                 {dayName}
-                {isToday && ' (Today)'}
+                {isToday && ` (${t('common.today')})`}
               </ThemedText>
               <ThemedText
                 type="bodySmall"
@@ -61,7 +63,7 @@ export function OpeningHoursCard({ openingHours, style }: OpeningHoursCardProps)
                   textAlign: 'right',
                 }}
               >
-                {isClosed ? 'Closed' : hours}
+                {isClosed ? t('common.closed') : hours}
               </ThemedText>
             </View>
           );

@@ -9,12 +9,14 @@ import { Chip } from '@/presentation/components/atoms/chip';
 import { useMyEvents, useEventFavorites, useToggleFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 
 type TabKey = 'upcoming' | 'completed' | 'cancelled';
 
 export default function MyEventsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('upcoming');
 
   const { data: upcomingEvents, isLoading: upcomingLoading, refetch: refetchUpcoming, isRefetching: upcomingRefetching } = useMyEvents('upcoming');
@@ -44,11 +46,27 @@ export default function MyEventsScreen() {
     toggleFavorite(id);
   }, [toggleFavorite]);
 
+  const getTabTitle = (tab: TabKey) => {
+    switch (tab) {
+      case 'upcoming': return t('common.upcoming');
+      case 'completed': return t('common.completed');
+      case 'cancelled': return t('common.cancelled');
+    }
+  };
+
+  const getListTitle = (tab: TabKey) => {
+    switch (tab) {
+      case 'upcoming': return t('common.upcomingEvents');
+      case 'completed': return t('common.completedEvents');
+      case 'cancelled': return t('common.cancelledEvents');
+    }
+  };
+
   return (
     <EventsLayout
       header={
         <Header
-          title="My Events"
+          title={t('common.myEvents')}
           onBackPress={() => router.back()}
         />
       }
@@ -60,7 +78,7 @@ export default function MyEventsScreen() {
           iconName="calendar"
           onPress={() => setActiveTab('upcoming')}
         >
-          Upcoming ({upcomingEvents?.length ?? 0})
+          {getTabTitle('upcoming')} ({upcomingEvents?.length ?? 0})
         </Chip>
         <Chip
           variant={activeTab === 'completed' ? 'filled' : 'tonal'}
@@ -68,7 +86,7 @@ export default function MyEventsScreen() {
           iconName="check"
           onPress={() => setActiveTab('completed')}
         >
-          Completed ({completedEvents?.length ?? 0})
+          {getTabTitle('completed')} ({completedEvents?.length ?? 0})
         </Chip>
         <Chip
           variant={activeTab === 'cancelled' ? 'filled' : 'tonal'}
@@ -76,7 +94,7 @@ export default function MyEventsScreen() {
           iconName="close"
           onPress={() => setActiveTab('cancelled')}
         >
-          Cancelled ({cancelledEvents?.length ?? 0})
+          {getTabTitle('cancelled')} ({cancelledEvents?.length ?? 0})
         </Chip>
       </View>
 
@@ -99,7 +117,7 @@ export default function MyEventsScreen() {
           registeredEvents={registeredIds}
           onEventPress={handleEventPress}
           onFavoritePress={handleFavoritePress}
-          title={activeTab === 'upcoming' ? 'Upcoming Events' : activeTab === 'completed' ? 'Completed Events' : 'Cancelled Events'}
+          title={getListTitle(activeTab)}
           horizontal={false}
         />
       </Animated.ScrollView>

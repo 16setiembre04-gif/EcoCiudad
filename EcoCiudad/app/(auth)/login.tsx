@@ -9,9 +9,11 @@ import { GuestGuard } from '@/presentation/components/organisms/auth-guard';
 import { Button, Input, ThemedText } from '@/presentation/components/atoms';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 
 function LoginScreenContent() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { signIn, isLoading, error, clearError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,11 +44,11 @@ function LoginScreenContent() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Welcome Back
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('auth.welcomeBack')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Sign in to continue to EcoCiudad
+            {t('auth.signInSubtitle')}
           </ThemedText>
         </View>
 
@@ -56,8 +58,8 @@ function LoginScreenContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('citizenRegister.emailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -76,8 +78,8 @@ function LoginScreenContent() {
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Password"
-                placeholder="Enter your password"
+                label={t('auth.password')}
+                placeholder={t('auth.enterPassword')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -104,7 +106,7 @@ function LoginScreenContent() {
           <View style={styles.forgotPassword}>
             <Link href="/(auth)/forgot-password" asChild>
               <Button variant="ghost" size="sm">
-                Forgot Password?
+                {t('auth.forgotPassword')}
               </Button>
             </Link>
           </View>
@@ -117,16 +119,16 @@ function LoginScreenContent() {
             loading={isLoading}
             disabled={isLoading}
           >
-            Sign In
+            {t('auth.signIn')}
           </Button>
 
           <View style={styles.registerContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Don't have an account?{' '}
+              {t('auth.dontHaveAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/register" asChild>
               <Button variant="ghost" size="sm">
-                Sign Up
+                {t('auth.signUp')}
               </Button>
             </Link>
           </View>

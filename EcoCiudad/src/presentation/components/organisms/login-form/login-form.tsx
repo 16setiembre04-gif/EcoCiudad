@@ -10,7 +10,7 @@ import { RememberMe } from '@/presentation/components/molecules/remember-me';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
-import { AUTH_CONSTANTS } from '@/constants/auth.constants';
+import { useTranslation } from '@/localization';
 import { type LoginFormProps } from './types';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -20,9 +20,9 @@ export function LoginForm({
   isLoading = false,
   error,
   showRememberMe = false,
-  showBiometricPlaceholder = false,
 }: LoginFormProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const shakeValue = useSharedValue(0);
   const [rememberMeChecked, setRememberMeChecked] = useState(false);
 
@@ -66,8 +66,8 @@ export function LoginForm({
         name="email"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            label="Email"
-            placeholder="Enter your email"
+            label={t('common.email')}
+            placeholder={t('common.enterYourEmail')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -121,20 +121,10 @@ export function LoginForm({
         iconName="arrow-right"
         iconPosition="right"
       >
-        Sign In
+        {t('common.signIn')}
       </Button>
 
-      {showBiometricPlaceholder && AUTH_CONSTANTS.BIOMETRIC_PLACEHOLDER && (
-        <Button
-          variant="outlined"
-          size="lg"
-          fullWidth
-          onPress={() => {}}
-          iconName="lock"
-        >
-          Use Biometrics
-        </Button>
-      )}
+
     </View>
   );
 }

@@ -1,10 +1,11 @@
-import { Pressable, Text } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { ButtonProps } from './types';
-import { getButtonStyles } from './styles';
 import { useTheme } from '@/theme/context';
+import { Pressable } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Icon } from '../icon';
 import { Loader } from '../loader';
+import { ThemedText } from '../text';
+import { getButtonStyles } from './styles';
+import { ButtonProps } from './types';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -32,17 +33,17 @@ export function Button({
   }));
 
   const handlePressIn = (e: unknown) => {
-    scale.value = withSpring(0.97, {
-      damping: 15,
-      stiffness: 200,
+    scale.value = withSpring(0.96, {
+      damping: 12,
+      stiffness: 180,
     });
     onPressIn?.(e as never);
   };
 
   const handlePressOut = (e: unknown) => {
     scale.value = withSpring(1, {
-      damping: 15,
-      stiffness: 200,
+      damping: 12,
+      stiffness: 180,
     });
     onPressOut?.(e as never);
   };
@@ -78,7 +79,9 @@ export function Button({
       ) : (
         <>
           {iconPosition === 'left' && renderIcon()}
-          <Text style={[styles.text, textStyle]}>{children}</Text>
+          <ThemedText type="button" style={[styles.text, textStyle]}>
+            {children}
+          </ThemedText>
           {iconPosition === 'right' && renderIcon()}
         </>
       )}

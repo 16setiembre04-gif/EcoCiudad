@@ -10,13 +10,20 @@ export function SectionHeader({ title, actionLabel, onActionPress, style }: Sect
 
   return (
     <View style={[styles.container, style]}>
-      <ThemedText type="subtitle" color={theme.colors.textPrimary}>
+      <ThemedText
+        type="subtitle"
+        color={theme.colors.textPrimary}
+        style={{ fontWeight: '600' }}
+      >
         {title}
       </ThemedText>
       {actionLabel && onActionPress && (
         <Pressable
           onPress={onActionPress}
-          style={styles.action}
+          style={({ pressed }) => [
+            styles.action,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
           accessibilityRole="button"
           accessibilityLabel={actionLabel}
         >

@@ -4,8 +4,6 @@ import { Either } from '@/domain/repositories';
 import { 
   Community, 
   CommunityMember, 
-  CommunityPrivacy,
-  CommunityCategory,
   MemberRole 
 } from '@/domain/entities/community';
 import { ICommunityRepository, CommunityFilters } from '@/domain/repositories/community.repository';

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CommunityTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
@@ -11,12 +11,14 @@ import { Chip } from '@/presentation/components/atoms/chip';
 import { useCreateCommunity } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { COMMUNITY_CATEGORIES } from '@/constants';
 import { CommunityCategory, CommunityPrivacy } from '@/domain/entities/community';
 
 export default function CreateCommunityScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const createMutation = useCreateCommunity();
 
   const [name, setName] = useState('');
@@ -30,13 +32,13 @@ export default function CreateCommunityScreen() {
 
   const validate = useCallback(() => {
     const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = 'Name is required';
-    if (name.length > 100) newErrors.name = 'Name must be less than 100 characters';
-    if (!description.trim()) newErrors.description = 'Description is required';
-    if (description.length > 500) newErrors.description = 'Description must be less than 500 characters';
+    if (!name.trim()) newErrors.name = t('common.nameRequired');
+    if (name.length > 100) newErrors.name = t('common.nameTooLong');
+    if (!description.trim()) newErrors.description = t('common.descriptionRequired');
+    if (description.length > 500) newErrors.description = t('common.descriptionTooLong');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, description]);
+  }, [name, description, t]);
 
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
@@ -59,31 +61,31 @@ export default function CreateCommunityScreen() {
       });
       router.replace('/(citizen)/community/my-communities' as any);
     } catch (error) {
-      console.error('Failed to create community:', error);
+      Alert.alert(t('common.error'), t('errors.failedToCreateCommunity'));
     }
-  }, [validate, name, description, category, privacy, department, district, rulesText, createMutation, router]);
+  }, [validate, name, description, category, privacy, department, district, rulesText, createMutation, router, t]);
 
   return (
     <CommunityTemplate
       header={
-        <Header title="Create Community" showBackButton />
+        <Header title={t('common.createCommunity')} showBackButton />
       }
     >
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <Card variant="elevated" padding="lg" style={styles.formCard}>
           <Input
-            label="Name"
+            label={t('common.name')}
             value={name}
             onChangeText={setName}
-            placeholder="Community name"
+            placeholder={t('common.communityName')}
             errorText={errors.name}
           />
 
           <Input
-            label="Description"
+            label={t('common.description')}
             value={description}
             onChangeText={setDescription}
-            placeholder="What is this community about?"
+            placeholder={t('common.communityDescription')}
             errorText={errors.description}
             multiline
             numberOfLines={4}
@@ -91,7 +93,7 @@ export default function CreateCommunityScreen() {
 
           <View style={styles.section}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Category
+              {t('reports.category')}
             </ThemedText>
             <View style={styles.chipRow}>
               {Object.entries(COMMUNITY_CATEGORIES).map(([key, config]) => (
@@ -109,7 +111,7 @@ export default function CreateCommunityScreen() {
 
           <View style={styles.section}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Privacy
+              {t('common.privacy')}
             </ThemedText>
             <View style={styles.privacyRow}>
               <Button
@@ -118,7 +120,7 @@ export default function CreateCommunityScreen() {
                 onPress={() => setPrivacy(CommunityPrivacy.PUBLIC)}
                 style={{ flex: 1 }}
               >
-                Public
+                {t('common.public')}
               </Button>
               <Button
                 variant={privacy === CommunityPrivacy.PRIVATE ? 'primary' : 'outlined'}
@@ -126,40 +128,40 @@ export default function CreateCommunityScreen() {
                 onPress={() => setPrivacy(CommunityPrivacy.PRIVATE)}
                 style={{ flex: 1 }}
               >
-                Private
+                {t('common.private')}
               </Button>
             </View>
           </View>
 
           <View style={styles.section}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Location (Optional)
+              {t('common.locationOptional')}
             </ThemedText>
             <Input
-              label="Department"
+              label={t('common.department')}
               value={department}
               onChangeText={setDepartment}
-              placeholder="Your department"
+              placeholder={t('common.yourDepartment')}
             />
             <Input
-              label="District"
+              label={t('common.district')}
               value={district}
               onChangeText={setDistrict}
-              placeholder="Your district"
+              placeholder={t('common.yourDistrict')}
             />
           </View>
 
           <View style={styles.section}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Rules (Optional)
+              {t('common.rulesOptional')}
             </ThemedText>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              One rule per line (max 10)
+              {t('common.rulesHint')}
             </ThemedText>
             <Input
               value={rulesText}
               onChangeText={setRulesText}
-              placeholder="Rule 1&#10;Rule 2&#10;Rule 3"
+              placeholder={t('common.rulesPlaceholder')}
               multiline
               numberOfLines={5}
             />
@@ -171,7 +173,7 @@ export default function CreateCommunityScreen() {
             onPress={handleSubmit}
             loading={createMutation.isPending}
           >
-            Create Community
+            {t('common.createCommunity')}
           </Button>
         </Card>
       </ScrollView>

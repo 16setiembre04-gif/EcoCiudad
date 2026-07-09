@@ -1,6 +1,8 @@
 import { REPORT_CATEGORIES } from '@/constants/report.constants';
 import { type ReportStatus } from '@/domain/entities';
 import { Chip } from '@/presentation/components/atoms/chip';
+import { ThemedText } from '@/presentation/components/atoms/text';
+import { Button } from '@/presentation/components/atoms/button';
 import { SearchBar } from '@/presentation/components/molecules/search-bar';
 import { AssignedReportsList } from '@/presentation/components/organisms/assigned-reports-list';
 import { Header } from '@/presentation/components/organisms/header';
@@ -8,6 +10,7 @@ import { OperatorLayout } from '@/presentation/components/templates/operator-lay
 import { useAssignedReports } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { RefreshControl, StyleSheet, View } from 'react-native';
@@ -18,11 +21,12 @@ type StatusFilter = 'all' | ReportStatus;
 export default function OperatorReportsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>();
 
-  const { data: reports, isLoading, refetch, isRefetching } = useAssignedReports({
+  const { data: reports, isLoading, refetch, isRefetching, error } = useAssignedReports({
     status: statusFilter === 'all' ? undefined : statusFilter,
     category: categoryFilter,
     search: searchQuery || undefined,
@@ -32,11 +36,16 @@ export default function OperatorReportsScreen() {
     router.push(`/(operator)/reports/${id}`);
   }, [router]);
 
+  const formatStatusLabel = (status: StatusFilter) => {
+    if (status === 'all') return t('common.all');
+    return t(`reportStatuses.${status}`);
+  };
+
   return (
     <OperatorLayout
       header={
         <Header
-          title="Assigned Reports"
+          title={t('common.assignedReports')}
           showBackButton={false}
         />
       }
@@ -57,7 +66,7 @@ export default function OperatorReportsScreen() {
           <SearchBar
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Search reports..."
+            placeholder={t('common.searchReports')}
           />
         </View>
 
@@ -70,7 +79,7 @@ export default function OperatorReportsScreen() {
                 size="sm"
                 onPress={() => setStatusFilter(status)}
               >
-                {status === 'all' ? 'All' : status.replace('_', ' ')}
+                {formatStatusLabel(status)}
               </Chip>
             ))}
           </View>
@@ -81,7 +90,7 @@ export default function OperatorReportsScreen() {
               size="sm"
               onPress={() => setCategoryFilter(undefined)}
             >
-              All Categories
+              {t('common.allCategories')}
             </Chip>
             {Object.entries(REPORT_CATEGORIES).map(([key, config]) => (
               <Chip
@@ -91,19 +100,28 @@ export default function OperatorReportsScreen() {
                 iconName={config.icon}
                 onPress={() => setCategoryFilter(key)}
               >
-                {config.label}
+                {t(config.labelKey)}
               </Chip>
             ))}
           </View>
         </View>
 
-        <AssignedReportsList
-          reports={reports ?? []}
-          isLoading={isLoading}
-          onReportPress={handleReportPress}
-          title="Reports"
-          horizontal={false}
-        />
+        {error ? (
+          <View style={styles.errorContainer}>
+            <ThemedText color={theme.colors.error}>{error.message || t('common.error')}</ThemedText>
+            <Button variant="outlined" onPress={() => refetch()} style={{ marginTop: spacing.md }}>
+              {t('common.retry')}
+            </Button>
+          </View>
+        ) : (
+          <AssignedReportsList
+            reports={reports ?? []}
+            isLoading={isLoading}
+            onReportPress={handleReportPress}
+            title={t('common.reports')}
+            horizontal={false}
+          />
+        )}
       </Animated.ScrollView>
     </OperatorLayout>
   );
@@ -129,5 +147,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: spacing.sm,
     paddingHorizontal: spacing.lg,
+  },
+  errorContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
   },
 });

@@ -1,5 +1,6 @@
 import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet } from 'react-native';
 import { type NavigationIconProps } from './types';
 
@@ -9,13 +10,14 @@ export function NavigationIcon({
   style,
 }: NavigationIconProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Pressable
       onPress={onPress}
       style={[styles.container, { backgroundColor: theme.colors.primary }, style]}
       accessibilityRole="button"
-      accessibilityLabel="Get directions"
+      accessibilityLabel={t('common.getDirections')}
     >
       <Icon name="route" size={size} color={theme.colors.onPrimary} />
     </Pressable>

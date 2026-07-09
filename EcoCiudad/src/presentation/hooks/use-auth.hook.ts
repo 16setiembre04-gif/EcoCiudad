@@ -1,8 +1,10 @@
 import { useAuthStore } from '@/presentation/stores';
 import { authService, type SignUpParams, type SignInParams } from '@/services/auth';
 import { logger } from '@/services/logger';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function useAuth() {
+  const queryClient = useQueryClient();
   const {
     user,
     isAuthenticated,
@@ -73,6 +75,7 @@ export function useAuth() {
     
     logger.info('[useAuth] signOut success');
     reset();
+    queryClient.clear();
     return { success: true };
   };
 

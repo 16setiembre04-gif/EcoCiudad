@@ -126,7 +126,11 @@ export class PostMapper {
       userReaction: dto.user_reaction as ReactionType | undefined,
       createdAt: new Date(dto.created_at),
       updatedAt: new Date(dto.updated_at),
-      author: dto.author,
+      author: dto.author ? {
+        id: dto.author.id,
+        displayName: dto.author.display_name,
+        avatarUrl: dto.author.avatar_url,
+      } : undefined,
     };
   }
 
@@ -147,7 +151,11 @@ export class PostMapper {
       user_reaction: domain.userReaction,
       created_at: domain.createdAt.toISOString(),
       updated_at: domain.updatedAt.toISOString(),
-      author: domain.author,
+      author: domain.author ? {
+        id: domain.author.id,
+        display_name: domain.author.displayName,
+        avatar_url: domain.author.avatarUrl,
+      } : undefined,
     };
   }
 }
@@ -164,7 +172,11 @@ export class CommentMapper {
       replyCount: dto.reply_count,
       createdAt: new Date(dto.created_at),
       updatedAt: new Date(dto.updated_at),
-      author: dto.author,
+      author: dto.author ? {
+        id: dto.author.id,
+        displayName: dto.author.display_name,
+        avatarUrl: dto.author.avatar_url,
+      } : undefined,
     };
   }
 
@@ -179,7 +191,11 @@ export class CommentMapper {
       reply_count: domain.replyCount,
       created_at: domain.createdAt.toISOString(),
       updated_at: domain.updatedAt.toISOString(),
-      author: domain.author,
+      author: domain.author ? {
+        id: domain.author.id,
+        display_name: domain.author.displayName,
+        avatar_url: domain.author.avatarUrl,
+      } : undefined,
     };
   }
 }

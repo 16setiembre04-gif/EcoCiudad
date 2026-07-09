@@ -3,10 +3,12 @@ import { Checkbox } from '@/presentation/components/atoms/checkbox';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { type TermsCheckboxProps } from './types';
 
 export function TermsCheckbox({ checked, onCheckedChange, error, accentColor }: TermsCheckboxProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Pressable
@@ -23,16 +25,16 @@ export function TermsCheckbox({ checked, onCheckedChange, error, accentColor }: 
       />
       <View style={styles.textContainer}>
         <ThemedText type="bodySmall" style={[styles.text, { color: theme.colors.textSecondary }]}>
-          I agree to the{' '}
+          {t('common.agreeTo')}{' '}
         </ThemedText>
         <ThemedText type="bodySmall" style={[styles.link, { color: theme.colors.primary }]}>
-          Terms of Service
+          {t('common.termsOfService')}
         </ThemedText>
         <ThemedText type="bodySmall" style={[styles.text, { color: theme.colors.textSecondary }]}>
-          {' '}and{' '}
+          {' '}{t('common.and')}{' '}
         </ThemedText>
         <ThemedText type="bodySmall" style={[styles.link, { color: theme.colors.primary }]}>
-          Privacy Policy
+          {t('common.privacyPolicy')}
         </ThemedText>
       </View>
     </Pressable>

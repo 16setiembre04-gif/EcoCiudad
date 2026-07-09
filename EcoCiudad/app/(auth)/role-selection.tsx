@@ -50,7 +50,7 @@ function RoleSelectionContent() {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Animated.View entering={FadeInDown.duration(animations.duration.slow)} style={styles.header}>
-        <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
+        <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
           {t('auth.welcome')}
         </ThemedText>
         <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>

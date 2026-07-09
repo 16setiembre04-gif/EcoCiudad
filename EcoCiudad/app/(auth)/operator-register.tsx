@@ -13,12 +13,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function OperatorRegisterContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { signUp, isLoading, error, clearError } = useAuth();
 
   const shakeValue = useSharedValue(0);
@@ -84,11 +86,11 @@ function OperatorRegisterContent() {
           <View style={[styles.logoContainer, { backgroundColor: theme.colors.secondaryLight }]}>
             <ThemedText style={styles.logoText}>🏢</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Operator Registration
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('operatorRegister.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Join our professional team
+            {t('operatorRegister.subtitle')}
           </ThemedText>
         </AnimatedView>
 
@@ -98,8 +100,8 @@ function OperatorRegisterContent() {
             name="displayName"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Full Name"
-                placeholder="Enter your full name"
+                label={t('operatorRegister.fullName')}
+                placeholder={t('operatorRegister.fullNamePlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -118,8 +120,8 @@ function OperatorRegisterContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Official Email"
-                placeholder="Enter your official email"
+                label={t('operatorRegister.officialEmail')}
+                placeholder={t('operatorRegister.officialEmailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -139,8 +141,8 @@ function OperatorRegisterContent() {
             name="employeeId"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Employee ID"
-                placeholder="Enter your employee ID"
+                label={t('operatorRegister.employeeId')}
+                placeholder={t('operatorRegister.employeeIdPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -161,8 +163,8 @@ function OperatorRegisterContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="Password"
-                placeholder="Create a password"
+                label={t('auth.password')}
+                placeholder={t('citizenRegister.createPassword')}
                 errorText={errors.password?.message}
                 hasError={!!errors.password}
                 showStrength
@@ -179,8 +181,8 @@ function OperatorRegisterContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="Confirm Password"
-                placeholder="Confirm your password"
+                label={t('auth.confirmPassword')}
+                placeholder={t('citizenRegister.confirmPasswordPlaceholder')}
                 errorText={errors.confirmPassword?.message}
                 hasError={!!errors.confirmPassword}
                 autoComplete="password-new"
@@ -224,16 +226,16 @@ function OperatorRegisterContent() {
             iconName="arrow-right"
             iconPosition="right"
           >
-            Create Account
+            {t('auth.createAccount')}
           </Button>
 
           <View style={styles.loginContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Already have an account?{' '}
+              {t('auth.haveAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/operator-login" asChild>
               <Button variant="ghost" size="sm">
-                Sign In
+                {t('auth.signIn')}
               </Button>
             </Link>
           </View>
@@ -241,7 +243,7 @@ function OperatorRegisterContent() {
           <View style={styles.changeRoleContainer}>
             <Link href="/(auth)/role-selection" asChild>
               <Button variant="ghost" size="sm">
-                Change Role
+                {t('auth.changeRole')}
               </Button>
             </Link>
           </View>

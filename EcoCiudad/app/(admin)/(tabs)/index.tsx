@@ -10,6 +10,7 @@ import { AdminLayout } from '@/presentation/components/templates/admin-layout';
 import { useAdminDashboard, useAuth } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { RefreshControl, StyleSheet, View } from 'react-native';
@@ -18,6 +19,7 @@ import Animated from 'react-native-reanimated';
 export default function AdminDashboardScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const {
     stats,
@@ -40,8 +42,11 @@ export default function AdminDashboardScreen() {
         case 'reports':
           router.push('/(admin)/reports' as any);
           break;
-        case 'events':
-        case 'settings':
+        case 'communities':
+          router.push('/(citizen)/(tabs)/community' as any);
+          break;
+        case 'recycling':
+          router.push('/(citizen)/recycling/map' as any);
           break;
         default:
           break;
@@ -58,8 +63,7 @@ export default function AdminDashboardScreen() {
     <AdminLayout
       header={
         <AdminDashboardHeader
-          adminName={user?.displayName ?? 'Administrator'}
-          onNotificationsPress={() => {}}
+          adminName={user?.displayName ?? t('common.administrator')}
         />
       }
     >
@@ -84,7 +88,7 @@ export default function AdminDashboardScreen() {
         </View>
 
         <View style={[styles.section, styles.chartSection]}>
-          <SectionHeader title="Analytics" />
+          <SectionHeader title={t('common.analytics')} />
           <View style={styles.chartsContainer}>
             <ActivityChart data={activityData} period={activityPeriod} />
             <CategoryChart data={reportsByCategory} />
@@ -96,7 +100,6 @@ export default function AdminDashboardScreen() {
           <AdminRecentActivity
             activity={recentActivity}
             isLoading={isLoading}
-            onViewAllPress={() => {}}
           />
         </View>
 

@@ -6,6 +6,7 @@ import { OperatorLayout } from '@/presentation/components/templates/operator-lay
 import { useOperatorDashboard } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { RefreshControl, StyleSheet, View } from 'react-native';
@@ -14,6 +15,7 @@ import Animated from 'react-native-reanimated';
 export default function OperatorDashboardScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const {
     stats,
@@ -21,6 +23,7 @@ export default function OperatorDashboardScreen() {
     recentActivity,
     isLoading,
     user,
+    refreshAll,
   } = useOperatorDashboard();
 
   const handleReportPress = useCallback((id: string) => {
@@ -39,7 +42,7 @@ export default function OperatorDashboardScreen() {
     return (
       <OperatorLayout>
         <View style={styles.loadingContainer}>
-          <Animated.Text>Loading dashboard...</Animated.Text>
+          <Animated.Text>{t('common.loadingDashboard')}</Animated.Text>
         </View>
       </OperatorLayout>
     );
@@ -52,7 +55,6 @@ export default function OperatorDashboardScreen() {
           stats={stats}
           operatorName={user.displayName}
           onProfilePress={handleProfilePress}
-          onNotificationsPress={() => {}}
         />
       }
     >
@@ -61,7 +63,7 @@ export default function OperatorDashboardScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={() => {}} tintColor={theme.colors.primary} />
+          <RefreshControl refreshing={isLoading} onRefresh={refreshAll} tintColor={theme.colors.primary} />
         }
       >
         <AssignedReportsList
@@ -69,13 +71,13 @@ export default function OperatorDashboardScreen() {
           isLoading={isLoading}
           onReportPress={handleReportPress}
           onViewAllPress={handleViewAllReports}
-          title="My Assigned Reports"
+          title={t('common.myAssignedReports')}
           horizontal
         />
 
         {recentActivity.length > 0 && (
           <View style={styles.sectionSpacer}>
-            <SectionHeader title="Recent Activity" />
+            <SectionHeader title={t('common.recentActivity')} />
             <View style={styles.activityList}>
               {recentActivity.map((activity) => (
                 <ActivityCard key={activity.id} activity={activity} />

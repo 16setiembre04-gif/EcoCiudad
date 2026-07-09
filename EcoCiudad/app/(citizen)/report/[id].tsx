@@ -8,18 +8,19 @@ import { ImageGallery } from '@/presentation/components/molecules/image-gallery'
 import { StatusTimeline } from '@/presentation/components/molecules/status-timeline';
 import { Header } from '@/presentation/components/organisms/header';
 import { DashboardTemplate } from '@/presentation/components/templates';
-import { useAddReportComment, useReport, useReportComments, useReportTimeline } from '@/presentation/hooks';
+import { useAddReportComment, useReport, useReportComments, useReportTimeline, useDeleteReport } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, ScrollView, Share, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('es-ES', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -31,13 +32,15 @@ function formatDate(date: Date): string {
 export default function ReportDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
 
-  const { data: report, isLoading } = useReport(id);
+  const { data: report, isLoading, error, refetch } = useReport(id);
   const { data: comments } = useReportComments(id);
   const { data: timeline } = useReportTimeline(id);
   const { mutate: addComment, isPending: isAddingComment } = useAddReportComment();
+  const { mutate: deleteReport, isPending: isDeleting } = useDeleteReport();
 
   const [newComment, setNewComment] = useState('');
 
@@ -45,12 +48,43 @@ export default function ReportDetailScreen() {
     if (!report) return;
     try {
       await Share.share({
-        message: `Check out this report: ${report.title}\n${report.description}`,
+        message: t('common.shareMessageReport', { title: report.title, description: report.description }),
       });
-    } catch (error) {
-      Alert.alert('Error', 'Failed to share report');
+    } catch {
+      Alert.alert(t('common.error'), t('common.failedToShareReport'));
     }
-  }, [report]);
+  }, [report, t]);
+
+  const handleEdit = useCallback(() => {
+    if (!id) return;
+    router.push(`/(citizen)/report/edit/${id}` as any);
+  }, [id, router]);
+
+  const handleDelete = useCallback(() => {
+    if (!id) return;
+    Alert.alert(
+      t('reports.deleteReportTitle'),
+      t('reports.deleteReportMessage'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: () => {
+            deleteReport(id, {
+              onSuccess: () => {
+                Alert.alert(t('common.success'), t('reports.reportDeleted'));
+                router.back();
+              },
+              onError: (err) => {
+                Alert.alert(t('common.error'), err.message || t('reports.failedToDeleteReport'));
+              },
+            });
+          },
+        },
+      ]
+    );
+  }, [id, deleteReport, router, t]);
 
   const handleAddComment = useCallback(() => {
     if (!newComment.trim() || !user || !id) return;
@@ -66,30 +100,49 @@ export default function ReportDetailScreen() {
         onSuccess: () => {
           setNewComment('');
         },
-        onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to add comment');
+        onError: (err) => {
+          Alert.alert(t('common.error'), err.message || t('common.failedToAddComment'));
         },
       }
     );
-  }, [newComment, user, id, addComment]);
+  }, [newComment, user, id, addComment, t]);
 
-  if (isLoading || !report) {
+  if (isLoading) {
     return (
       <DashboardTemplate
-        header={<Header title="Report Detail" onBackPress={() => router.back()} />}
+        header={<Header title={t('common.reportDetail')} onBackPress={() => router.back()} />}
       >
         <View style={styles.loadingContainer}>
-          <ThemedText>Loading...</ThemedText>
+          <ThemedText>{t('common.loading')}</ThemedText>
         </View>
       </DashboardTemplate>
     );
   }
 
+  if (error || !report) {
+    return (
+      <DashboardTemplate
+        header={<Header title={t('common.reportDetail')} onBackPress={() => router.back()} />}
+      >
+        <View style={styles.loadingContainer}>
+          <ThemedText color={theme.colors.error}>
+            {error?.message || t('reports.loadingReport')}
+          </ThemedText>
+          <Button variant="outlined" onPress={() => refetch()} style={{ marginTop: spacing.md }}>
+            {t('common.retry')}
+          </Button>
+        </View>
+      </DashboardTemplate>
+    );
+  }
+
+  const canEdit = user?.id === report.reporterId && report.status === 'pending';
+
   return (
     <DashboardTemplate
       header={
         <Header
-          title="Report Detail"
+          title={t('common.reportDetail')}
           onBackPress={() => router.back()}
           rightIcon="share"
           onRightIconPress={handleShare}
@@ -122,7 +175,7 @@ export default function ReportDetailScreen() {
           <View style={styles.locationContainer}>
             <Icon name="location" size={16} color={theme.colors.textSecondary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              {report.location.address ?? 'Location not available'}
+              {report.location.address ?? t('common.locationNotAvailable')}
             </ThemedText>
           </View>
 
@@ -130,8 +183,19 @@ export default function ReportDetailScreen() {
             <StatusTimeline entries={timeline} currentStatus={report.status} />
           )}
 
+          {canEdit && (
+            <View style={styles.actionsRow}>
+              <Button variant="outlined" size="sm" onPress={handleEdit}>
+                {t('common.edit')}
+              </Button>
+              <Button variant="destructive" size="sm" onPress={handleDelete} loading={isDeleting}>
+                {t('common.delete')}
+              </Button>
+            </View>
+          )}
+
           <View style={styles.commentsSection}>
-            <ThemedText type="subtitle">Comments</ThemedText>
+            <ThemedText type="subtitle">{t('common.comments')}</ThemedText>
 
             {comments && comments.length > 0 ? (
               <View style={styles.commentsList}>
@@ -151,7 +215,7 @@ export default function ReportDetailScreen() {
               </View>
             ) : (
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                No comments yet
+                {t('common.noCommentsYet')}
               </ThemedText>
             )}
 
@@ -166,7 +230,7 @@ export default function ReportDetailScreen() {
                       color: theme.colors.textPrimary,
                     },
                   ]}
-                  placeholder="Add a comment..."
+                  placeholder={t('common.addComment')}
                   placeholderTextColor={theme.colors.textSecondary}
                   value={newComment}
                   onChangeText={setNewComment}
@@ -179,7 +243,7 @@ export default function ReportDetailScreen() {
                   loading={isAddingComment}
                   disabled={!newComment.trim()}
                 >
-                  Post
+                  {t('common.post')}
                 </Button>
               </View>
             )}
@@ -202,6 +266,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: spacing.lg,
   },
   container: {
     gap: spacing.md,
@@ -220,6 +285,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   commentsSection: {
     gap: spacing.md,

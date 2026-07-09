@@ -83,11 +83,11 @@ export class OperatorRepositoryImpl implements OperatorRepository {
   async updateReportStatus(
     reportId: string,
     status: ReportStatus,
-    operatorId: string,
-    notes?: string
+    _operatorId: string,
+    _notes?: string
   ): Promise<Either<DomainError, Report>> {
     try {
-      const dto = await this.datasource.updateReportStatus(reportId, status, operatorId, notes);
+      const dto = await this.datasource.updateReportStatus(reportId, status);
       const report = ReportMapper.toDomain(dto);
       return right(report);
     } catch (error) {
@@ -97,12 +97,12 @@ export class OperatorRepositoryImpl implements OperatorRepository {
 
   async resolveReport(
     reportId: string,
-    operatorId: string,
+    _operatorId: string,
     notes: string,
     resolutionPhotos?: string[]
   ): Promise<Either<DomainError, Report>> {
     try {
-      const dto = await this.datasource.resolveReport(reportId, operatorId, notes, resolutionPhotos);
+      const dto = await this.datasource.resolveReport(reportId, notes, resolutionPhotos);
       const report = ReportMapper.toDomain(dto);
       return right(report);
     } catch (error) {
@@ -112,11 +112,11 @@ export class OperatorRepositoryImpl implements OperatorRepository {
 
   async rejectReport(
     reportId: string,
-    operatorId: string,
+    _operatorId: string,
     reason: string
   ): Promise<Either<DomainError, Report>> {
     try {
-      const dto = await this.datasource.rejectReport(reportId, operatorId, reason);
+      const dto = await this.datasource.rejectReport(reportId, reason);
       const report = ReportMapper.toDomain(dto);
       return right(report);
     } catch (error) {
@@ -193,11 +193,11 @@ export class OperatorRepositoryImpl implements OperatorRepository {
   }
 
   async optimizeRoute(
-    operatorId: string,
+    _operatorId: string,
     reportIds: string[]
   ): Promise<Either<DomainError, Report[]>> {
     try {
-      const dtos = await this.datasource.optimizeRoute(operatorId, reportIds);
+      const dtos = await this.datasource.optimizeRoute(reportIds);
       const reports = dtos.map(ReportMapper.toDomain);
       return right(reports);
     } catch (error) {

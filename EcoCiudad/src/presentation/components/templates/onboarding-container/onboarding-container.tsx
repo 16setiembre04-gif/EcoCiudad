@@ -6,6 +6,7 @@ import { OnboardingScreen } from '@/presentation/components/organisms/onboarding
 import { animations } from '@/theme/animations';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, View } from 'react-native';
@@ -16,6 +17,7 @@ const { width } = Dimensions.get('window');
 export function OnboardingContainer() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -53,7 +55,7 @@ export function OnboardingContainer() {
       <View style={styles.header}>
         <Button variant="ghost" size="sm" onPress={handleSkip}>
           <ThemedText type="button" color={theme.colors.textSecondary}>
-            Skip
+            {t('common.skip')}
           </ThemedText>
         </Button>
       </View>
@@ -97,7 +99,7 @@ export function OnboardingContainer() {
               fullWidth
               onPress={handleNext}
             >
-              {isLastStep ? 'Get Started' : 'Next'}
+              {isLastStep ? t('common.getStarted') : t('common.next')}
             </Button>
           </Animated.View>
         </View>

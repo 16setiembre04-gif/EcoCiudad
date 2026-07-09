@@ -3,6 +3,7 @@ import { ThemedText } from '@/presentation/components/atoms';
 import { useAuthStore } from '@/presentation/stores/auth.store';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Redirect } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { logger } from '@/services/logger';
@@ -20,33 +21,34 @@ export function AuthGuard({
 }: AuthGuardProps) {
   const { user, isAuthenticated, isInitialized, isLoading } = useAuthStore();
   const theme = useTheme();
+  const { t } = useTranslation();
 
-  logger.info('[AuthGuard] Render', { isAuthenticated, isInitialized, isLoading, user: user?.displayName });
+  logger.info('[AuthGuard] Renderizado', { isAuthenticated, isInitialized, isLoading, user: user?.displayName });
 
   if (!isInitialized || isLoading) {
-    logger.info('[AuthGuard] Waiting for initialization');
+    logger.info('[AuthGuard] Esperando inicialización');
     return (
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
         <ThemedText style={{ marginTop: spacing.md, color: theme.colors.textPrimary }}>
-          Loading...
+          {t('common.loading')}...
         </ThemedText>
       </View>
     );
   }
 
   if (!isAuthenticated) {
-    logger.info('[AuthGuard] Not authenticated, redirecting to role-selection');
+    logger.info('[AuthGuard] No autenticado, redirigiendo a selección de rol');
     return <Redirect href="/(auth)/role-selection" />;
   }
 
   if (requireEmailVerification && !user?.isEmailVerified) {
-    logger.info('[AuthGuard] Email not verified, redirecting to verify-email');
+    logger.info('[AuthGuard] Correo no verificado, redirigiendo a verificación de correo');
     return <Redirect href="/(auth)/verify-email" />;
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    logger.info('[AuthGuard] Wrong role, redirecting', { userRole: user.role, allowedRoles });
+    logger.info('[AuthGuard] Rol incorrecto, redirigiendo', { userRole: user.role, allowedRoles });
     const roleRedirects = {
       citizen: '/(citizen)' as const,
       operator: '/(operator)' as const,
@@ -55,7 +57,7 @@ export function AuthGuard({
     return <Redirect href={roleRedirects[user.role]} />;
   }
 
-  logger.info('[AuthGuard] Access granted, rendering children');
+  logger.info('[AuthGuard] Acceso concedido, renderizando hijos');
   return <>{children}</>;
 }
 
@@ -66,10 +68,10 @@ interface GuestGuardProps {
 export function GuestGuard({ children }: GuestGuardProps) {
   const { isAuthenticated, isInitialized, isLoading, user } = useAuthStore();
 
-  logger.info('[GuestGuard] Render', { isAuthenticated, isInitialized, isLoading });
+  logger.info('[GuestGuard] Renderizado', { isAuthenticated, isInitialized, isLoading });
 
   if (!isInitialized || isLoading) {
-    logger.info('[GuestGuard] Waiting for initialization');
+    logger.info('[GuestGuard] Esperando inicialización');
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" />
@@ -78,7 +80,7 @@ export function GuestGuard({ children }: GuestGuardProps) {
   }
 
   if (isAuthenticated && user) {
-    logger.info('[GuestGuard] Already authenticated, redirecting', { role: user.role });
+    logger.info('[GuestGuard] Ya autenticado, redirigiendo', { role: user.role });
     const roleRedirects = {
       citizen: '/(citizen)' as const,
       operator: '/(operator)' as const,
@@ -87,7 +89,7 @@ export function GuestGuard({ children }: GuestGuardProps) {
     return <Redirect href={roleRedirects[user.role]} />;
   }
 
-  logger.info('[GuestGuard] Not authenticated, rendering children');
+  logger.info('[GuestGuard] Sin autenticar, renderizando hijos');
   return <>{children}</>;
 }
 
@@ -100,10 +102,10 @@ interface RoleGuardProps {
 export function RoleGuard({ children, roles, fallback }: RoleGuardProps) {
   const { user, hasRole, isInitialized } = useAuthStore();
 
-  logger.info('[RoleGuard] Render', { isInitialized, hasAccess: hasRole(roles) });
+  logger.info('[RoleGuard] Renderizado', { isInitialized, hasAccess: hasRole(roles) });
 
   if (!isInitialized) {
-    logger.info('[RoleGuard] Waiting for initialization');
+    logger.info('[RoleGuard] Esperando inicialización');
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" />
@@ -112,7 +114,7 @@ export function RoleGuard({ children, roles, fallback }: RoleGuardProps) {
   }
 
   if (!hasRole(roles)) {
-    logger.info('[RoleGuard] No access, redirecting');
+    logger.info('[RoleGuard] Sin acceso, redirigiendo');
     if (fallback) return <>{fallback}</>;
 
     if (user) {
@@ -127,7 +129,7 @@ export function RoleGuard({ children, roles, fallback }: RoleGuardProps) {
     return <Redirect href="/(auth)/role-selection" />;
   }
 
-  logger.info('[RoleGuard] Access granted, rendering children');
+  logger.info('[RoleGuard] Acceso concedido, renderizando hijos');
   return <>{children}</>;
 }
 

@@ -54,7 +54,14 @@ export function Input({
       )}
       <View style={styles.inputWrapper}>
         {leftIcon && (
-          <View style={{ paddingLeft: spacing.md }}>
+          <View
+            style={{
+              width: styles.iconContainerSize,
+              height: styles.iconContainerSize,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Icon name={leftIcon} size={styles.iconSize} color={theme.colors.textSecondary} />
           </View>
         )}
@@ -63,7 +70,7 @@ export function Input({
           editable={!disabled}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholderTextColor={theme.colors.disabled}
+          placeholderTextColor={theme.colors.textDisabled}
           accessibilityLabel={label}
           accessibilityState={{ disabled }}
           {...props}
@@ -72,7 +79,12 @@ export function Input({
           <Pressable
             onPress={onRightIconPress}
             disabled={!onRightIconPress}
-            style={{ paddingRight: spacing.md, paddingLeft: spacing.sm, padding: spacing.sm }}
+            style={{
+              width: styles.iconContainerSize,
+              height: styles.iconContainerSize,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
             accessibilityRole={onRightIconPress ? 'button' : 'none'}
           >
             <Icon

@@ -5,6 +5,7 @@ import { HorizontalBarChart } from '@/presentation/components/atoms/horizontal-b
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet } from 'react-native';
 
 export interface CategoryChartProps {
@@ -13,9 +14,10 @@ export interface CategoryChartProps {
 
 export function CategoryChart({ data }: CategoryChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const chartData = data.map((item) => ({
-    label: REPORT_CATEGORY_CONFIG[item.category]?.label ?? item.category,
+    label: t(REPORT_CATEGORY_CONFIG[item.category]?.labelKey ?? item.category),
     value: item.count,
     percentage: item.percentage,
     color: REPORT_CATEGORY_CONFIG[item.category]?.color ?? theme.colors.textSecondary,
@@ -23,7 +25,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
 
   return (
     <Card variant="elevated" padding="lg" style={styles.container}>
-      <ThemedText type="subtitle">Reports by Category</ThemedText>
+      <ThemedText type="subtitle">{t('common.reportsByCategory')}</ThemedText>
       <HorizontalBarChart data={chartData} maxItems={6} />
     </Card>
   );

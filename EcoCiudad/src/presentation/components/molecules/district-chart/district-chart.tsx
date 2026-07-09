@@ -4,6 +4,7 @@ import { HorizontalBarChart } from '@/presentation/components/atoms/horizontal-b
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet } from 'react-native';
 
 export interface DistrictChartProps {
@@ -12,6 +13,7 @@ export interface DistrictChartProps {
 
 export function DistrictChart({ data }: DistrictChartProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const chartData = data.map((item, index) => ({
     label: item.district,
@@ -22,7 +24,7 @@ export function DistrictChart({ data }: DistrictChartProps) {
 
   return (
     <Card variant="elevated" padding="lg" style={styles.container}>
-      <ThemedText type="subtitle">Reports by District</ThemedText>
+      <ThemedText type="subtitle">{t('common.reportsByDistrict')}</ThemedText>
       <HorizontalBarChart data={chartData} maxItems={5} />
     </Card>
   );

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { type ViewStyle, type PressableProps } from 'react-native';
+import { type ViewStyle, type PressableProps, type StyleProp } from 'react-native';
 import { type ElevationLevel } from '@/theme';
 
 export type CardVariant = 'elevated' | 'filled' | 'outlined';
@@ -11,5 +11,5 @@ export interface CardProps extends Omit<PressableProps, 'style'> {
   padding?: CardPadding;
   elevationLevel?: ElevationLevel;
   onPress?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }

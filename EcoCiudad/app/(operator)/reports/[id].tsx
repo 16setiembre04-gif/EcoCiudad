@@ -1,4 +1,3 @@
-import { type ReportStatus } from '@/domain/entities';
 import { Button } from '@/presentation/components/atoms/button';
 import { Card } from '@/presentation/components/atoms/card';
 import { CategoryChip } from '@/presentation/components/atoms/category-chip';
@@ -10,9 +9,10 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
 import { Header } from '@/presentation/components/organisms/header';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
-import { useRejectReport, useReportDetails, useResolveReport, useUpdateReportStatus } from '@/presentation/hooks';
+import { useRejectReport, useReportDetails, useResolveReport } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
@@ -20,19 +20,19 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 export default function OperatorReportDetailsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: report, isLoading } = useReportDetails(id);
   const { mutate: resolveReport, isPending: isResolving } = useResolveReport();
   const { mutate: rejectReport, isPending: isRejecting } = useRejectReport();
-  const { mutate: updateStatus } = useUpdateReportStatus();
 
   const [notes, setNotes] = useState('');
   const [showResolveForm, setShowResolveForm] = useState(false);
   const [showRejectForm, setShowRejectForm] = useState(false);
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(t('common.locale'), {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -44,7 +44,7 @@ export default function OperatorReportDetailsScreen() {
 
   const handleResolve = useCallback(() => {
     if (!notes.trim()) {
-      Alert.alert('Error', 'Please add resolution notes');
+      Alert.alert(t('common.error'), t('common.addResolutionNotes'));
       return;
     }
 
@@ -52,19 +52,19 @@ export default function OperatorReportDetailsScreen() {
       { reportId: id, notes: notes.trim() },
       {
         onSuccess: () => {
-          Alert.alert('Success', 'Report resolved successfully');
+          Alert.alert(t('common.success'), t('common.reportResolvedSuccess'));
           router.back();
         },
         onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to resolve report');
+          Alert.alert(t('common.error'), error.message || t('common.failedToResolveReport'));
         },
       }
     );
-  }, [id, notes, resolveReport, router]);
+  }, [id, notes, resolveReport, router, t]);
 
   const handleReject = useCallback(() => {
     if (!notes.trim()) {
-      Alert.alert('Error', 'Please add rejection reason');
+      Alert.alert(t('common.error'), t('common.addRejectionReason'));
       return;
     }
 
@@ -72,21 +72,21 @@ export default function OperatorReportDetailsScreen() {
       { reportId: id, reason: notes.trim() },
       {
         onSuccess: () => {
-          Alert.alert('Success', 'Report rejected successfully');
+          Alert.alert(t('common.success'), t('common.reportRejectedSuccess'));
           router.back();
         },
         onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to reject report');
+          Alert.alert(t('common.error'), error.message || t('common.failedToRejectReport'));
         },
       }
     );
-  }, [id, notes, rejectReport, router]);
+  }, [id, notes, rejectReport, router, t]);
 
   if (isLoading || !report) {
     return (
       <OperatorLayout>
         <View style={styles.loadingContainer}>
-          <ThemedText>Loading report details...</ThemedText>
+          <ThemedText>{t('common.loadingReportDetails')}</ThemedText>
         </View>
       </OperatorLayout>
     );
@@ -96,7 +96,7 @@ export default function OperatorReportDetailsScreen() {
     <OperatorLayout
       header={
         <Header
-          title="Report Details"
+          title={t('common.reportDetails')}
           onBackPress={() => router.back()}
         />
       }
@@ -114,14 +114,14 @@ export default function OperatorReportDetailsScreen() {
           <View style={styles.infoRow}>
             <Icon name="calendar" size={16} color={theme.colors.textSecondary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Created: {formatDate(report.createdAt)}
+              {t('common.created')}: {formatDate(report.createdAt)}
             </ThemedText>
           </View>
 
           <View style={styles.infoRow}>
             <Icon name="location" size={16} color={theme.colors.textSecondary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              {report.location.address || 'No address provided'}
+              {report.location.address || t('common.noAddressProvided')}
             </ThemedText>
           </View>
 
@@ -129,7 +129,7 @@ export default function OperatorReportDetailsScreen() {
         </Card>
 
         <Card variant="elevated" padding="md" style={styles.section}>
-          <ThemedText type="subtitle">Description</ThemedText>
+          <ThemedText type="subtitle">{t('common.description')}</ThemedText>
           <ThemedText type="body" color={theme.colors.textSecondary}>
             {report.description}
           </ThemedText>
@@ -141,7 +141,7 @@ export default function OperatorReportDetailsScreen() {
 
         {report.resolutionNotes && (
           <Card variant="elevated" padding="md" style={styles.section}>
-            <ThemedText type="subtitle">Resolution Notes</ThemedText>
+            <ThemedText type="subtitle">{t('common.resolutionNotes')}</ThemedText>
             <ThemedText type="body" color={theme.colors.textSecondary}>
               {report.resolutionNotes}
             </ThemedText>
@@ -150,7 +150,7 @@ export default function OperatorReportDetailsScreen() {
 
         {report.status !== 'resolved' && report.status !== 'rejected' && (
           <View style={styles.actionsContainer}>
-            <ThemedText type="subtitle">Actions</ThemedText>
+            <ThemedText type="subtitle">{t('common.actions')}</ThemedText>
 
             {!showResolveForm && !showRejectForm && (
               <View style={styles.actionButtons}>
@@ -161,7 +161,7 @@ export default function OperatorReportDetailsScreen() {
                   onPress={() => setShowResolveForm(true)}
                   iconName="check"
                 >
-                  Resolve Report
+                  {t('common.resolveReport')}
                 </Button>
                 <Button
                   variant="outlined"
@@ -170,7 +170,7 @@ export default function OperatorReportDetailsScreen() {
                   onPress={() => setShowRejectForm(true)}
                   iconName="close"
                 >
-                  Reject Report
+                  {t('common.rejectReport')}
                 </Button>
               </View>
             )}
@@ -178,8 +178,8 @@ export default function OperatorReportDetailsScreen() {
             {showResolveForm && (
               <View style={styles.formContainer}>
                 <Input
-                  label="Resolution Notes *"
-                  placeholder="Describe how you resolved this issue..."
+                  label={t('common.resolutionNotesRequired')}
+                  placeholder={t('common.describeResolutionPlaceholder')}
                   value={notes}
                   onChangeText={setNotes}
                   multiline
@@ -194,7 +194,7 @@ export default function OperatorReportDetailsScreen() {
                       setNotes('');
                     }}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     variant="primary"
@@ -202,7 +202,7 @@ export default function OperatorReportDetailsScreen() {
                     onPress={handleResolve}
                     loading={isResolving}
                   >
-                    Confirm Resolution
+                    {t('common.confirmResolution')}
                   </Button>
                 </View>
               </View>
@@ -211,8 +211,8 @@ export default function OperatorReportDetailsScreen() {
             {showRejectForm && (
               <View style={styles.formContainer}>
                 <Input
-                  label="Rejection Reason *"
-                  placeholder="Explain why this report is being rejected..."
+                  label={t('common.rejectionReasonRequired')}
+                  placeholder={t('common.explainRejectionPlaceholder')}
                   value={notes}
                   onChangeText={setNotes}
                   multiline
@@ -227,7 +227,7 @@ export default function OperatorReportDetailsScreen() {
                       setNotes('');
                     }}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     variant="destructive"
@@ -235,7 +235,7 @@ export default function OperatorReportDetailsScreen() {
                     onPress={handleReject}
                     loading={isRejecting}
                   >
-                    Confirm Rejection
+                    {t('common.confirmRejection')}
                   </Button>
                 </View>
               </View>

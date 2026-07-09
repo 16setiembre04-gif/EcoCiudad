@@ -5,6 +5,5 @@ export interface LoginFormProps {
   isLoading?: boolean;
   error?: string | null;
   showRememberMe?: boolean;
-  showBiometricPlaceholder?: boolean;
   accentColor?: string;
 }

@@ -1,19 +1,14 @@
+import { REPORT_STATUSES } from '@/constants/report.constants';
 import { Badge } from '@/presentation/components/atoms/badge';
 import { Card } from '@/presentation/components/atoms/card';
 import { Divider } from '@/presentation/components/atoms/divider';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTranslation } from '@/localization';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { View } from 'react-native';
 import { ReportCardProps } from './types';
-
-const statusConfig = {
-  pending: { color: 'warning' as const, label: 'Pending' },
-  'in-review': { color: 'info' as const, label: 'In Review' },
-  resolved: { color: 'success' as const, label: 'Resolved' },
-  rejected: { color: 'error' as const, label: 'Rejected' },
-};
 
 export function ReportCard({
   title,
@@ -27,22 +22,24 @@ export function ReportCard({
   testID,
 }: ReportCardProps) {
   const theme = useTheme();
-  const config = statusConfig[status];
+  const { t } = useTranslation();
+  const statusKey = status === 'in-review' ? 'in_review' : status;
+  const config = REPORT_STATUSES[statusKey];
 
   const content = (
     <View style={{ gap: spacing.md }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <View style={{ flex: 1, gap: spacing.xs }}>
-          <ThemedText type="title" numberOfLines={2}>
-            {title}
-          </ThemedText>
-          <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={2}>
-            {description}
-          </ThemedText>
-        </View>
-        <Badge variant="tonal" color={config.color}>
-          {config.label}
-        </Badge>
+          <View style={{ flex: 1, gap: spacing.xs }}>
+            <ThemedText type="subtitle" numberOfLines={2}>
+              {title}
+            </ThemedText>
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={2}>
+              {description}
+            </ThemedText>
+          </View>
+          <Badge variant="tonal" color={config.color}>
+            {t(config.labelKey)}
+          </Badge>
       </View>
 
       <Divider orientation="horizontal" />

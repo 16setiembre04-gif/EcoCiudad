@@ -5,6 +5,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { ReportCard } from '@/presentation/components/molecules/report-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 export interface RecentReportItem {
@@ -30,10 +31,12 @@ export function RecentReportsList({
   onReportPress,
   onViewAllPress,
 }: RecentReportsListProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View>
-        <SectionHeader title="Recent Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('dashboard.recentActivity')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.listContainer}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="lg" style={styles.skeletonCard}>
@@ -50,12 +53,12 @@ export function RecentReportsList({
   if (reports.length === 0) {
     return (
       <View>
-        <SectionHeader title="Recent Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('dashboard.recentActivity')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="report"
-            title="No reports yet"
-            description="Your environmental reports will appear here"
+            title={t('reports.noReportsYet')}
+            description={t('reports.createFirst')}
           />
         </View>
       </View>
@@ -64,7 +67,7 @@ export function RecentReportsList({
 
   return (
     <View>
-      <SectionHeader title="Recent Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+      <SectionHeader title={t('dashboard.recentActivity')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
       <FlatList
         data={reports}
         keyExtractor={(item) => item.id}

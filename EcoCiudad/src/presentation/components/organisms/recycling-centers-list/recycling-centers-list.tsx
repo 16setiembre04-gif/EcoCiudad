@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { RecyclerCard } from '@/presentation/components/molecules/recycler-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 export interface RecyclingCenterItem {
@@ -29,10 +30,12 @@ export function RecyclingCentersList({
   onCenterPress,
   onViewAllPress,
 }: RecyclingCentersListProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View>
-        <SectionHeader title="Nearby Recycling Centers" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('recycling.centers')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.listContainer}>
           {[0, 1].map((i) => (
             <Card key={i} variant="elevated" padding="lg" style={styles.skeletonCard}>
@@ -49,12 +52,12 @@ export function RecyclingCentersList({
   if (centers.length === 0) {
     return (
       <View>
-        <SectionHeader title="Nearby Recycling Centers" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('recycling.centers')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="recycle"
-            title="No centers nearby"
-            description="Recycling centers will appear here based on your location"
+            title={t('recycling.noCentersNearby')}
+            description={t('recycling.noCentersArea')}
           />
         </View>
       </View>
@@ -63,7 +66,7 @@ export function RecyclingCentersList({
 
   return (
     <View>
-      <SectionHeader title="Nearby Recycling Centers" actionLabel="View All" onActionPress={onViewAllPress} />
+      <SectionHeader title={t('recycling.centers')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
       <FlatList
         data={centers}
         keyExtractor={(item) => item.id}

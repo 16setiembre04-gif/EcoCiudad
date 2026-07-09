@@ -10,6 +10,7 @@ import { TimeChip } from '@/presentation/components/atoms/time-chip';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type EventHeaderProps } from './types';
 
@@ -23,6 +24,7 @@ export function EventHeader({
   style,
 }: EventHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const categoryConfig = EVENT_CATEGORIES[event.category];
 
   return (
@@ -45,7 +47,7 @@ export function EventHeader({
             style={styles.backButton}
             onPress={onBackPress}
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('common.goBack')}
           >
             <Icon name="arrow-left" size={20} color={theme.colors.onPrimary} />
           </Pressable>
@@ -57,7 +59,7 @@ export function EventHeader({
               style={styles.actionButton}
               onPress={onFavoritePress}
               accessibilityRole="button"
-              accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              accessibilityLabel={isFavorite ? t('common.removeFromFavorites') : t('common.addToFavorites')}
             >
               <Icon
                 name="heart"
@@ -71,7 +73,7 @@ export function EventHeader({
               style={styles.actionButton}
               onPress={onSharePress}
               accessibilityRole="button"
-              accessibilityLabel="Share event"
+              accessibilityLabel={t('common.shareEvent')}
             >
               <Icon name="share" size={20} color={theme.colors.onPrimary} />
             </Pressable>
@@ -99,7 +101,7 @@ export function EventHeader({
         </View>
 
         <View style={styles.infoRow}>
-          <LocationBadge address={event.location.address} isVirtual={event.isVirtual} />
+          <LocationBadge address={event.location.address ?? ''} isVirtual={event.isVirtual} />
           <View style={styles.rightInfo}>
             <CapacityBadge current={event.currentAttendees} max={event.maxAttendees} />
             <RewardChip points={event.ecoPointsReward} />
@@ -110,7 +112,7 @@ export function EventHeader({
           <View style={[styles.registeredBanner, { backgroundColor: theme.colors.success + '15' }]}>
             <Icon name="check" size={16} color={theme.colors.success} />
             <ThemedText type="bodySmall" style={{ color: theme.colors.success, fontWeight: '600' }}>
-              You are registered for this event
+              {t('common.registeredForEvent')}
             </ThemedText>
           </View>
         )}

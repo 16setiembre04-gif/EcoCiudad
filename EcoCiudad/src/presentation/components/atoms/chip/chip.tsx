@@ -12,6 +12,7 @@ export function Chip({
   selected = false,
   onPress,
   onDismiss,
+  dismissAccessibilityLabel = 'Cerrar',
   style,
   textStyle,
 }: ChipProps) {
@@ -27,7 +28,7 @@ export function Chip({
           onPress={onDismiss}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel="Dismiss"
+          accessibilityLabel={dismissAccessibilityLabel}
         >
           <Icon name="close" size={styles.iconSize} color={styles.iconColor} />
         </Pressable>

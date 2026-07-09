@@ -12,12 +12,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function ForgotPasswordContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { resetPassword, isLoading, error, clearError } = useAuth();
   const [isSuccess, setIsSuccess] = useState(false);
   const [sentEmail, setSentEmail] = useState('');
@@ -71,16 +73,16 @@ function ForgotPasswordContent() {
             <ThemedText style={styles.successEmoji}>✉️</ThemedText>
           </View>
           <ThemedText type="headline" style={[styles.successTitle, { color: theme.colors.textPrimary }]}>
-            Check Your Email
+            {t('forgotPassword.checkEmail')}
           </ThemedText>
           <ThemedText type="body" style={[styles.successText, { color: theme.colors.textSecondary }]}>
-            We've sent a password reset link to:
+            {t('forgotPassword.resetLinkSent')}
           </ThemedText>
           <ThemedText type="body" style={[styles.emailText, { color: theme.colors.primary }]}>
             {sentEmail}
           </ThemedText>
           <ThemedText type="bodySmall" style={[styles.instructionsText, { color: theme.colors.textSecondary }]}>
-            Click the link in the email to reset your password. The link will expire in 1 hour.
+            {t('forgotPassword.instructions')}
           </ThemedText>
 
           <View style={styles.successActions}>
@@ -90,7 +92,7 @@ function ForgotPasswordContent() {
               fullWidth
               onPress={() => router.push('/(auth)/role-selection')}
             >
-              Back to Login
+              {t('forgotPassword.backToLogin')}
             </Button>
             <Button
               variant="ghost"
@@ -100,7 +102,7 @@ function ForgotPasswordContent() {
                 setSentEmail('');
               }}
             >
-              Send Again
+              {t('forgotPassword.sendAgain')}
             </Button>
           </View>
         </AnimatedView>
@@ -121,11 +123,11 @@ function ForgotPasswordContent() {
           <View style={[styles.logoContainer, { backgroundColor: theme.colors.primaryLight }]}>
             <ThemedText style={styles.logoText}>🔑</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Forgot Password?
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('forgotPassword.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            No worries, we'll send you reset instructions
+            {t('forgotPassword.subtitle')}
           </ThemedText>
         </AnimatedView>
 
@@ -135,8 +137,8 @@ function ForgotPasswordContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('citizenRegister.emailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -169,13 +171,13 @@ function ForgotPasswordContent() {
             iconName="send"
             iconPosition="right"
           >
-            Send Reset Link
+            {t('forgotPassword.sendResetLink')}
           </Button>
 
           <View style={styles.backContainer}>
             <Link href="/(auth)/role-selection" asChild>
               <Button variant="ghost" size="md">
-                Back to Login
+                {t('forgotPassword.backToLogin')}
               </Button>
             </Link>
           </View>

@@ -2,6 +2,8 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
+import { useRouter } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { HeaderProps } from './types';
 
@@ -19,12 +21,16 @@ export function Header({
   testID,
 }: HeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
+  const router = useRouter();
 
   const handleBack = () => {
     if (onBackPress) {
       onBackPress();
     } else if (onLeftIconPress) {
       onLeftIconPress();
+    } else {
+      router.back();
     }
   };
 
@@ -56,7 +62,7 @@ export function Header({
                 alignItems: 'center',
               }}
               accessibilityRole="button"
-              accessibilityLabel={showBackButton ? 'Go back' : 'Menu'}
+              accessibilityLabel={showBackButton ? t('common.goBack') : t('common.menu')}
             >
               <Icon
                 name={showBackButton ? 'arrow-left' : leftIcon || 'menu'}
@@ -90,7 +96,7 @@ export function Header({
               alignItems: 'center',
             }}
             accessibilityRole="button"
-            accessibilityLabel="Action"
+            accessibilityLabel={rightIcon ? t(`common.${rightIcon}` as any) : t('common.action')}
           >
             <Icon name={rightIcon} size={20} color={theme.colors.textPrimary} />
           </Pressable>

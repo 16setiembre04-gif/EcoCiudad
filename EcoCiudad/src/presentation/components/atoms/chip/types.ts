@@ -13,6 +13,7 @@ export interface ChipProps {
   selected?: boolean;
   onPress?: () => void;
   onDismiss?: () => void;
+  dismissAccessibilityLabel?: string;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }

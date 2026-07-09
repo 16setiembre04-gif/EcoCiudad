@@ -10,13 +10,14 @@ import { useOperatorPerformance, useOperatorStats } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { useRouter } from 'expo-router';
+import { useTranslation } from '@/localization';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function OperatorProfileScreen() {
   const theme = useTheme();
   const user = useAuthStore((state) => state.user);
+  const { t } = useTranslation();
   const [performancePeriod, setPerformancePeriod] = useState<'day' | 'week' | 'month' | 'year'>('week');
 
   const { data: stats } = useOperatorStats();
@@ -26,7 +27,7 @@ export default function OperatorProfileScreen() {
     return (
       <OperatorLayout>
         <View style={styles.loadingContainer}>
-          <ThemedText>Loading profile...</ThemedText>
+          <ThemedText>{t('common.loadingProfile')}</ThemedText>
         </View>
       </OperatorLayout>
     );
@@ -36,7 +37,7 @@ export default function OperatorProfileScreen() {
     <OperatorLayout
       header={
         <Header
-          title="My Profile"
+          title={t('common.myProfile')}
           showBackButton={false}
         />
       }
@@ -48,7 +49,7 @@ export default function OperatorProfileScreen() {
             <View style={styles.profileInfo}>
               <ThemedText type="headline">{user.displayName}</ThemedText>
               <ThemedText type="body" color={theme.colors.textSecondary}>
-                Environmental Officer
+                {t('common.environmentalOfficer')}
               </ThemedText>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
                 {user.email}
@@ -59,13 +60,13 @@ export default function OperatorProfileScreen() {
 
         {stats && (
           <Card variant="elevated" padding="md" style={styles.statsCard}>
-            <ThemedText type="subtitle">Statistics</ThemedText>
+            <ThemedText type="subtitle">{t('common.statistics')}</ThemedText>
             <View style={styles.statsGrid}>
               <View style={styles.statItem}>
                 <Icon name="tasks" size={24} color={theme.colors.primary} />
                 <ThemedText type="headline">{stats.totalAssigned}</ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Total Assigned
+                  {t('common.totalAssigned')}
                 </ThemedText>
               </View>
 
@@ -73,7 +74,7 @@ export default function OperatorProfileScreen() {
                 <Icon name="success" size={24} color={theme.colors.success} />
                 <ThemedText type="headline">{stats.resolvedThisMonth}</ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  This Month
+                  {t('common.thisMonth')}
                 </ThemedText>
               </View>
 
@@ -81,7 +82,7 @@ export default function OperatorProfileScreen() {
                 <Icon name="eco-points" size={24} color={theme.colors.secondary} />
                 <ThemedText type="headline">{stats.averageResolutionTime}h</ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Avg Time
+                  {t('common.averageTime')}
                 </ThemedText>
               </View>
 
@@ -89,7 +90,7 @@ export default function OperatorProfileScreen() {
                 <Icon name="achievement" size={24} color={theme.colors.warning} />
                 <ThemedText type="headline">{stats.completionRate}%</ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Completion
+                  {t('common.completion')}
                 </ThemedText>
               </View>
             </View>
@@ -97,7 +98,7 @@ export default function OperatorProfileScreen() {
         )}
 
         <View style={styles.periodSelector}>
-          <ThemedText type="subtitle">Performance</ThemedText>
+          <ThemedText type="subtitle">{t('common.performance')}</ThemedText>
           <View style={styles.periodButtons}>
             {(['day', 'week', 'month', 'year'] as const).map((period) => (
               <Chip
@@ -106,7 +107,7 @@ export default function OperatorProfileScreen() {
                 size="sm"
                 onPress={() => setPerformancePeriod(period)}
               >
-                {period.charAt(0).toUpperCase() + period.slice(1)}
+                {t(`common.${period}` as any)}
               </Chip>
             ))}
           </View>

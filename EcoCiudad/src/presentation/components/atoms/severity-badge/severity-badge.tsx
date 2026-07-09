@@ -1,16 +1,18 @@
 import { REPORT_SEVERITIES } from '@/constants/report.constants';
 import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type SeverityBadgeProps } from './types';
 
 export function SeverityBadge({ severity, style }: SeverityBadgeProps) {
+  const { t } = useTranslation();
   const config = REPORT_SEVERITIES[severity];
 
   return (
     <View style={[styles.container, { backgroundColor: config.color + '20' }, style]}>
       <View style={[styles.dot, { backgroundColor: config.color }]} />
       <ThemedText type="caption" style={[styles.text, { color: config.color }]}>
-        {config.label}
+        {t(config.labelKey)}
       </ThemedText>
     </View>
   );

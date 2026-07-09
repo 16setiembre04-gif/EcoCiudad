@@ -1,6 +1,7 @@
 import { REPORT_STATUSES } from '@/constants/report.constants';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { TimelineDot } from '@/presentation/components/atoms/timeline-dot';
+import { useTranslation } from '@/localization';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { StyleSheet, View } from 'react-native';
@@ -8,17 +9,17 @@ import { type StatusTimelineProps } from './types';
 
 const STATUS_ORDER = ['pending', 'in_review', 'resolved'] as const;
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 export function StatusTimeline({ entries, currentStatus, style }: StatusTimelineProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
+
+  const formatDate = (date: Date): string =>
+    date.toLocaleDateString(t('common.locale'), {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
   const currentIndex = STATUS_ORDER.indexOf(currentStatus as typeof STATUS_ORDER[number]);
 
@@ -59,7 +60,7 @@ export function StatusTimeline({ entries, currentStatus, style }: StatusTimeline
                     : theme.colors.textSecondary,
                 }}
               >
-                {config.label}
+                {t(config.labelKey)}
               </ThemedText>
               {entry && (
                 <ThemedText type="caption" color={theme.colors.textSecondary}>

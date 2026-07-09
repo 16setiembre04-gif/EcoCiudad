@@ -4,6 +4,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 
 export interface AdminActivityItemProps {
@@ -12,8 +13,9 @@ export interface AdminActivityItemProps {
 
 export function AdminActivityItem({ activity }: AdminActivityItemProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const config = ADMIN_ACTIVITY_ACTIONS[activity.action] ?? {
-    label: activity.action,
+    labelKey: activity.action,
     icon: 'info' as const,
     color: theme.colors.textSecondary,
   };
@@ -25,11 +27,11 @@ export function AdminActivityItem({ activity }: AdminActivityItemProps) {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (minutes < 1) return t('common.justNow');
+    if (minutes < 60) return t('common.minutesAgo', { minutes });
+    if (hours < 24) return t('common.hoursAgo', { hours });
+    if (days < 7) return t('common.daysAgo', { days });
+    return date.toLocaleDateString(t('common.locale'), { month: 'short', day: 'numeric' });
   };
 
   return (
@@ -39,7 +41,7 @@ export function AdminActivityItem({ activity }: AdminActivityItemProps) {
       </View>
       <View style={styles.content}>
         <ThemedText type="bodySmall" style={{ fontWeight: '500' }} numberOfLines={1}>
-          {config.label}
+          {t(config.labelKey)}
         </ThemedText>
         {activity.details && (
           <ThemedText type="caption" color={theme.colors.textSecondary} numberOfLines={1}>

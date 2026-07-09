@@ -12,12 +12,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function ResetPasswordContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { updatePassword, isLoading, error, clearError } = useAuth();
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -70,10 +72,10 @@ function ResetPasswordContent() {
             <ThemedText style={styles.successEmoji}>&#x2705;</ThemedText>
           </View>
           <ThemedText type="headline" style={[styles.successTitle, { color: theme.colors.textPrimary }]}>
-            Password Reset!
+            {t('resetPassword.successTitle')}
           </ThemedText>
           <ThemedText type="body" style={[styles.successText, { color: theme.colors.textSecondary }]}>
-            Your password has been successfully reset. You can now sign in with your new password.
+            {t('resetPassword.successMessage')}
           </ThemedText>
 
           <View style={styles.successActions}>
@@ -83,7 +85,7 @@ function ResetPasswordContent() {
               fullWidth
               onPress={() => router.replace('/(auth)/role-selection')}
             >
-              Sign In
+              {t('auth.signIn')}
             </Button>
           </View>
         </AnimatedView>
@@ -104,11 +106,11 @@ function ResetPasswordContent() {
           <View style={[styles.iconContainer, { backgroundColor: theme.colors.primaryLight }]}>
             <ThemedText style={styles.iconText}>&#x1F512;</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Reset Password
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('resetPassword.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Create a new strong password for your account
+            {t('resetPassword.subtitle')}
           </ThemedText>
         </AnimatedView>
 
@@ -121,8 +123,8 @@ function ResetPasswordContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="New Password"
-                placeholder="Enter new password"
+                label={t('auth.newPassword')}
+                placeholder={t('resetPassword.enterNewPassword')}
                 errorText={errors.password?.message}
                 hasError={!!errors.password}
                 showStrength
@@ -139,8 +141,8 @@ function ResetPasswordContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="Confirm Password"
-                placeholder="Confirm new password"
+                label={t('auth.confirmPassword')}
+                placeholder={t('resetPassword.confirmNewPassword')}
                 errorText={errors.confirmPassword?.message}
                 hasError={!!errors.confirmPassword}
                 autoComplete="password-new"
@@ -166,7 +168,7 @@ function ResetPasswordContent() {
             iconName="check"
             iconPosition="right"
           >
-            Reset Password
+            {t('resetPassword.resetButton')}
           </Button>
         </AnimatedView>
       </ScrollView>

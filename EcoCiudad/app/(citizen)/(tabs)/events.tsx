@@ -12,11 +12,13 @@ import { useEventDashboard, useToggleFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { EVENT_CATEGORIES } from '@/constants/event.constants';
+import { useTranslation } from '@/localization';
 import { type EventCategory } from '@/domain/entities';
 
 export default function EventsHomeScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<EventCategory | undefined>();
   const [showCalendar, setShowCalendar] = useState(false);
@@ -28,6 +30,7 @@ export default function EventsHomeScreen() {
     favoriteIds,
     registeredIds,
     isLoading,
+    refreshAll,
   } = useEventDashboard();
 
   const { mutate: toggleFavorite } = useToggleFavorite();
@@ -60,7 +63,7 @@ export default function EventsHomeScreen() {
     <EventsLayout
       header={
         <Header
-          title="Events"
+          title={t('events.title')}
           showBackButton={false}
           rightIcon="plus"
           onRightIconPress={handleCreatePress}
@@ -72,14 +75,14 @@ export default function EventsHomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => {}} tintColor={theme.colors.primary} />
+          <RefreshControl refreshing={isLoading} onRefresh={refreshAll} tintColor={theme.colors.primary} />
         }
       >
         <View style={styles.searchContainer}>
           <SearchBar
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Search events..."
+            placeholder={t('events.searchPlaceholder')}
           />
         </View>
 
@@ -89,7 +92,7 @@ export default function EventsHomeScreen() {
             size="sm"
             onPress={() => setSelectedCategory(undefined)}
           >
-            All
+            {t('common.all')}
           </Chip>
           {Object.entries(EVENT_CATEGORIES).map(([key, config]) => (
             <Chip
@@ -111,7 +114,7 @@ export default function EventsHomeScreen() {
             iconName="list"
             onPress={() => setShowCalendar(false)}
           >
-            List
+            {t('events.list')}
           </Chip>
           <Chip
             variant={showCalendar ? 'filled' : 'tonal'}
@@ -119,7 +122,7 @@ export default function EventsHomeScreen() {
             iconName="calendar"
             onPress={() => setShowCalendar(true)}
           >
-            Calendar
+            {t('events.calendar')}
           </Chip>
         </View>
 
@@ -137,7 +140,7 @@ export default function EventsHomeScreen() {
               registeredEvents={registeredIds}
               onEventPress={handleEventPress}
               onFavoritePress={handleFavoritePress}
-              title="Upcoming Events"
+              title={t('events.upcomingEvents')}
               horizontal={false}
             />
 
@@ -149,7 +152,7 @@ export default function EventsHomeScreen() {
                   registeredEvents={registeredIds}
                   onEventPress={handleEventPress}
                   onFavoritePress={handleFavoritePress}
-                  title="Popular Events"
+                  title={t('events.popularEvents')}
                   horizontal
                 />
               </View>
@@ -163,7 +166,7 @@ export default function EventsHomeScreen() {
                   registeredEvents={registeredIds}
                   onEventPress={handleEventPress}
                   onFavoritePress={handleFavoritePress}
-                  title="My Events"
+                  title={t('events.myEvents')}
                   horizontal
                   onViewAllPress={handleMyEventsPress}
                 />

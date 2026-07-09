@@ -10,6 +10,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type EventCardProps } from './types';
 
@@ -23,6 +24,7 @@ export function EventCard({
   testID,
 }: EventCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const categoryConfig = EVENT_CATEGORIES[event.category];
 
   const content = (
@@ -42,7 +44,7 @@ export function EventCard({
               style={styles.favoriteButton}
               onPress={onFavoritePress}
               accessibilityRole="button"
-              accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              accessibilityLabel={isFavorite ? t('common.removeFromFavorites') : t('common.addToFavorites')}
             >
               <Icon
                 name="heart"
@@ -63,7 +65,7 @@ export function EventCard({
               style={styles.favoriteButton}
               onPress={onFavoritePress}
               accessibilityRole="button"
-              accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              accessibilityLabel={isFavorite ? t('common.removeFromFavorites') : t('common.addToFavorites')}
             >
               <Icon
                 name="heart"
@@ -87,7 +89,7 @@ export function EventCard({
             <View style={[styles.registeredBadge, { backgroundColor: theme.colors.success + '20' }]}>
               <Icon name="check" size={12} color={theme.colors.success} />
               <ThemedText type="caption" style={{ color: theme.colors.success, fontWeight: '600' }}>
-                Registered
+                {t('common.registered')}
               </ThemedText>
             </View>
           )}
@@ -104,7 +106,7 @@ export function EventCard({
 
         <View style={styles.footerRow}>
           <LocationBadge
-            address={event.location.address}
+            address={event.location.address ?? ''}
             isVirtual={event.isVirtual}
             style={styles.location}
           />
@@ -135,8 +137,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     height: 140,
-    borderTopLeftRadius: borderRadius.card,
-    borderTopRightRadius: borderRadius.card,
+    borderTopLeftRadius: borderRadius.xl,
+    borderTopRightRadius: borderRadius.xl,
     overflow: 'hidden',
     position: 'relative',
   },
@@ -146,8 +148,8 @@ const styles = StyleSheet.create({
   },
   placeholderImage: {
     height: 140,
-    borderTopLeftRadius: borderRadius.card,
-    borderTopRightRadius: borderRadius.card,
+    borderTopLeftRadius: borderRadius.xl,
+    borderTopRightRadius: borderRadius.xl,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',

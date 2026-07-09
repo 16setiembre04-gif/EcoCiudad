@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { type DimensionValue } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
@@ -7,10 +7,10 @@ import { type SkeletonProps } from './types';
 
 export function Skeleton({ width = '100%', height = 16, variant = 'rect', style }: SkeletonProps) {
   const theme = useTheme();
-  const opacity = useSharedValue(0.3);
+  const opacity = useSharedValue(0.4);
 
   opacity.value = withRepeat(
-    withTiming(0.7, { duration: animations.duration.slow }),
+    withTiming(0.8, { duration: animations.duration.slow * 2 }),
     -1,
     true,
   );
@@ -27,19 +27,17 @@ export function Skeleton({ width = '100%', height = 16, variant = 'rect', style 
     }
   };
 
+  const baseStyle = {
+    width: width as DimensionValue,
+    height,
+    backgroundColor: theme.colors.surfaceVariant,
+    borderRadius: getBorderRadius(),
+  };
+
   return (
     <Animated.View
-      style={[
-        {
-          width,
-          height,
-          backgroundColor: theme.colors.border,
-          borderRadius: getBorderRadius(),
-        },
-        animatedStyle,
-        style,
-      ]}
-      accessibilityRole="none"
+      style={[baseStyle, animatedStyle, style]}
+      accessibilityRole="progressbar"
       accessible={false}
     />
   );

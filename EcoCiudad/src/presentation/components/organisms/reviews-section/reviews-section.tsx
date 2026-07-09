@@ -5,21 +5,24 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { ReviewCard } from '@/presentation/components/molecules/review-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type ReviewsSectionProps } from './types';
 
 export function ReviewsSection({
   reviews,
   isLoading = false,
-  onReviewPress,
+  onReviewPress: _onReviewPress,
   onHelpfulPress,
   onAddReviewPress,
   style,
 }: ReviewsSectionProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title="Reviews" />
+        <SectionHeader title={t('common.reviews')} />
         <View style={styles.listContainer}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="md" style={styles.skeletonCard}>
@@ -36,16 +39,16 @@ export function ReviewsSection({
   if (reviews.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title="Reviews" />
+        <SectionHeader title={t('common.reviews')} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="message"
-            title="No reviews yet"
-            description="Be the first to review this center"
+            title={t('common.noReviewsYet')}
+            description={t('common.beFirstToReview')}
             action={
               onAddReviewPress ? (
                 <Button variant="primary" size="md" onPress={onAddReviewPress}>
-                  Write Review
+                  {t('common.writeReview')}
                 </Button>
               ) : undefined
             }
@@ -57,11 +60,11 @@ export function ReviewsSection({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={`Reviews (${reviews.length})`} />
+      <SectionHeader title={`${t('common.reviews')} (${reviews.length})`} />
       {onAddReviewPress && (
         <View style={styles.addButtonContainer}>
           <Button variant="outlined" size="sm" onPress={onAddReviewPress} iconName="plus">
-            Write Review
+            {t('common.writeReview')}
           </Button>
         </View>
       )}

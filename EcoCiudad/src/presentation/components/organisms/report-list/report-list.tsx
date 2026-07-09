@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { ReportCard } from '@/presentation/components/molecules/report-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type ReportListProps } from './types';
 
@@ -25,7 +26,7 @@ function mapCategoryToIcon(category: string): 'leaf' | 'water' | 'tree' | 'noise
 }
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 export function ReportList({
@@ -35,10 +36,12 @@ export function ReportList({
   onViewAllPress,
   style,
 }: ReportListProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title="Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('reports.title')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.listContainer}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="lg" style={styles.skeletonCard}>
@@ -55,12 +58,12 @@ export function ReportList({
   if (reports.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title="Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+        <SectionHeader title={t('reports.title')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="report"
-            title="No reports yet"
-            description="Your environmental reports will appear here"
+            title={t('reports.noReportsYet')}
+            description={t('reports.createFirst')}
           />
         </View>
       </View>
@@ -69,7 +72,7 @@ export function ReportList({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title="Reports" actionLabel="View All" onActionPress={onViewAllPress} />
+      <SectionHeader title={t('reports.title')} actionLabel={t('common.viewAll')} onActionPress={onViewAllPress} />
       <FlatList
         data={reports}
         keyExtractor={(item) => item.id}
@@ -80,7 +83,7 @@ export function ReportList({
             description={item.description}
             status={mapStatus(item.status)}
             category={mapCategoryToIcon(item.category)}
-            location={item.location.address ?? 'Unknown location'}
+            location={item.location.address ?? t('admin.noLocation')}
             date={formatDate(item.createdAt)}
             onPress={onReportPress ? () => onReportPress(item.id) : undefined}
             containerStyle={styles.card}

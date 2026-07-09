@@ -4,15 +4,17 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type ActivityCardProps } from './types';
 
 export function ActivityCard({ activity, containerStyle }: ActivityCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const config = OPERATOR_ACTIONS[activity.action];
 
   const formatDateTime = (date: Date): string => {
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString(t('common.locale'), {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -28,7 +30,7 @@ export function ActivityCard({ activity, containerStyle }: ActivityCardProps) {
         </View>
         <View style={styles.content}>
           <ThemedText type="body" style={{ fontWeight: '600' }}>
-            {config.label}
+            {t(config.labelKey)}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
             {formatDateTime(activity.createdAt)}

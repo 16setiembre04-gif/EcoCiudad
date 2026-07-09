@@ -7,50 +7,57 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2E7D32',
-          light: '#A5D6A7',
+          DEFAULT: '#22C55E',
+          light: '#DCFCE7',
+          container: '#DCFCE7',
           'on-primary': '#FFFFFF',
+          'on-container': '#166534',
         },
         secondary: {
-          DEFAULT: '#66BB6A',
+          DEFAULT: '#16A34A',
+          light: '#BBF7D0',
           'on-secondary': '#FFFFFF',
         },
         'operator-primary': {
-          DEFAULT: '#1565C0',
-          light: '#90CAF9',
+          DEFAULT: '#3B82F6',
+          light: '#DBEAFE',
         },
         'operator-secondary': {
-          DEFAULT: '#42A5F5',
+          DEFAULT: '#2563EB',
         },
         background: {
-          DEFAULT: '#F8FAFC',
+          DEFAULT: '#FAFAFA',
         },
         surface: {
           DEFAULT: '#FFFFFF',
           variant: '#F1F5F9',
         },
         border: {
-          DEFAULT: '#E2E8F0',
+          DEFAULT: '#E5E7EB',
         },
         divider: {
-          DEFAULT: '#CBD5E1',
+          DEFAULT: '#E5E7EB',
         },
         text: {
-          primary: '#1E293B',
-          secondary: '#64748B',
-          disabled: '#94A3B8',
+          primary: '#1F2937',
+          secondary: '#6B7280',
+          disabled: '#9CA3AF',
         },
         success: {
           DEFAULT: '#22C55E',
+          light: '#DCFCE7',
         },
         warning: {
-          DEFAULT: '#FACC15',
+          DEFAULT: '#F59E0B',
+          light: '#FEF3C7',
         },
         error: {
           DEFAULT: '#EF4444',
+          light: '#FEE2E2',
         },
         info: {
           DEFAULT: '#3B82F6',
+          light: '#DBEAFE',
         },
       },
       fontFamily: {

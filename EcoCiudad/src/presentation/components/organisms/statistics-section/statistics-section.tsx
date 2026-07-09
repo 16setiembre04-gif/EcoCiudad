@@ -2,6 +2,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { StatCard } from '@/presentation/components/atoms/stat-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 
 export interface DashboardStat {
@@ -17,10 +18,12 @@ export interface StatisticsSectionProps {
 }
 
 export function StatisticsSection({ stats, isLoading = false }: StatisticsSectionProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View>
-        <SectionHeader title="Your Statistics" />
+        <SectionHeader title={t('dashboard.statistics')} />
         <View style={styles.grid}>
           {[0, 1, 2, 3].map((i) => (
             <View key={i} style={styles.skeletonCard}>
@@ -36,7 +39,7 @@ export function StatisticsSection({ stats, isLoading = false }: StatisticsSectio
 
   return (
     <View>
-      <SectionHeader title="Your Statistics" />
+      <SectionHeader title={t('dashboard.statistics')} />
       <View style={styles.grid}>
         {stats.map((stat, index) => (
           <StatCard

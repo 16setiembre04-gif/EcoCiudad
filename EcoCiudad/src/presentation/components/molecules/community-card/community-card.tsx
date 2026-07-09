@@ -4,6 +4,7 @@ import { Card } from '@/presentation/components/atoms/card';
 import { Divider } from '@/presentation/components/atoms/divider';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTranslation } from '@/localization';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { View } from 'react-native';
@@ -21,6 +22,7 @@ export function CommunityCard({
   testID,
 }: CommunityCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const content = (
     <View style={{ gap: spacing.md }}>
@@ -28,12 +30,12 @@ export function CommunityCard({
         <Avatar uri={imageUrl} name={name} size="lg" />
         <View style={{ flex: 1, gap: spacing.xs }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-            <ThemedText type="title" numberOfLines={1}>
+            <ThemedText type="subtitle" numberOfLines={1}>
               {name}
             </ThemedText>
             {isJoined && (
               <Badge variant="tonal" color="success" iconName="check">
-                Joined
+                {t('communities.joined')}
               </Badge>
             )}
           </View>
@@ -49,7 +51,7 @@ export function CommunityCard({
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
           <Icon name="community" size={20} color={theme.colors.primary} />
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            {memberCount} {memberCount === 1 ? 'member' : 'members'}
+            {memberCount} {memberCount === 1 ? t('communities.member') : t('communities.membersCount')}
           </ThemedText>
         </View>
         {action}

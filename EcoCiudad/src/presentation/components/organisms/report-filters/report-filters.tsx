@@ -3,6 +3,7 @@ import { CategoryChip } from '@/presentation/components/atoms/category-chip';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { type ReportFiltersProps } from './types';
 
@@ -12,28 +13,29 @@ export function ReportFilters({
   selectedSeverity,
   onCategoryChange,
   onStatusChange,
-  onSeverityChange,
+  onSeverityChange: _onSeverityChange,
   onClearFilters,
   style,
 }: ReportFiltersProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const hasFilters = selectedCategory || selectedStatus || selectedSeverity;
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
-        <ThemedText type="subtitle">Filters</ThemedText>
+        <ThemedText type="subtitle">{t('reports.status')}</ThemedText>
         {hasFilters && onClearFilters && (
-          <Pressable onPress={onClearFilters} accessibilityRole="button" accessibilityLabel="Clear filters">
+          <Pressable onPress={onClearFilters} accessibilityRole="button" accessibilityLabel={t('accessibility.clearFilters')}>
             <ThemedText type="bodySmall" color={theme.colors.error}>
-              Clear All
+              {t('reports.clearFilters')}
             </ThemedText>
           </Pressable>
         )}
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
-        {Object.entries(REPORT_CATEGORIES).map(([key, config]) => (
+        {Object.entries(REPORT_CATEGORIES).map(([key, _config]) => (
           <CategoryChip
             key={key}
             category={key as keyof typeof REPORT_CATEGORIES}
@@ -48,6 +50,8 @@ export function ReportFilters({
           <CategoryChip
             key={key}
             category="other"
+            label={t(config.labelKey)}
+            iconName={config.icon}
             selected={selectedStatus === key}
             onPress={() => onStatusChange?.(selectedStatus === key ? undefined : key as keyof typeof REPORT_STATUSES)}
           />

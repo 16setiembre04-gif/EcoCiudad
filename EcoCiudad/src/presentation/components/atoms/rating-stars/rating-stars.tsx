@@ -1,5 +1,6 @@
 import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type RatingStarsProps } from './types';
 
@@ -18,6 +19,7 @@ export function RatingStars({
   style,
 }: RatingStarsProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const iconSize = sizeMap[size];
 
   const handlePress = (starIndex: number) => {
@@ -37,7 +39,7 @@ export function RatingStars({
             key={index}
             onPress={() => handlePress(index)}
             accessibilityRole="button"
-            accessibilityLabel={`Rate ${index + 1} star${index === 0 ? '' : 's'}`}
+            accessibilityLabel={t('common.rateStars', { count: index + 1 })}
           >
             <Icon
               name="star"

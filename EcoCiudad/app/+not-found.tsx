@@ -1,15 +1,18 @@
 import { View, StyleSheet } from 'react-native';
 import { Link, Stack } from 'expo-router';
 import { ThemedText, Button } from '@/presentation/components/atoms';
+import { useTranslation } from '@/localization';
 
 export default function NotFoundScreen() {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
+      <Stack.Screen options={{ title: t('notFound.title') }} />
       <View style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
+        <ThemedText type="title">{t('notFound.description')}</ThemedText>
         <Link href="/" asChild>
-          <Button variant="primary" size="md">Go to home screen</Button>
+          <Button variant="primary" size="md">{t('notFound.goHome')}</Button>
         </Link>
       </View>
     </>

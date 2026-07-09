@@ -324,9 +324,9 @@ export class AdminRemoteDataSource {
   async assignReport(reportId: string, operatorId: string): Promise<ReportDTO> {
     const { data, error } = await this.client
       .from('reports')
-      .update({ 
+      .update({
         assignee_id: operatorId,
-        status: 'in_review',
+        status: 'assigned',
         updated_at: new Date().toISOString()
       })
       .eq('id', reportId)

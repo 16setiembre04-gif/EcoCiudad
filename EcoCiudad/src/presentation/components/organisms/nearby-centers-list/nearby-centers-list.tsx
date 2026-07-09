@@ -4,6 +4,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { CenterCard } from '@/presentation/components/molecules/center-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type NearbyCentersListProps } from './types';
 
@@ -34,14 +35,17 @@ export function NearbyCentersList({
   onCenterPress,
   onFavoritePress,
   onViewAllPress,
-  title = 'Nearby Centers',
+  title,
   horizontal = true,
   style,
 }: NearbyCentersListProps) {
+  const { t } = useTranslation();
+  const sectionTitle = title ?? t('recycling.centers');
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <View style={horizontal ? styles.skeletonHorizontal : styles.skeletonVertical}>
           {[0, 1, 2].map((i) => (
             <Card key={i} variant="elevated" padding="md" style={horizontal ? styles.skeletonCardH : styles.skeletonCardV}>
@@ -58,12 +62,12 @@ export function NearbyCentersList({
   if (centers.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} />
+        <SectionHeader title={sectionTitle} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="recycle"
-            title="No centers nearby"
-            description="No recycling centers found in your area"
+            title={t('recycling.noCentersNearby')}
+            description={t('recycling.noCentersArea')}
           />
         </View>
       </View>
@@ -73,7 +77,7 @@ export function NearbyCentersList({
   if (horizontal) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+        <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <FlatList
           data={centers}
           keyExtractor={(item) => item.id}
@@ -109,7 +113,7 @@ export function NearbyCentersList({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={title} actionLabel={onViewAllPress ? 'View All' : undefined} onActionPress={onViewAllPress} />
+      <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
       <FlatList
         data={centers}
         keyExtractor={(item) => item.id}

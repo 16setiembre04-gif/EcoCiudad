@@ -1,6 +1,5 @@
 import { Avatar } from '@/presentation/components/atoms/avatar';
 import { Badge } from '@/presentation/components/atoms/badge';
-import { useTheme } from '@/theme/context';
 import { StyleSheet, View } from 'react-native';
 import { type OperatorAvatarProps } from './types';
 
@@ -11,7 +10,6 @@ export function OperatorAvatar({
   showBadge = false,
   style,
 }: OperatorAvatarProps) {
-  const theme = useTheme();
 
   return (
     <View style={[styles.container, style]}>

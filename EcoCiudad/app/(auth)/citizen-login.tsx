@@ -72,7 +72,7 @@ function CitizenLoginContent() {
           <View style={[styles.logoContainer, { backgroundColor: theme.colors.primaryLight }]}>
             <ThemedText style={styles.logoText}>🌿</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
             {t('citizenLogin.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>

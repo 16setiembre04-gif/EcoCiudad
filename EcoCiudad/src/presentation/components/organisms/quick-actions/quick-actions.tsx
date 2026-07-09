@@ -25,6 +25,7 @@ export function QuickActions({
           flexDirection: 'row',
           flexWrap: 'wrap',
           gap: gapSize,
+          paddingHorizontal: spacing.lg,
         },
         containerStyle,
       ]}
@@ -38,20 +39,28 @@ export function QuickActions({
           accessibilityRole="button"
           accessibilityLabel={item.label}
         >
-          <Card variant="elevated" padding="lg" style={{ alignItems: 'center', gap: spacing.sm }}>
+          <Card
+            variant="elevated"
+            padding="md"
+            style={{ alignItems: 'center', gap: spacing.sm }}
+          >
             <View
               style={{
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-                backgroundColor: item.color || theme.colors.primaryLight,
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: item.color || theme.colors.primaryContainer,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
-              <Icon name={item.icon} size={24} color={theme.colors.primary} />
+              <Icon name={item.icon} size={28} color={theme.colors.onPrimaryContainer} />
             </View>
-            <ThemedText type="bodySmall" style={{ textAlign: 'center' }} numberOfLines={2}>
+            <ThemedText
+              type="bodySmall"
+              style={{ textAlign: 'center', fontWeight: '500' }}
+              numberOfLines={2}
+            >
               {item.label}
             </ThemedText>
           </Card>

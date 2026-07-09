@@ -3,6 +3,7 @@ import { SectionHeader } from '@/presentation/components/atoms/section-header';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { ParticipantCard } from '@/presentation/components/molecules/participant-card';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type ParticipantsListProps } from './types';
 
@@ -10,13 +11,16 @@ export function ParticipantsList({
   participants,
   isLoading = false,
   onParticipantPress,
-  title = 'Participants',
+  title,
   style,
 }: ParticipantsListProps) {
+  const { t } = useTranslation();
+  const displayTitle = title ?? t('common.participants');
+
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} />
+        <SectionHeader title={displayTitle} />
         <View style={styles.listContainer}>
           {[0, 1, 2].map((i) => (
             <View key={i} style={styles.skeletonItem}>
@@ -35,12 +39,12 @@ export function ParticipantsList({
   if (participants.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title={title} />
+        <SectionHeader title={displayTitle} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="community"
-            title="No participants yet"
-            description="Be the first to register for this event"
+            title={t('common.noParticipantsYet')}
+            description={t('common.beFirstToRegister')}
           />
         </View>
       </View>
@@ -49,7 +53,7 @@ export function ParticipantsList({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={`${title} (${participants.length})`} />
+      <SectionHeader title={`${displayTitle} (${participants.length})`} />
       <FlatList
         data={participants}
         keyExtractor={(item) => item.id}

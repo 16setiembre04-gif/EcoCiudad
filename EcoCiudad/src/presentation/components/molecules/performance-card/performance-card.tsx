@@ -3,24 +3,26 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type PerformanceCardProps } from './types';
 
 export function PerformanceCard({ performance, containerStyle }: PerformanceCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const periodLabels = {
-    day: 'Today',
-    week: 'This Week',
-    month: 'This Month',
-    year: 'This Year',
+    day: t('common.today'),
+    week: t('common.thisWeek'),
+    month: t('common.thisMonth'),
+    year: t('common.thisYear'),
   };
 
   return (
     <Card variant="elevated" padding="md" style={[styles.container, containerStyle]}>
       <View style={styles.header}>
         <Icon name="achievement" size={24} color={theme.colors.primary} />
-        <ThemedText type="title">Performance - {periodLabels[performance.period]}</ThemedText>
+        <ThemedText type="title">{t('common.performance')} - {periodLabels[performance.period]}</ThemedText>
       </View>
 
       <View style={styles.statsGrid}>
@@ -29,7 +31,7 @@ export function PerformanceCard({ performance, containerStyle }: PerformanceCard
             {performance.totalReports}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Total Reports
+            {t('common.totalReports')}
           </ThemedText>
         </View>
 
@@ -38,7 +40,7 @@ export function PerformanceCard({ performance, containerStyle }: PerformanceCard
             {performance.resolvedReports}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Resolved
+            {t('common.resolved')}
           </ThemedText>
         </View>
 
@@ -47,7 +49,7 @@ export function PerformanceCard({ performance, containerStyle }: PerformanceCard
             {performance.rejectedReports}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Rejected
+            {t('common.rejected')}
           </ThemedText>
         </View>
 
@@ -56,7 +58,7 @@ export function PerformanceCard({ performance, containerStyle }: PerformanceCard
             {performance.completionRate}%
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Completion Rate
+            {t('common.completionRate')}
           </ThemedText>
         </View>
       </View>
@@ -64,14 +66,14 @@ export function PerformanceCard({ performance, containerStyle }: PerformanceCard
       {performance.topCategories.length > 0 && (
         <View style={styles.categoriesContainer}>
           <ThemedText type="body" style={{ fontWeight: '600' }}>
-            Top Categories
+            {t('common.topCategories')}
           </ThemedText>
           <View style={styles.categoriesList}>
             {performance.topCategories.map((cat, index) => (
               <View key={index} style={styles.categoryItem}>
                 <ThemedText type="bodySmall">{cat.category}</ThemedText>
                 <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                  {cat.count} reports
+                  {t('common.reportsCount', { count: cat.count })}
                 </ThemedText>
               </View>
             ))}

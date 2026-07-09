@@ -12,6 +12,7 @@ import { useCreateEvent } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -20,6 +21,7 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 export default function CreateEventScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
 
   const { mutate: createEvent, isPending } = useCreateEvent();
@@ -42,7 +44,7 @@ export default function CreateEventScreen() {
   const handlePickImage = useCallback(async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission required', 'Please allow access to your photos');
+      Alert.alert(t('common.permissionRequired'), t('reports.photosPermissionRequired'));
       return;
     }
 
@@ -55,7 +57,7 @@ export default function CreateEventScreen() {
     if (!result.canceled && result.assets) {
       setImages(result.assets.map((asset) => asset.uri).slice(0, 3));
     }
-  }, []);
+  }, [t]);
 
   const handleRemoveImage = useCallback((index: number) => {
     setImages(images.filter((_, i) => i !== index));
@@ -63,12 +65,12 @@ export default function CreateEventScreen() {
 
   const handleSubmit = useCallback(() => {
     if (!title || !description || !startDate || !startTime || !location) {
-      Alert.alert('Missing information', 'Please fill in all required fields');
+      Alert.alert(t('reports.missingInfoTitle'), t('reports.missingInfoMessage'));
       return;
     }
 
     if (!user) {
-      Alert.alert('Error', 'You must be logged in to create an event');
+      Alert.alert(t('common.error'), t('common.mustBeLoggedIn'));
       return;
     }
 
@@ -85,7 +87,6 @@ export default function CreateEventScreen() {
         location,
         organizerId: user.id,
         maxAttendees: maxAttendees ? parseInt(maxAttendees) : undefined,
-        currentAttendees: 0,
         status: 'upcoming',
         imageUrl: images[0],
         bannerUrl: images[0],
@@ -96,22 +97,22 @@ export default function CreateEventScreen() {
       },
       {
         onSuccess: () => {
-          Alert.alert('Success', 'Event created successfully', [
-            { text: 'OK', onPress: () => router.back() },
+          Alert.alert(t('common.success'), t('common.eventCreated'), [
+            { text: t('common.ok'), onPress: () => router.back() },
           ]);
         },
         onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to create event');
+          Alert.alert(t('common.error'), error.message || t('common.failedToCreateEvent'));
         },
       },
     );
-  }, [title, description, category, startDate, startTime, endDate, endTime, maxAttendees, ecoPointsReward, location, images, requirements, isVirtual, meetingLink, user, createEvent, router]);
+  }, [title, description, category, startDate, startTime, endDate, endTime, maxAttendees, ecoPointsReward, location, images, requirements, isVirtual, meetingLink, user, createEvent, router, t]);
 
   return (
     <EventsLayout
       header={
         <Header
-          title="Create Event"
+          title={t('common.createEvent')}
           onBackPress={() => router.back()}
         />
       }
@@ -119,16 +120,16 @@ export default function CreateEventScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
           <Input
-            label="Title *"
-            placeholder="Enter event title"
+            label={t('common.titleRequired')}
+            placeholder={t('common.title')}
             value={title}
             onChangeText={setTitle}
             maxLength={100}
           />
 
           <Input
-            label="Description *"
-            placeholder="Describe your event"
+            label={t('common.descriptionRequired')}
+            placeholder={t('common.description')}
             value={description}
             onChangeText={setDescription}
             multiline
@@ -138,7 +139,7 @@ export default function CreateEventScreen() {
 
           <View style={styles.section}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Category *
+              {t('common.categoryRequired')}
             </ThemedText>
             <View style={styles.chipRow}>
               {Object.entries(EVENT_CATEGORIES).map(([key, config]) => (
@@ -158,16 +159,16 @@ export default function CreateEventScreen() {
           <View style={styles.row}>
             <View style={styles.field}>
               <Input
-                label="Start Date *"
-                placeholder="YYYY-MM-DD"
+                label={t('common.startDateRequired')}
+                placeholder={t('common.dateFormatPlaceholder')}
                 value={startDate}
                 onChangeText={setStartDate}
               />
             </View>
             <View style={styles.field}>
               <Input
-                label="Start Time *"
-                placeholder="HH:MM"
+                label={t('common.startTimeRequired')}
+                placeholder={t('common.timeFormatPlaceholder')}
                 value={startTime}
                 onChangeText={setStartTime}
               />
@@ -177,16 +178,16 @@ export default function CreateEventScreen() {
           <View style={styles.row}>
             <View style={styles.field}>
               <Input
-                label="End Date"
-                placeholder="YYYY-MM-DD"
+                label={t('common.endDate')}
+                placeholder={t('common.dateFormatPlaceholder')}
                 value={endDate}
                 onChangeText={setEndDate}
               />
             </View>
             <View style={styles.field}>
               <Input
-                label="End Time"
-                placeholder="HH:MM"
+                label={t('common.endTime')}
+                placeholder={t('common.timeFormatPlaceholder')}
                 value={endTime}
                 onChangeText={setEndTime}
               />
@@ -194,16 +195,16 @@ export default function CreateEventScreen() {
           </View>
 
           <Input
-            label="Max Participants"
-            placeholder="Leave empty for unlimited"
+            label={t('common.maxParticipants')}
+            placeholder={t('common.unlimitedPlaceholder')}
             value={maxAttendees}
             onChangeText={setMaxAttendees}
             keyboardType="number-pad"
           />
 
           <Input
-            label="Eco Points Reward"
-            placeholder="Points for attending"
+            label={t('common.ecoPointsReward')}
+            placeholder={t('common.pointsForAttending')}
             value={ecoPointsReward}
             onChangeText={setEcoPointsReward}
             keyboardType="number-pad"
@@ -229,14 +230,14 @@ export default function CreateEventScreen() {
               iconName="link"
               onPress={() => setIsVirtual(!isVirtual)}
             >
-              {isVirtual ? 'Virtual Event' : 'In-Person Event'}
+              {isVirtual ? t('common.virtualEvent') : t('common.inPersonEvent')}
             </Chip>
           </View>
 
           {isVirtual && (
             <Input
-              label="Meeting Link"
-              placeholder="https://..."
+              label={t('common.meetingLink')}
+              placeholder={t('common.httpsPlaceholder')}
               value={meetingLink}
               onChangeText={setMeetingLink}
               autoCapitalize="none"
@@ -244,8 +245,8 @@ export default function CreateEventScreen() {
           )}
 
           <Input
-            label="Requirements (one per line)"
-            placeholder="Bring water\nWear comfortable shoes"
+            label={t('common.requirementsOnePerLine')}
+            placeholder={t('common.requirementsPlaceholder')}
             value={requirements}
             onChangeText={setRequirements}
             multiline
@@ -261,7 +262,7 @@ export default function CreateEventScreen() {
             iconName="check"
             iconPosition="right"
           >
-            Create Event
+            {t('common.createEvent')}
           </Button>
         </View>
       </ScrollView>

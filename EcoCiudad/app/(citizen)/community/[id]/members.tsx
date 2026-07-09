@@ -13,11 +13,13 @@ import { Card } from '@/presentation/components/atoms/card';
 import { useCommunityMembers } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { MEMBER_ROLES } from '@/constants';
 import { type CommunityMember } from '@/domain/entities/community';
 
 export default function CommunityMembersScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -43,15 +45,15 @@ export default function CommunityMembersScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
             <Avatar
               uri={item.user?.avatarUrl}
-              name={item.user?.displayName ?? 'User'}
+              name={item.user?.displayName ?? t('common.user')}
               size="md"
             />
             <View style={{ flex: 1 }}>
               <ThemedText type="body" style={{ fontWeight: '600' }}>
-                {item.user?.displayName ?? 'Unknown'}
+                {item.user?.displayName ?? t('common.unknown')}
               </ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Joined {new Date(item.joinedAt).toLocaleDateString()}
+                {t('common.joined')} {new Date(item.joinedAt).toLocaleDateString()}
               </ThemedText>
             </View>
             <Badge variant="tonal" color={roleConfig?.color === '#EF4444' ? 'error' : roleConfig?.color === '#F59E0B' ? 'warning' : roleConfig?.color === '#3B82F6' ? 'info' : 'primary'}>
@@ -61,7 +63,7 @@ export default function CommunityMembersScreen() {
         </Card>
       );
     },
-    [theme.colors.textSecondary]
+    [theme.colors.textSecondary, t]
   );
 
   if (isLoading) {
@@ -75,13 +77,13 @@ export default function CommunityMembersScreen() {
   return (
     <CommunityTemplate
       header={
-        <Header title="Members" showBackButton />
+        <Header title={t('common.members')} showBackButton />
       }
       search={
         <SearchBar
           value={search}
           onChangeText={setSearch}
-          placeholder="Search members..."
+          placeholder={t('common.searchMembers')}
         />
       }
     >
@@ -101,8 +103,8 @@ export default function CommunityMembersScreen() {
         ListEmptyComponent={
           <EmptyState
             iconName="community"
-            title="No members found"
-            description="Try adjusting your search"
+            title={t('common.noMembersFound')}
+            description={t('common.tryAdjustingSearch')}
           />
         }
       />

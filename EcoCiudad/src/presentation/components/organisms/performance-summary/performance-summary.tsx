@@ -4,6 +4,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type PerformanceSummaryProps } from './types';
 
@@ -13,18 +14,19 @@ export function PerformanceSummary({
   style,
 }: PerformanceSummaryProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const periodLabels = {
-    day: 'Today',
-    week: 'This Week',
-    month: 'This Month',
-    year: 'This Year',
+    day: t('common.today'),
+    week: t('common.thisWeek'),
+    month: t('common.thisMonth'),
+    year: t('common.thisYear'),
   };
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
-        <ThemedText type="subtitle">Performance</ThemedText>
+        <ThemedText type="subtitle">{t('common.performance')}</ThemedText>
         <View style={styles.periodSelector}>
           {(['day', 'week', 'month', 'year'] as const).map((period) => (
             <Chip
@@ -45,7 +47,7 @@ export function PerformanceSummary({
             <Icon name="tasks" size={24} color={theme.colors.primary} />
             <ThemedText type="headline">{performance.totalReports}</ThemedText>
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              Total
+              {t('common.total')}
             </ThemedText>
           </View>
 
@@ -53,7 +55,7 @@ export function PerformanceSummary({
             <Icon name="success" size={24} color={theme.colors.success} />
             <ThemedText type="headline">{performance.resolvedReports}</ThemedText>
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              Resolved
+              {t('common.resolved')}
             </ThemedText>
           </View>
 
@@ -61,7 +63,7 @@ export function PerformanceSummary({
             <Icon name="error" size={24} color={theme.colors.error} />
             <ThemedText type="headline">{performance.rejectedReports}</ThemedText>
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              Rejected
+              {t('common.rejected')}
             </ThemedText>
           </View>
 
@@ -69,7 +71,7 @@ export function PerformanceSummary({
             <Icon name="achievement" size={24} color={theme.colors.secondary} />
             <ThemedText type="headline">{performance.completionRate}%</ThemedText>
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              Rate
+              {t('common.rate')}
             </ThemedText>
           </View>
         </View>
@@ -77,7 +79,7 @@ export function PerformanceSummary({
         {performance.topCategories.length > 0 && (
           <View style={styles.categoriesSection}>
             <ThemedText type="body" style={{ fontWeight: '600' }}>
-              Top Categories
+              {t('common.topCategories')}
             </ThemedText>
             <View style={styles.categoriesList}>
               {performance.topCategories.map((cat, index) => (

@@ -9,25 +9,37 @@ import { StatisticsSection } from '@/presentation/components/organisms/statistic
 import { RecentReportsList } from '@/presentation/components/organisms/recent-reports';
 import { UpcomingEventsList } from '@/presentation/components/organisms/upcoming-events';
 import { RecyclingCentersList } from '@/presentation/components/organisms/recycling-centers-list';
+import { SectionHeader } from '@/presentation/components/atoms/section-header';
+import { EcoPointsCard } from '@/presentation/components/molecules/eco-points-card';
+import { CommunityCard } from '@/presentation/components/molecules/community-card';
+import { EmptyState } from '@/presentation/components/atoms/empty-state';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { useDashboard } from '@/presentation/hooks/use-dashboard.hook';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { animations } from '@/theme/animations';
 import { DASHBOARD_QUICK_ACTIONS, getGreeting } from '@/constants/dashboard.constants';
+import { useTranslation } from '@/localization';
+import { FlatList } from 'react-native';
 
 export default function CitizenHomeScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const {
     stats,
     recentReports,
     upcomingEvents,
     recyclingCenters,
+    communities,
     isLoading,
     isRefreshing,
     refreshAll,
     user,
+    ecoPoints,
+    level,
+    progress,
+    pointsForNextLevel,
   } = useDashboard();
 
   const greeting = useMemo(() => getGreeting(), []);
@@ -57,13 +69,19 @@ export default function CitizenHomeScreen() {
     router.push(`/(citizen)/events/${id}`);
   }, [router]);
 
+  const handleCommunityPress = useCallback((id: string) => {
+    router.push(`/(citizen)/community/${id}` as any);
+  }, [router]);
+
   return (
     <DashboardTemplate
       header={
         <DashboardHeader
-          userName={user?.displayName ?? 'Ciudadano'}
+          userName={user?.displayName ?? t('dashboard.citizen')}
           greeting={greeting}
           avatarUri={user?.avatarUrl}
+          points={ecoPoints}
+          level={level}
           onProfilePress={() => router.push('/(citizen)/(tabs)/profile' as any)}
           onNotificationsPress={() => router.push('/(citizen)/settings')}
         />
@@ -81,7 +99,17 @@ export default function CitizenHomeScreen() {
           />
         }
       >
-        <Animated.View entering={FadeInDown.duration(animations.duration.slow)} style={styles.section}>
+        <Animated.View entering={FadeInDown.duration(animations.duration.slow)}>
+          <EcoPointsCard
+            points={ecoPoints}
+            level={level}
+            progress={progress}
+            pointsForNextLevel={pointsForNextLevel}
+          />
+        </Animated.View>
+
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(50)} style={styles.section}>
+          <SectionHeader title={t('dashboard.quickActions')} />
           <QuickActions
             items={DASHBOARD_QUICK_ACTIONS}
             onItemPress={handleQuickAction}
@@ -89,11 +117,11 @@ export default function CitizenHomeScreen() {
           />
         </Animated.View>
 
-        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(50)}>
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(100)}>
           <StatisticsSection stats={stats} isLoading={isLoading} />
         </Animated.View>
 
-        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(100)}>
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(150)}>
           <RecentReportsList
             reports={recentReports}
             isLoading={isLoading}
@@ -102,7 +130,7 @@ export default function CitizenHomeScreen() {
           />
         </Animated.View>
 
-        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(150)}>
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(200)}>
           <UpcomingEventsList
             events={upcomingEvents}
             isLoading={isLoading}
@@ -111,7 +139,55 @@ export default function CitizenHomeScreen() {
           />
         </Animated.View>
 
-        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(200)}>
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(250)}>
+          <View>
+            <SectionHeader
+              title={t('dashboard.communities')}
+              actionLabel={t('common.viewAll')}
+              onActionPress={() => router.push('/(citizen)/(tabs)/community')}
+            />
+            {isLoading ? (
+              <View style={styles.horizontalList}>
+                {[0, 1].map((i) => (
+                  <View key={i} style={styles.communityCard}>
+                    <View style={[styles.communityAvatar, { backgroundColor: theme.colors.surfaceVariant }]} />
+                    <View style={[styles.communityLine, { backgroundColor: theme.colors.surfaceVariant }]} />
+                    <View style={[styles.communityLineShort, { backgroundColor: theme.colors.surfaceVariant }]} />
+                  </View>
+                ))}
+              </View>
+            ) : communities.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <EmptyState
+                  iconName="community"
+                  title={t('communities.noCommunities')}
+                  description={t('communities.joinFirst')}
+                />
+              </View>
+            ) : (
+              <FlatList
+                data={communities}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.horizontalList}
+                renderItem={({ item }) => (
+                  <View style={styles.communityCard}>
+                    <CommunityCard
+                      name={item.name}
+                      description={item.description}
+                      memberCount={item.memberCount}
+                      imageUrl={item.imageUrl}
+                      onPress={() => handleCommunityPress(item.id)}
+                    />
+                  </View>
+                )}
+              />
+            )}
+          </View>
+        </Animated.View>
+
+        <Animated.View entering={FadeInUp.duration(animations.duration.slow).delay(300)}>
           <RecyclingCentersList
             centers={recyclingCenters}
             isLoading={isLoading}
@@ -126,7 +202,7 @@ export default function CitizenHomeScreen() {
         onPress={() => router.push('/(citizen)/report/create')}
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         accessibilityRole="button"
-        accessibilityLabel="Report environmental issue"
+        accessibilityLabel={t('accessibility.reportEnvironmentalIssue')}
       >
         <Icon name="plus" size={28} color={theme.colors.onPrimary} />
       </Pressable>
@@ -140,10 +216,38 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: spacing['5xl'],
+    gap: spacing.lg,
   },
   section: {
+    paddingTop: spacing.md,
+  },
+  horizontalList: {
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
+    gap: spacing.md,
+  },
+  communityCard: {
+    width: 260,
+  },
+  communityAvatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    marginBottom: spacing.md,
+  },
+  communityLine: {
+    width: '70%',
+    height: 16,
+    borderRadius: 4,
+    marginBottom: spacing.sm,
+  },
+  communityLineShort: {
+    width: '40%',
+    height: 12,
+    borderRadius: 4,
+  },
+  emptyContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
   },
   fabSpacer: {
     height: spacing['3xl'],

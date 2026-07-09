@@ -5,14 +5,9 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type ReminderCardProps } from './types';
-
-function formatReminderTime(minutes: number): string {
-  if (minutes < 60) return `${minutes} min before`;
-  if (minutes < 1440) return `${Math.floor(minutes / 60)} hr before`;
-  return `${Math.floor(minutes / 1440)} day before`;
-}
 
 export function ReminderCard({
   reminderBefore,
@@ -22,7 +17,14 @@ export function ReminderCard({
   style,
 }: ReminderCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const typeConfig = REMINDER_TYPES[reminderType];
+
+  const formatReminderTime = (minutes: number): string => {
+    if (minutes < 60) return t('common.minutesBefore', { minutes });
+    if (minutes < 1440) return t('common.hoursBefore', { hours: Math.floor(minutes / 60) });
+    return t('common.daysBefore', { days: Math.floor(minutes / 1440) });
+  };
 
   return (
     <Pressable
@@ -44,7 +46,7 @@ export function ReminderCard({
           {formatReminderTime(reminderBefore)}
         </ThemedText>
         <ThemedText type="caption" color={theme.colors.textSecondary}>
-          via {typeConfig.label}
+          {t('common.via')} {typeConfig.label}
         </ThemedText>
       </View>
       <Checkbox checked={isActive} onCheckedChange={() => onPress?.()} size="sm" />

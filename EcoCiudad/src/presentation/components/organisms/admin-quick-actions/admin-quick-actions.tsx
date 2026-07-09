@@ -3,6 +3,7 @@ import { Card } from '@/presentation/components/atoms/card';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 export interface AdminQuickActionsProps {
@@ -10,9 +11,11 @@ export interface AdminQuickActionsProps {
 }
 
 export function AdminQuickActions({ onActionPress }: AdminQuickActionsProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <ThemedText type="subtitle" style={styles.title}>Quick Actions</ThemedText>
+      <ThemedText type="subtitle" style={styles.title}>{t('common.quickActions')}</ThemedText>
       <View style={styles.grid}>
         {ADMIN_QUICK_ACTIONS.map((action) => (
           <Pressable
@@ -20,14 +23,14 @@ export function AdminQuickActions({ onActionPress }: AdminQuickActionsProps) {
             onPress={() => onActionPress(action.key)}
             style={styles.actionItem}
             accessibilityRole="button"
-            accessibilityLabel={action.label}
+            accessibilityLabel={t(action.labelKey)}
           >
             <Card variant="elevated" padding="md" style={styles.actionCard}>
               <View style={[styles.iconContainer, { backgroundColor: action.color + '20' }]}>
                 <Icon name={action.icon} size={22} color={action.color} />
               </View>
               <ThemedText type="caption" style={{ textAlign: 'center', fontWeight: '500' }}>
-                {action.label}
+                {t(action.labelKey)}
               </ThemedText>
             </Card>
           </Pressable>

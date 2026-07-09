@@ -6,7 +6,7 @@ export interface GeoLocation {
   address?: string;
 }
 
-export type ReportStatus = 'pending' | 'in_review' | 'resolved' | 'rejected';
+export type ReportStatus = 'pending' | 'assigned' | 'in_progress' | 'in_review' | 'resolved' | 'rejected';
 export type ReportCategory = 'waste' | 'pollution' | 'green_space' | 'water' | 'noise' | 'other';
 export type ReportSeverity = 'low' | 'medium' | 'high' | 'critical';
 

@@ -7,7 +7,7 @@ export const AUTH_CONSTANTS = {
   NAME_MAX_LENGTH: 50,
   PHONE_MIN_LENGTH: 9,
   PHONE_MAX_LENGTH: 15,
-  BIOMETRIC_PLACEHOLDER: true,
+  BIOMETRIC_PLACEHOLDER: false,
   GUEST_MODE_ENABLED: true,
 } as const;
 
@@ -26,16 +26,16 @@ export const AUTH_ROUTES = {
 } as const;
 
 export const AUTH_ERRORS = {
-  INVALID_CREDENTIALS: 'Invalid email or password',
-  EMAIL_NOT_CONFIRMED: 'Please verify your email before signing in',
-  WEAK_PASSWORD: 'Password must be at least 8 characters',
-  PASSWORDS_NO_MATCH: 'Passwords do not match',
-  INVALID_EMAIL: 'Invalid email address',
-  TERMS_REQUIRED: 'You must accept the terms and conditions',
-  NAME_TOO_SHORT: 'Name must be at least 2 characters',
-  PHONE_INVALID: 'Invalid phone number',
-  ACCOUNT_EXISTS: 'An account with this email already exists',
-  NETWORK_ERROR: 'A network error occurred. Please try again.',
+  INVALID_CREDENTIALS: 'Correo o contraseña inválidos',
+  EMAIL_NOT_CONFIRMED: 'Por favor verifica tu correo antes de iniciar sesión',
+  WEAK_PASSWORD: 'La contraseña debe tener al menos 8 caracteres',
+  PASSWORDS_NO_MATCH: 'Las contraseñas no coinciden',
+  INVALID_EMAIL: 'Correo electrónico inválido',
+  TERMS_REQUIRED: 'Debes aceptar los términos y condiciones',
+  NAME_TOO_SHORT: 'El nombre debe tener al menos 2 caracteres',
+  PHONE_INVALID: 'Número de teléfono inválido',
+  ACCOUNT_EXISTS: 'Ya existe una cuenta con este correo',
+  NETWORK_ERROR: 'Ocurrió un error de red. Por favor intenta de nuevo.',
 } as const;
 
 export const PASSWORD_STRENGTH = {

@@ -5,6 +5,7 @@ import { MaterialChip } from '@/presentation/components/atoms/material-chip';
 import { OpenStatus } from '@/presentation/components/atoms/open-status';
 import { RatingStars } from '@/presentation/components/atoms/rating-stars';
 import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTranslation } from '@/localization';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { StyleSheet, View } from 'react-native';
@@ -20,6 +21,7 @@ export function CenterCard({
   testID,
 }: CenterCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -66,7 +68,7 @@ export function CenterCard({
           ))}
           {center.acceptedMaterials.length > 3 && (
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              +{center.acceptedMaterials.length - 3} more
+              +{center.acceptedMaterials.length - 3} {t('recycling.moreMaterials')}
             </ThemedText>
           )}
         </View>

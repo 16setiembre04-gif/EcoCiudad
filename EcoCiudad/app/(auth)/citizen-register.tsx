@@ -13,12 +13,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function CitizenRegisterContent() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { signUp, isLoading, error, clearError } = useAuth();
   const shakeValue = useSharedValue(0);
 
@@ -88,11 +90,11 @@ function CitizenRegisterContent() {
           <View style={[styles.logoContainer, { backgroundColor: theme.colors.primaryLight }]}>
             <ThemedText style={styles.logoText}>&#x1F331;</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Join Our Community
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('citizenRegister.title')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Help build a greener, cleaner city together
+            {t('citizenRegister.subtitle')}
           </ThemedText>
         </AnimatedView>
 
@@ -104,15 +106,15 @@ function CitizenRegisterContent() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.nameField}>
                   <Input
-                    label="First Name"
-                    placeholder="First name"
+                    label={t('citizenRegister.firstName')}
+                    placeholder={t('citizenRegister.firstNamePlaceholder')}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
                     errorText={errors.firstName?.message}
                     state={errors.firstName ? 'error' : 'default'}
                     autoCapitalize="words"
-                    autoComplete="name given-name"
+                    autoComplete="given-name"
                     size="lg"
                   />
                 </View>
@@ -124,15 +126,15 @@ function CitizenRegisterContent() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.nameField}>
                   <Input
-                    label="Last Name"
-                    placeholder="Last name"
+                    label={t('citizenRegister.lastName')}
+                    placeholder={t('citizenRegister.lastNamePlaceholder')}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
                     errorText={errors.lastName?.message}
                     state={errors.lastName ? 'error' : 'default'}
                     autoCapitalize="words"
-                    autoComplete="name family-name"
+                    autoComplete="family-name"
                     size="lg"
                   />
                 </View>
@@ -145,8 +147,8 @@ function CitizenRegisterContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('citizenRegister.emailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -166,8 +168,8 @@ function CitizenRegisterContent() {
             name="phone"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Phone Number"
-                placeholder="Enter your phone number"
+                label={t('citizenRegister.phone')}
+                placeholder={t('citizenRegister.phonePlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -188,8 +190,8 @@ function CitizenRegisterContent() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.nameField}>
                   <Input
-                    label="Department"
-                    placeholder="Department"
+                    label={t('citizenRegister.department')}
+                    placeholder={t('citizenRegister.departmentPlaceholder')}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -208,8 +210,8 @@ function CitizenRegisterContent() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.nameField}>
                   <Input
-                    label="District"
-                    placeholder="District"
+                    label={t('citizenRegister.district')}
+                    placeholder={t('citizenRegister.districtPlaceholder')}
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
@@ -232,8 +234,8 @@ function CitizenRegisterContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="Password"
-                placeholder="Create a password"
+                label={t('auth.password')}
+                placeholder={t('citizenRegister.createPassword')}
                 errorText={errors.password?.message}
                 hasError={!!errors.password}
                 showStrength
@@ -250,8 +252,8 @@ function CitizenRegisterContent() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                label="Confirm Password"
-                placeholder="Confirm your password"
+                label={t('auth.confirmPassword')}
+                placeholder={t('citizenRegister.confirmPasswordPlaceholder')}
                 errorText={errors.confirmPassword?.message}
                 hasError={!!errors.confirmPassword}
                 autoComplete="password-new"
@@ -295,16 +297,16 @@ function CitizenRegisterContent() {
             iconName="arrow-right"
             iconPosition="right"
           >
-            Create Account
+            {t('citizenRegister.createAccount')}
           </Button>
 
           <View style={styles.loginContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Already have an account?{' '}
+              {t('auth.haveAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/citizen-login" asChild>
               <Button variant="ghost" size="sm">
-                Sign In
+                {t('auth.signIn')}
               </Button>
             </Link>
           </View>
@@ -312,7 +314,7 @@ function CitizenRegisterContent() {
           <View style={styles.changeRoleContainer}>
             <Link href="/(auth)/role-selection" asChild>
               <Button variant="ghost" size="sm">
-                Change Role
+                {t('auth.changeRole')}
               </Button>
             </Link>
           </View>

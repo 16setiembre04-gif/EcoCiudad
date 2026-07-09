@@ -6,6 +6,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, View } from 'react-native';
 import { ProfileHeaderProps } from './types';
 
@@ -25,6 +26,7 @@ export function ProfileHeader({
   testID,
 }: ProfileHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -59,13 +61,13 @@ export function ProfileHeader({
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
               <Icon name="achievement" size={16} color={theme.colors.primary} />
               <ThemedText type="bodySmall" color={theme.colors.primary}>
-                Level {level}
+                {t('common.level')} {level}
               </ThemedText>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
               <Icon name="eco-points" size={16} color={theme.colors.secondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                {points} pts
+                {points} {t('common.points')}
               </ThemedText>
             </View>
           </View>
@@ -81,7 +83,7 @@ export function ProfileHeader({
             alignItems: 'center',
           }}
           accessibilityRole="button"
-          accessibilityLabel="Settings"
+          accessibilityLabel={t('common.settings')}
         >
           <Icon name="settings" size={20} color={theme.colors.textPrimary} />
         </Pressable>
@@ -95,7 +97,7 @@ export function ProfileHeader({
             {reportsCount}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Reports
+            {t('common.reports')}
           </ThemedText>
         </View>
         <View style={{ alignItems: 'center', gap: spacing.xs }}>
@@ -103,7 +105,7 @@ export function ProfileHeader({
             {eventsCount}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Events
+            {t('common.events')}
           </ThemedText>
         </View>
         <View style={{ alignItems: 'center', gap: spacing.xs }}>
@@ -111,7 +113,7 @@ export function ProfileHeader({
             {communitiesCount}
           </ThemedText>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            Communities
+            {t('common.communities')}
           </ThemedText>
         </View>
       </View>
@@ -119,7 +121,7 @@ export function ProfileHeader({
       {onEditPress && (
         <View style={{ width: '100%', marginTop: spacing.lg }}>
           <Button variant="outlined" size="md" fullWidth onPress={onEditPress} iconName="edit">
-            Edit Profile
+            {t('common.editProfile')}
           </Button>
         </View>
       )}

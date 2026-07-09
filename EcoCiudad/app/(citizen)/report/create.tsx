@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { DashboardTemplate } from '@/presentation/components/templates';
@@ -18,11 +18,23 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { REPORT_CATEGORIES, REPORT_SEVERITIES, IMAGE_UPLOAD_CONFIG } from '@/constants/report.constants';
+import { useTranslation } from '@/localization';
+import { reportSchema } from '@/lib/validations/report.schema';
 import { type ReportCategory, type ReportSeverity, type GeoLocation } from '@/domain/entities';
+
+type FormErrors = {
+  title?: string;
+  description?: string;
+  category?: string;
+  location?: string;
+  images?: string;
+};
 
 export default function CreateReportScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
+  const { selectedLocation } = useLocalSearchParams<{ selectedLocation?: string }>();
   const { mutate: createReport, isPending } = useCreateReportWithImages();
 
   const [title, setTitle] = useState('');
@@ -33,29 +45,112 @@ export default function CreateReportScreen() {
   const [location, setLocation] = useState<GeoLocation | undefined>();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [step, setStep] = useState<'form' | 'preview'>('form');
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handlePickImage = async () => {
-    if (images.length >= IMAGE_UPLOAD_CONFIG.MAX_IMAGES) {
-      Alert.alert('Limit reached', `You can only upload ${IMAGE_UPLOAD_CONFIG.MAX_IMAGES} images`);
-      return;
+  useEffect(() => {
+    if (selectedLocation) {
+      try {
+        const parsed = JSON.parse(selectedLocation) as GeoLocation;
+        setLocation(parsed);
+        router.setParams({ selectedLocation: undefined });
+      } catch {
+        // ignore malformed param
+      }
     }
+  }, [selectedLocation, router]);
 
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission required', 'Please allow access to your photos');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsMultipleSelection: true,
-      quality: IMAGE_UPLOAD_CONFIG.COMPRESSION_QUALITY,
+  const validate = useCallback((): boolean => {
+    const result = reportSchema.safeParse({
+      title: title.trim(),
+      description: description.trim(),
+      category,
+      latitude: location?.latitude ?? 0,
+      longitude: location?.longitude ?? 0,
+      address: location?.address,
+      images,
     });
 
-    if (!result.canceled && result.assets) {
-      const newImages = result.assets.map((asset) => asset.uri).slice(0, IMAGE_UPLOAD_CONFIG.MAX_IMAGES - images.length);
-      setImages([...images, ...newImages]);
+    if (result.success) {
+      setErrors({});
+      return true;
     }
+
+    const fieldErrors: FormErrors = {};
+    for (const issue of result.error.issues) {
+      const path = issue.path[0] as keyof FormErrors;
+      if (!fieldErrors[path]) {
+        fieldErrors[path] = issue.message;
+      }
+    }
+
+    // Override numeric location errors with friendly message when no location selected
+    if (!location) {
+      fieldErrors.location = t('reports.locationRequired');
+    }
+    if (!category) {
+      fieldErrors.category = t('reports.categoryRequired');
+    }
+
+    setErrors(fieldErrors);
+    return false;
+  }, [title, description, category, location, images, t]);
+
+  const validateForPreview = () => {
+    if (!validate()) return;
+    setStep('preview');
+  };
+
+  const handleAddImage = async (source: 'camera' | 'gallery') => {
+    if (images.length >= IMAGE_UPLOAD_CONFIG.MAX_IMAGES) {
+      Alert.alert(
+        t('reports.limitReachedTitle'),
+        t('reports.limitReachedMessage', { max: IMAGE_UPLOAD_CONFIG.MAX_IMAGES })
+      );
+      return;
+    }
+
+    let permissionResult;
+    let pickerResult;
+
+    try {
+      if (source === 'camera') {
+        permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.status !== 'granted') {
+          Alert.alert(t('reports.permissionRequiredTitle'), t('reports.cameraPermissionRequired'));
+          return;
+        }
+        pickerResult = await ImagePicker.launchCameraAsync({
+          mediaTypes: ['images'],
+          quality: IMAGE_UPLOAD_CONFIG.COMPRESSION_QUALITY,
+        });
+      } else {
+        permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.status !== 'granted') {
+          Alert.alert(t('reports.permissionRequiredTitle'), t('reports.photosPermissionRequired'));
+          return;
+        }
+        pickerResult = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsMultipleSelection: true,
+          quality: IMAGE_UPLOAD_CONFIG.COMPRESSION_QUALITY,
+        });
+      }
+
+      if (!pickerResult.canceled && pickerResult.assets) {
+        const newImages = pickerResult.assets.map((asset) => asset.uri).slice(0, IMAGE_UPLOAD_CONFIG.MAX_IMAGES - images.length);
+        setImages((prev) => [...prev, ...newImages]);
+      }
+    } catch {
+      Alert.alert(t('common.error'), t('reports.failedToSubmitReport'));
+    }
+  };
+
+  const handlePickImage = () => {
+    Alert.alert(t('reports.photoSourceTitle'), undefined, [
+      { text: t('reports.takePhoto'), onPress: () => handleAddImage('camera') },
+      { text: t('reports.chooseFromGallery'), onPress: () => handleAddImage('gallery') },
+      { text: t('common.cancel'), style: 'cancel' },
+    ]);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -66,25 +161,14 @@ export default function CreateReportScreen() {
     router.push('/(citizen)/report/map-picker');
   };
 
-  const handlePreview = () => {
-    if (!title || !description || !category || !location) {
-      Alert.alert('Missing information', 'Please fill in all required fields');
-      return;
-    }
-    setStep('preview');
-  };
-
   const handleSubmit = () => {
-    if (!category || !location) {
-      Alert.alert('Missing information', 'Please fill in all required fields');
-      return;
-    }
+    if (!validate() || !category || !location) return;
 
     createReport(
       {
         report: {
-          title,
-          description,
+          title: title.trim(),
+          description: description.trim(),
           category,
           severity,
           isAnonymous,
@@ -97,12 +181,12 @@ export default function CreateReportScreen() {
       },
       {
         onSuccess: () => {
-          Alert.alert('Success', 'Report submitted successfully', [
-            { text: 'OK', onPress: () => router.back() },
+          Alert.alert(t('reports.reportSubmittedTitle'), t('reports.reportSubmittedMessage'), [
+            { text: t('common.ok'), onPress: () => router.back() },
           ]);
         },
         onError: (error) => {
-          Alert.alert('Error', error.message || 'Failed to submit report');
+          Alert.alert(t('common.error'), error.message || t('reports.failedToSubmitReport'));
         },
       }
     );
@@ -113,7 +197,7 @@ export default function CreateReportScreen() {
       <DashboardTemplate
         header={
           <Header
-            title="Preview Report"
+            title={t('reports.previewTitle')}
             onBackPress={() => setStep('form')}
           />
         }
@@ -127,48 +211,48 @@ export default function CreateReportScreen() {
 
             <View style={styles.previewRow}>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Category:
+                {t('reports.previewCategory')}
               </ThemedText>
               <CategoryChip category={category!} />
             </View>
 
             <View style={styles.previewRow}>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Severity:
+                {t('reports.previewSeverity')}
               </ThemedText>
               <SeverityBadge severity={severity} />
             </View>
 
             <View style={styles.previewRow}>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Location:
+                {t('reports.previewLocation')}
               </ThemedText>
-              <ThemedText type="bodySmall">{location?.address ?? 'Not set'}</ThemedText>
+              <ThemedText type="bodySmall">{location?.address ?? t('admin.noLocation')}</ThemedText>
             </View>
 
             <View style={styles.previewRow}>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Anonymous:
+                {t('reports.previewAnonymous')}
               </ThemedText>
-              <ThemedText type="bodySmall">{isAnonymous ? 'Yes' : 'No'}</ThemedText>
+              <ThemedText type="bodySmall">{isAnonymous ? t('reports.previewYes') : t('reports.previewNo')}</ThemedText>
             </View>
 
             {images.length > 0 && (
               <View style={styles.previewRow}>
                 <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                  Photos:
+                  {t('reports.previewPhotos')}
                 </ThemedText>
-                <ThemedText type="bodySmall">{images.length} photo(s)</ThemedText>
+                <ThemedText type="bodySmall">{t('reports.photoCount', { count: images.length })}</ThemedText>
               </View>
             )}
           </Animated.View>
 
           <View style={styles.buttonContainer}>
             <Button variant="outlined" onPress={() => setStep('form')}>
-              Edit
+              {t('reports.editButton')}
             </Button>
             <Button variant="primary" onPress={handleSubmit} loading={isPending}>
-              Submit Report
+              {t('reports.submitReport')}
             </Button>
           </View>
         </ScrollView>
@@ -180,7 +264,7 @@ export default function CreateReportScreen() {
     <DashboardTemplate
       header={
         <Header
-          title="Create Report"
+          title={t('reports.createTitle')}
           onBackPress={() => router.back()}
         />
       }
@@ -188,26 +272,30 @@ export default function CreateReportScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
           <Input
-            label="Title *"
-            placeholder="Brief title for your report"
+            label={t('reports.titleLabel')}
+            placeholder={t('reports.titlePlaceholder')}
             value={title}
             onChangeText={setTitle}
             maxLength={100}
+            errorText={errors.title}
+            state={errors.title ? 'error' : 'default'}
           />
 
           <Input
-            label="Description *"
-            placeholder="Describe the issue in detail"
+            label={t('reports.descriptionLabel')}
+            placeholder={t('reports.descriptionPlaceholder')}
             value={description}
             onChangeText={setDescription}
             multiline
             numberOfLines={4}
             maxLength={500}
+            errorText={errors.description}
+            state={errors.description ? 'error' : 'default'}
           />
 
           <View style={styles.section}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Category *
+              {t('reports.categoryLabel')}
             </ThemedText>
             <View style={styles.chipRow}>
               {Object.keys(REPORT_CATEGORIES).map((key) => (
@@ -219,11 +307,16 @@ export default function CreateReportScreen() {
                 />
               ))}
             </View>
+            {errors.category && (
+              <ThemedText type="caption" color={theme.colors.error}>
+                {errors.category}
+              </ThemedText>
+            )}
           </View>
 
           <View style={styles.section}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Severity
+              {t('reports.severityLabel')}
             </ThemedText>
             <View style={styles.severityRow}>
               {Object.keys(REPORT_SEVERITIES).map((key) => (
@@ -233,7 +326,7 @@ export default function CreateReportScreen() {
                   size="sm"
                   onPress={() => setSeverity(key as ReportSeverity)}
                 >
-                  {REPORT_SEVERITIES[key as ReportSeverity].label}
+                  {t(REPORT_SEVERITIES[key as ReportSeverity].labelKey)}
                 </Button>
               ))}
             </View>
@@ -244,23 +337,33 @@ export default function CreateReportScreen() {
             onAddImage={handlePickImage}
             onRemoveImage={handleRemoveImage}
           />
+          {errors.images && (
+            <ThemedText type="caption" color={theme.colors.error}>
+              {errors.images}
+            </ThemedText>
+          )}
 
           <LocationSelector
             location={location}
             onPickLocation={handlePickLocation}
             onClear={() => setLocation(undefined)}
           />
+          {errors.location && (
+            <ThemedText type="caption" color={theme.colors.error}>
+              {errors.location}
+            </ThemedText>
+          )}
 
           <View style={styles.anonymousRow}>
             <Checkbox
               checked={isAnonymous}
               onCheckedChange={setIsAnonymous}
             />
-            <ThemedText type="bodySmall">Submit anonymously</ThemedText>
+            <ThemedText type="bodySmall">{t('reports.anonymousLabel')}</ThemedText>
           </View>
 
-          <Button variant="primary" onPress={handlePreview}>
-            Preview Report
+          <Button variant="primary" onPress={validateForPreview}>
+            {t('reports.previewReport')}
           </Button>
         </View>
       </ScrollView>

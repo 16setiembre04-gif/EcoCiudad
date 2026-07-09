@@ -2,6 +2,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type ImageThumbnailProps } from './types';
 
@@ -13,6 +14,7 @@ export function ImageThumbnail({
   style,
 }: ImageThumbnailProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const content = (
     <View style={[styles.container, { width: size, height: size }, style]}>
@@ -26,7 +28,7 @@ export function ImageThumbnail({
           style={[styles.removeButton, { backgroundColor: theme.colors.error }]}
           onPress={onRemove}
           accessibilityRole="button"
-          accessibilityLabel="Remove image"
+          accessibilityLabel={t('common.removeImage')}
         >
           <Icon name="close" size={12} color={theme.colors.onPrimary} />
         </Pressable>

@@ -1,8 +1,8 @@
 import { EmptyState } from '@/presentation/components/atoms/empty-state';
 import { SectionHeader } from '@/presentation/components/atoms/section-header';
-import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 import { type CenterGalleryProps } from './types';
 
@@ -11,17 +11,17 @@ export function CenterGallery({
   onImagePress,
   style,
 }: CenterGalleryProps) {
-  const theme = useTheme();
+  const { t } = useTranslation();
 
   if (images.length === 0) {
     return (
       <View style={[styles.container, style]}>
-        <SectionHeader title="Gallery" />
+        <SectionHeader title={t('common.gallery')} />
         <View style={styles.emptyContainer}>
           <EmptyState
             iconName="image"
-            title="No photos"
-            description="No photos available for this center"
+            title={t('common.noPhotos')}
+            description={t('common.noPhotosForCenter')}
           />
         </View>
       </View>
@@ -30,7 +30,7 @@ export function CenterGallery({
 
   return (
     <View style={[styles.container, style]}>
-      <SectionHeader title={`Gallery (${images.length})`} />
+      <SectionHeader title={`${t('common.gallery')} (${images.length})`} />
       <FlatList
         data={images}
         keyExtractor={(item, index) => `${item}-${index}`}
@@ -42,7 +42,7 @@ export function CenterGallery({
             style={styles.imageContainer}
             onPress={() => onImagePress?.(index)}
             accessibilityRole="image"
-            accessibilityLabel={`Photo ${index + 1}`}
+            accessibilityLabel={`${t('common.photo')} ${index + 1}`}
           >
             <Image
               source={{ uri: item }}

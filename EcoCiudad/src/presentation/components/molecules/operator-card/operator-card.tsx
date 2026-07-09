@@ -4,6 +4,7 @@ import { OperatorAvatar } from '@/presentation/components/atoms/operator-avatar'
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type OperatorCardProps } from './types';
 
@@ -14,6 +15,7 @@ export function OperatorCard({
   containerStyle,
 }: OperatorCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -34,7 +36,7 @@ export function OperatorCard({
             {operator.displayName}
           </ThemedText>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            Environmental Officer
+            {t('common.environmentalOfficer')}
           </ThemedText>
         </View>
       </View>

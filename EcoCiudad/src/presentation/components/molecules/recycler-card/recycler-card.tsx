@@ -3,6 +3,7 @@ import { Chip } from '@/presentation/components/atoms/chip';
 import { Divider } from '@/presentation/components/atoms/divider';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
+import { useTranslation } from '@/localization';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { View } from 'react-native';
@@ -21,6 +22,7 @@ export function RecyclerCard({
   testID,
 }: RecyclerCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const displayMaterials = materials.slice(0, 3);
   const remainingCount = materials.length - 3;
 
@@ -52,13 +54,19 @@ export function RecyclerCard({
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
         {displayMaterials.map((material, index) => (
-          <Chip key={index} variant="tonal" size="sm" iconName="recycle">
+          <Chip
+            key={index}
+            variant="tonal"
+            size="sm"
+            iconName="recycle"
+            style={{ backgroundColor: theme.colors.primaryContainer }}
+          >
             {material}
           </Chip>
         ))}
         {remainingCount > 0 && (
-          <Chip variant="tonal" size="sm">
-            +{remainingCount} more
+          <Chip variant="tonal" size="sm" style={{ backgroundColor: theme.colors.surfaceVariant }}>
+            +{remainingCount} {t('recycling.moreMaterials')}
           </Chip>
         )}
       </View>

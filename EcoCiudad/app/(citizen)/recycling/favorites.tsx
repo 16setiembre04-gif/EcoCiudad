@@ -6,9 +6,11 @@ import { Header } from '@/presentation/components/organisms/header';
 import { NearbyCentersList } from '@/presentation/components/organisms/nearby-centers-list';
 import { useCenterFavorites, useToggleCenterFavorite } from '@/presentation/hooks';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 
 export default function RecyclingCentersFavoritesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { data: favorites, isLoading } = useCenterFavorites();
   const { mutate: toggleFavorite } = useToggleCenterFavorite();
@@ -27,7 +29,7 @@ export default function RecyclingCentersFavoritesScreen() {
     <RecyclingCentersLayout
       header={
         <Header
-          title="My Favorites"
+          title={t('common.favoriteCenters')}
           onBackPress={() => router.back()}
         />
       }
@@ -39,7 +41,7 @@ export default function RecyclingCentersFavoritesScreen() {
           favorites={favoriteIds}
           onCenterPress={handleCenterPress}
           onFavoritePress={handleFavoritePress}
-          title="Favorite Centers"
+          title={t('common.favoriteCenters')}
           horizontal={false}
         />
       </View>

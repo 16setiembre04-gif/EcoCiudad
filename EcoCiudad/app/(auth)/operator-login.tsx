@@ -12,11 +12,13 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { animations } from '@/theme/animations';
+import { useTranslation } from '@/localization';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 function OperatorLoginContent() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { signIn, isLoading, error, clearError } = useAuth();
 
   const shakeValue = useSharedValue(0);
@@ -70,11 +72,11 @@ function OperatorLoginContent() {
           <View style={[styles.logoContainer, { backgroundColor: theme.colors.secondaryLight }]}>
             <ThemedText style={styles.logoText}>🚛</ThemedText>
           </View>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Operator Portal
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('operatorLogin.portal')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Sign in to manage operations
+            {t('operatorLogin.signInToManage')}
           </ThemedText>
         </AnimatedView>
 
@@ -84,8 +86,8 @@ function OperatorLoginContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('auth.emailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -125,7 +127,7 @@ function OperatorLoginContent() {
           <View style={styles.forgotPassword}>
             <Link href="/(auth)/forgot-password" asChild>
               <Button variant="ghost" size="sm">
-                Forgot Password?
+                {t('auth.forgotPassword')}
               </Button>
             </Link>
           </View>
@@ -140,16 +142,16 @@ function OperatorLoginContent() {
             iconName="arrow-right"
             iconPosition="right"
           >
-            Sign In
+            {t('auth.signIn')}
           </Button>
 
           <View style={styles.registerContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Don't have an account?{' '}
+              {t('auth.dontHaveAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/operator-register" asChild>
               <Button variant="ghost" size="sm">
-                Sign Up
+                {t('auth.signUp')}
               </Button>
             </Link>
           </View>
@@ -157,7 +159,7 @@ function OperatorLoginContent() {
           <View style={styles.changeRoleContainer}>
             <Link href="/(auth)/role-selection" asChild>
               <Button variant="ghost" size="sm">
-                Change Role
+                {t('auth.changeRole')}
               </Button>
             </Link>
           </View>

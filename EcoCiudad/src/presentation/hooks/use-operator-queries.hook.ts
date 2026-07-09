@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { type Report, type ReportStatus, type OperatorActivityLog, type OperatorPerformance } from '@/domain/entities';
+import { type ReportStatus } from '@/domain/entities';
 import { type OperatorReportFilters } from '@/domain/repositories';
 import { container } from '@/presentation/navigation/container';
 import { useAuthStore } from '@/presentation/stores';
@@ -11,7 +11,7 @@ export function useAssignedReports(filters?: OperatorReportFilters) {
   return useQuery({
     queryKey: [QUERY_KEYS.REPORTS, 'assigned', user?.id, filters],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.getAssignedReports.execute(user.id, filters);
       if (result.left) throw result.left;
       return result.right;
@@ -49,7 +49,7 @@ export function useAssignReport() {
 
   return useMutation({
     mutationFn: async ({ reportId, notes }: { reportId: string; notes?: string }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.assignReport.execute(
         reportId,
         user.id,
@@ -71,7 +71,7 @@ export function useUnassignReport() {
 
   return useMutation({
     mutationFn: async (reportId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.unassignReport.execute(reportId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -96,7 +96,7 @@ export function useUpdateReportStatus() {
       status: ReportStatus;
       notes?: string;
     }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.updateReportStatus.execute(
         reportId,
         status,
@@ -127,7 +127,7 @@ export function useResolveReport() {
       notes: string;
       resolutionPhotos?: string[];
     }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.resolveReport.execute(
         reportId,
         user.id,
@@ -150,7 +150,7 @@ export function useRejectReport() {
 
   return useMutation({
     mutationFn: async ({ reportId, reason }: { reportId: string; reason: string }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.rejectReport.execute(
         reportId,
         user.id,
@@ -172,7 +172,7 @@ export function useOperatorActivity(limit?: number) {
   return useQuery({
     queryKey: ['operator', 'activity', user?.id, limit],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.getActivity.execute(user.id, limit);
       if (result.left) throw result.left;
       return result.right;
@@ -187,7 +187,7 @@ export function useOperatorStats() {
   return useQuery({
     queryKey: ['operator', 'stats', user?.id],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.getStats.execute(user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -202,7 +202,7 @@ export function useOperatorPerformance(period: 'day' | 'week' | 'month' | 'year'
   return useQuery({
     queryKey: ['operator', 'performance', user?.id, period],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.getPerformance.execute(user.id, period);
       if (result.left) throw result.left;
       return result.right;
@@ -217,7 +217,7 @@ export function useTodayRoute() {
   return useQuery({
     queryKey: ['operator', 'route', 'today', user?.id],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.getTodayRoute.execute(user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -232,7 +232,7 @@ export function useOptimizeRoute() {
 
   return useMutation({
     mutationFn: async (reportIds: string[]) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.operatorUseCases.optimizeRoute.execute(user.id, reportIds);
       if (result.left) throw result.left;
       return result.right;
@@ -246,12 +246,16 @@ export function useOptimizeRoute() {
 export function useOperatorDashboard() {
   const user = useAuthStore((state) => state.user);
 
-  const { data: stats, isLoading: statsLoading } = useOperatorStats();
-  const { data: assignedReports, isLoading: assignedLoading } = useAssignedReports();
-  const { data: activity, isLoading: activityLoading } = useOperatorActivity(10);
-  const { data: performance, isLoading: performanceLoading } = useOperatorPerformance('week');
+  const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useOperatorStats();
+  const { data: assignedReports, isLoading: assignedLoading, refetch: refetchAssigned } = useAssignedReports();
+  const { data: activity, isLoading: activityLoading, refetch: refetchActivity } = useOperatorActivity(10);
+  const { data: performance, isLoading: performanceLoading, refetch: refetchPerformance } = useOperatorPerformance('week');
 
   const isLoading = statsLoading || assignedLoading || activityLoading || performanceLoading;
+
+  const refreshAll = async () => {
+    await Promise.all([refetchStats(), refetchAssigned(), refetchActivity(), refetchPerformance()]);
+  };
 
   return {
     stats,
@@ -260,5 +264,6 @@ export function useOperatorDashboard() {
     performance,
     isLoading,
     user,
+    refreshAll,
   };
 }

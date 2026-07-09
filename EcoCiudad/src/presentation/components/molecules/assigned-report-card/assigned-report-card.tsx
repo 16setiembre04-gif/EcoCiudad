@@ -6,6 +6,7 @@ import { StatusIndicator } from '@/presentation/components/atoms/status-indicato
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { StyleSheet, View } from 'react-native';
 import { type AssignedReportCardProps } from './types';
 
@@ -15,9 +16,10 @@ export function AssignedReportCard({
   containerStyle,
 }: AssignedReportCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(t('common.locale'), {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -51,7 +53,7 @@ export function AssignedReportCard({
         <View style={styles.infoRow}>
           <Icon name="location" size={16} color={theme.colors.textSecondary} />
           <ThemedText type="caption" color={theme.colors.textSecondary} numberOfLines={1}>
-            {report.location.address || 'No address'}
+            {report.location.address || t('common.noAddress')}
           </ThemedText>
         </View>
         <View style={styles.infoRow}>

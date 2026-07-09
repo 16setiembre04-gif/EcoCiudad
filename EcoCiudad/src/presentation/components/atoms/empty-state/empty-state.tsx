@@ -21,8 +21,9 @@ export function EmptyState({
         <View style={styles.iconContainer}>
           <Icon
             name={iconName}
-            size={64}
-            color={theme.colors.disabled}
+            size={72}
+            color={theme.colors.primary}
+            strokeWidth={1.5}
           />
         </View>
       )}

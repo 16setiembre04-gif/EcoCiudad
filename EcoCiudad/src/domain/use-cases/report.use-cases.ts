@@ -40,6 +40,36 @@ export class CreateReportUseCase {
   }
 }
 
+export class UpdateReportUseCase {
+  constructor(private readonly reportRepository: ReportRepository) {}
+
+  async execute(
+    id: string,
+    data: Partial<Report>,
+  ): Promise<Either<DomainError, Report>> {
+    return this.reportRepository.update(id, data);
+  }
+}
+
+export class DeleteReportUseCase {
+  constructor(private readonly reportRepository: ReportRepository) {}
+
+  async execute(id: string): Promise<Either<DomainError, void>> {
+    return this.reportRepository.delete(id);
+  }
+}
+
+export class UploadReportImageUseCase {
+  constructor(private readonly reportRepository: ReportRepository) {}
+
+  async execute(
+    reportId: string,
+    uri: string,
+  ): Promise<Either<DomainError, string>> {
+    return this.reportRepository.uploadImage(reportId, uri);
+  }
+}
+
 export class UpdateReportStatusUseCase {
   constructor(private readonly reportRepository: ReportRepository) {}
 

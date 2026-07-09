@@ -6,6 +6,7 @@ import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type RoutePlannerProps } from './types';
 
@@ -18,6 +19,7 @@ export function RoutePlanner({
   style,
 }: RoutePlannerProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
@@ -42,12 +44,12 @@ export function RoutePlanner({
     return (
       <View style={[styles.container, style]}>
         <View style={styles.header}>
-          <ThemedText type="subtitle">Today's Route</ThemedText>
+          <ThemedText type="subtitle">{t('common.todaysRoute')}</ThemedText>
         </View>
         <EmptyState
           iconName="route"
-          title="No route planned"
-          description="You don't have any reports assigned for today"
+          title={t('common.noRoutePlanned')}
+          description={t('common.noReportsAssignedToday')}
         />
       </View>
     );
@@ -60,14 +62,14 @@ export function RoutePlanner({
     <View style={[styles.container, style]}>
       <View style={styles.header}>
         <View>
-          <ThemedText type="subtitle">Today's Route</ThemedText>
+          <ThemedText type="subtitle">{t('common.todaysRoute')}</ThemedText>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            {route.length} stops • ~{totalDistance.toFixed(1)}km • ~{estimatedTime} min
+            {t('common.routeSummary', { stops: route.length, distance: totalDistance.toFixed(1), time: estimatedTime })}
           </ThemedText>
         </View>
         {onOptimize && (
           <Button variant="outlined" size="sm" onPress={onOptimize} iconName="refresh">
-            Optimize
+            {t('common.optimize')}
           </Button>
         )}
       </View>
@@ -95,7 +97,7 @@ export function RoutePlanner({
                   {item.title}
                 </ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary} numberOfLines={1}>
-                  {item.location.address || 'No address'}
+                  {item.location.address || t('common.noAddress')}
                 </ThemedText>
               </View>
               {item.priority && <PriorityBadge priority={item.priority} size="sm" />}
@@ -114,7 +116,7 @@ export function RoutePlanner({
             iconName="route"
             iconPosition="right"
           >
-            Start Route
+            {t('common.startRoute')}
           </Button>
         </View>
       )}

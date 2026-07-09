@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { View, ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import { View, ScrollView, RefreshControl, StyleSheet, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CommunityTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
@@ -14,12 +14,14 @@ import { Loader } from '@/presentation/components/atoms/loader';
 import { useCommunity, useIsMember, useJoinCommunity, useLeaveCommunity, useCommunityMembers } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { COMMUNITY_CATEGORIES } from '@/constants';
 import { type CommunityMember } from '@/domain/entities/community';
 
 export default function CommunityDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -40,18 +42,18 @@ export default function CommunityDetailScreen() {
     try {
       await joinMutation.mutateAsync(id);
     } catch (error) {
-      console.error('Failed to join community:', error);
+      Alert.alert(t('common.error'), t('errors.failedToJoin'));
     }
-  }, [id, joinMutation]);
+  }, [id, joinMutation, t]);
 
   const handleLeave = useCallback(async () => {
     if (!id) return;
     try {
       await leaveMutation.mutateAsync(id);
     } catch (error) {
-      console.error('Failed to leave community:', error);
+      Alert.alert(t('common.error'), t('errors.failedToLeaveCommunity'));
     }
-  }, [id, leaveMutation]);
+  }, [id, leaveMutation, t]);
 
   const handleMembersPress = useCallback(() => {
     if (!id) return;
@@ -114,7 +116,7 @@ export default function CommunityDetailScreen() {
                   {categoryConfig?.label ?? community.category}
                 </Badge>
                 <Badge variant="tonal" color={community.privacy === 'public' ? 'success' : 'warning'}>
-                  {community.privacy === 'public' ? 'Public' : 'Private'}
+                  {community.privacy === 'public' ? t('common.public') : t('common.private')}
                 </Badge>
               </View>
             </View>
@@ -134,7 +136,7 @@ export default function CommunityDetailScreen() {
                 {community.memberCount}
               </ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Members
+                {t('common.members')}
               </ThemedText>
             </View>
             <View style={styles.statItem}>
@@ -143,7 +145,7 @@ export default function CommunityDetailScreen() {
                 {community.postCount}
               </ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Posts
+                {t('common.posts')}
               </ThemedText>
             </View>
           </View>
@@ -162,7 +164,7 @@ export default function CommunityDetailScreen() {
           {community.rules && community.rules.length > 0 && (
             <View style={styles.rulesSection}>
               <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-                Rules
+                {t('common.rules')}
               </ThemedText>
               {community.rules.map((rule: string, index: number) => (
                 <View key={index} style={styles.ruleRow}>
@@ -181,14 +183,14 @@ export default function CommunityDetailScreen() {
           {adminMembers.length > 0 && (
             <View style={styles.adminsSection}>
               <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-                Administrators
+                {t('common.administrators')}
               </ThemedText>
               <View style={styles.adminsRow}>
                 {adminMembers.slice(0, 5).map((member: CommunityMember) => (
                   <Avatar
                     key={member.id}
                     uri={member.user?.avatarUrl}
-                    name={member.user?.displayName ?? 'User'}
+                    name={member.user?.displayName ?? t('common.user')}
                     size="md"
                   />
                 ))}
@@ -207,7 +209,7 @@ export default function CommunityDetailScreen() {
                   loading={leaveMutation.isPending}
                   style={{ flex: 1 }}
                 >
-                  Leave
+                  {t('common.leave')}
                 </Button>
                 <Button
                   variant="secondary"
@@ -215,7 +217,7 @@ export default function CommunityDetailScreen() {
                   onPress={handleMembersPress}
                   style={{ flex: 1 }}
                 >
-                  Members
+                  {t('common.members')}
                 </Button>
               </>
             ) : (
@@ -225,7 +227,7 @@ export default function CommunityDetailScreen() {
                 onPress={handleJoin}
                 loading={joinMutation.isPending}
               >
-                Join Community
+                {t('common.joinCommunity')}
               </Button>
             )}
           </View>

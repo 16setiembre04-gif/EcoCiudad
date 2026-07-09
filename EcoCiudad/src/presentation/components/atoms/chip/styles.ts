@@ -2,6 +2,7 @@ import { type ChipVariant, type ChipSize } from './types';
 import { type ThemeColors } from '@/theme';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { textStyles } from '@/theme/typography';
 
 export const getChipStyles = (
   variant: ChipVariant,
@@ -10,14 +11,14 @@ export const getChipStyles = (
   colors: ThemeColors,
 ) => {
   const sizeConfig = {
-    sm: { height: 28, paddingHorizontal: spacing.md, fontSize: 12, iconSize: 14 },
-    md: { height: 36, paddingHorizontal: spacing.lg, fontSize: 14, iconSize: 16 },
+    sm: { height: 32, paddingHorizontal: spacing.md, iconSize: 14 },
+    md: { height: 40, paddingHorizontal: spacing.lg, iconSize: 16 },
   };
 
   const sizeStyles = sizeConfig[size];
 
   const baseContainer = {
-    height: sizeStyles.height,
+    minHeight: sizeStyles.height,
     paddingHorizontal: sizeStyles.paddingHorizontal,
     borderRadius: borderRadius.full,
     justifyContent: 'center' as const,
@@ -26,41 +27,43 @@ export const getChipStyles = (
     gap: spacing.xs,
   };
 
+  const baseText = {
+    ...textStyles.bodySmall,
+    fontWeight: '500' as const,
+  };
+
   const variantStyles = {
     filled: {
       container: {
         backgroundColor: selected ? colors.primary : colors.surfaceVariant,
       },
       text: {
+        ...baseText,
         color: selected ? colors.onPrimary : colors.textPrimary,
-        fontSize: sizeStyles.fontSize,
-        fontWeight: '500' as const,
       },
       iconColor: selected ? colors.onPrimary : colors.textPrimary,
     },
     outlined: {
       container: {
         backgroundColor: 'transparent',
-        borderWidth: 1,
+        borderWidth: 1.5,
         borderColor: selected ? colors.primary : colors.border,
       },
       text: {
+        ...baseText,
         color: selected ? colors.primary : colors.textPrimary,
-        fontSize: sizeStyles.fontSize,
-        fontWeight: '500' as const,
       },
       iconColor: selected ? colors.primary : colors.textPrimary,
     },
     tonal: {
       container: {
-        backgroundColor: selected ? colors.primaryLight : colors.surfaceVariant,
+        backgroundColor: selected ? colors.primaryContainer : colors.surfaceVariant,
       },
       text: {
-        color: selected ? colors.primary : colors.textPrimary,
-        fontSize: sizeStyles.fontSize,
-        fontWeight: '500' as const,
+        ...baseText,
+        color: selected ? colors.onPrimaryContainer : colors.textPrimary,
       },
-      iconColor: selected ? colors.primary : colors.textPrimary,
+      iconColor: selected ? colors.onPrimaryContainer : colors.textPrimary,
     },
   };
 

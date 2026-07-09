@@ -1,5 +1,6 @@
 import { type ViewStyle, type TextStyle } from 'react-native';
 import { type ThemeColors } from '@/theme';
+import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { textStyles } from '@/theme/typography';
 
@@ -12,6 +13,12 @@ export const getEmptyStateStyles = (colors: ThemeColors) => ({
     paddingVertical: spacing['2xl'],
   } as ViewStyle,
   iconContainer: {
+    width: 112,
+    height: 112,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primaryContainer,
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
     marginBottom: spacing.lg,
   } as ViewStyle,
   title: {
@@ -25,7 +32,7 @@ export const getEmptyStateStyles = (colors: ThemeColors) => ({
     color: colors.textSecondary,
     textAlign: 'center' as const,
     marginBottom: spacing.xl,
-    lineHeight: textStyles.body.lineHeight * 1.5,
+    lineHeight: textStyles.body.lineHeight * 1.4,
   } as TextStyle,
   actionContainer: {
     marginTop: spacing.md,

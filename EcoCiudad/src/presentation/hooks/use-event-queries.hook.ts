@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { type EventFilters } from '@/domain/repositories';
-import { type Event, type EventStatus, type EventParticipant, type EventAttendance, type EventReminder } from '@/domain/entities';
+import { type Event, type EventStatus } from '@/domain/entities';
 import { container } from '@/presentation/navigation/container';
 import { useAuthStore } from '@/presentation/stores';
 import { QUERY_KEYS, EVENT_CONSTANTS } from '@/constants';
@@ -62,7 +62,7 @@ export function useMyEvents(status?: EventStatus) {
   return useQuery({
     queryKey: [QUERY_KEYS.EVENTS, 'my', user?.id, status],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.eventUseCases.getMyEvents.execute(user.id, status);
       if (result.left) throw result.left;
       return result.right;
@@ -124,7 +124,7 @@ export function useLeaveEvent() {
 
   return useMutation({
     mutationFn: async (eventId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.eventUseCases.leaveEvent.execute(eventId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -170,7 +170,7 @@ export function useToggleFavorite() {
 
   return useMutation({
     mutationFn: async (eventId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.eventUseCases.toggleFavorite.execute(eventId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -217,7 +217,7 @@ export function useMarkAttendance() {
 
   return useMutation({
     mutationFn: async (eventId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.eventUseCases.markAttendance.execute(eventId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -258,7 +258,7 @@ export function useSetReminder() {
       reminderBefore: number;
       reminderType: 'push' | 'email' | 'sms';
     }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.eventUseCases.setReminder.execute(eventId, user.id, reminderBefore, reminderType);
       if (result.left) throw result.left;
       return result.right;
@@ -287,15 +287,19 @@ export function useEventReminders(eventId: string) {
 export function useEventDashboard() {
   const user = useAuthStore((state) => state.user);
 
-  const { data: upcomingEvents, isLoading: upcomingLoading } = useUpcomingEvents();
-  const { data: popularEvents, isLoading: popularLoading } = usePopularEvents();
-  const { data: myEvents, isLoading: myEventsLoading } = useMyEvents();
-  const { data: favorites, isLoading: favoritesLoading } = useEventFavorites();
+  const { data: upcomingEvents, isLoading: upcomingLoading, refetch: refetchUpcoming } = useUpcomingEvents();
+  const { data: popularEvents, isLoading: popularLoading, refetch: refetchPopular } = usePopularEvents();
+  const { data: myEvents, isLoading: myEventsLoading, refetch: refetchMyEvents } = useMyEvents();
+  const { data: favorites, isLoading: favoritesLoading, refetch: refetchFavorites } = useEventFavorites();
 
   const isLoading = upcomingLoading || popularLoading || myEventsLoading || favoritesLoading;
 
   const favoriteIds = favorites?.map((e) => e.id) ?? [];
   const registeredIds = myEvents?.map((e) => e.id) ?? [];
+
+  const refreshAll = async () => {
+    await Promise.all([refetchUpcoming(), refetchPopular(), refetchMyEvents(), refetchFavorites()]);
+  };
 
   return {
     upcomingEvents: upcomingEvents ?? [],
@@ -306,5 +310,6 @@ export function useEventDashboard() {
     registeredIds,
     isLoading,
     user,
+    refreshAll,
   };
 }

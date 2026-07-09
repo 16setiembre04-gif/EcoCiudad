@@ -48,6 +48,9 @@ export class ReportRemoteDataSource {
 
     if (filters?.category) query = query.eq('category', filters.category);
     if (filters?.status) query = query.eq('status', filters.status);
+    if (filters?.search) {
+      query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    }
 
     const sortBy = (filters?.sortBy as string) ?? 'created_at';
     const sortOrder = (filters?.sortOrder as string) ?? 'desc';

@@ -11,10 +11,12 @@ import { useRecyclingCentersDashboard, useToggleCenterFavorite } from '@/present
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { RECYCLING_MATERIALS } from '@/constants/recycling.constants';
+import { useTranslation } from '@/localization';
 
 export default function RecyclingCentersHomeScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>();
 
@@ -57,7 +59,7 @@ export default function RecyclingCentersHomeScreen() {
     <RecyclingCentersLayout
       header={
         <Header
-          title="Recycling Centers"
+          title={t('recycling.centers')}
           showBackButton={false}
           rightIcon="map"
           onRightIconPress={handleMapPress}
@@ -76,7 +78,7 @@ export default function RecyclingCentersHomeScreen() {
           <SearchBar
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Search recycling centers..."
+            placeholder={t('recycling.searchPlaceholder')}
           />
         </View>
 
@@ -86,7 +88,7 @@ export default function RecyclingCentersHomeScreen() {
             size="sm"
             onPress={() => setSelectedMaterial(undefined)}
           >
-            All
+            {t('common.all')}
           </Chip>
           {Object.entries(RECYCLING_MATERIALS).map(([key, config]) => (
             <Chip
@@ -107,7 +109,7 @@ export default function RecyclingCentersHomeScreen() {
           favorites={favoriteIds}
           onCenterPress={handleCenterPress}
           onFavoritePress={handleFavoritePress}
-          title="All Centers"
+          title={t('recycling.allCenters')}
           horizontal={false}
         />
 
@@ -118,7 +120,7 @@ export default function RecyclingCentersHomeScreen() {
               favorites={favoriteIds}
               onCenterPress={handleCenterPress}
               onFavoritePress={handleFavoritePress}
-              title="Recommended Centers"
+              title={t('recycling.recommendedCenters')}
               horizontal
             />
           </View>
@@ -131,7 +133,7 @@ export default function RecyclingCentersHomeScreen() {
               favorites={favoriteIds}
               onCenterPress={handleCenterPress}
               onFavoritePress={handleFavoritePress}
-              title="My Favorites"
+              title={t('recycling.myFavorites')}
               horizontal
               onViewAllPress={handleViewAllPress}
             />

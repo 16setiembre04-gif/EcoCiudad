@@ -1,5 +1,5 @@
 import {
-  Home, Map, Calendar, List, User, Settings, Search, Bell,
+  Home, Map, Calendar,   List, User, Settings, Search, Bell, Clock,
   Plus, Minus, Check, X, ChevronRight, ChevronLeft, ChevronUp, ChevronDown,
   Edit3, Trash2, Camera, Image, MapPin, Phone, Mail, Lock, Eye, EyeOff,
   Star, Heart, Share2, Download, Upload, RefreshCw, Filter, SortAsc,
@@ -19,6 +19,7 @@ export const iconMap = {
   settings: Settings,
   search: Search,
   bell: Bell,
+  clock: Clock,
   plus: Plus,
   minus: Minus,
   check: Check,

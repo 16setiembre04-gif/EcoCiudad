@@ -1,1 +1,1 @@
-export { UpcomingEventsList, type UpcomingEventsListProps, type UpcomingEventItem } from './upcoming-events';
+export { UpcomingEventsList, type UpcomingEventsListProps } from './upcoming-events';

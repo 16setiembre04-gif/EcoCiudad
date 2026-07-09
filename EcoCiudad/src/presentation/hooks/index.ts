@@ -1,4 +1,4 @@
-export { useReports, useReport, useCreateReport } from './use-reports.hook';
+export { useReports, useReport } from './use-reports.hook';
 export { useEvents, useEvent, useJoinEvent } from './use-events.hook';
 export { useAuth, useSession, useRequireAuth, useRequireRole } from './use-auth.hook';
 export {
@@ -18,6 +18,8 @@ export {
   useAddReportComment,
   useReportTimeline,
   useCreateReportWithImages,
+  useUpdateReport,
+  useDeleteReport,
 } from './use-report-queries.hook';
 export {
   useUpcomingEvents,

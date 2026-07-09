@@ -53,7 +53,7 @@ export class EventMapper {
       end_date: entity.endDate.toISOString(),
       latitude: entity.location.latitude,
       longitude: entity.location.longitude,
-      address: entity.location.address,
+      address: entity.location.address ?? '',
       organizer_id: entity.organizerId,
       max_attendees: entity.maxAttendees,
       current_attendees: entity.currentAttendees,

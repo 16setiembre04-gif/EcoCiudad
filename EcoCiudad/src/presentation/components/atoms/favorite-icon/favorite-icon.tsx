@@ -1,5 +1,6 @@
 import { Icon } from '@/presentation/components/atoms/icon';
 import { useTheme } from '@/theme/context';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { type FavoriteIconProps } from './types';
@@ -13,6 +14,7 @@ export function FavoriteIcon({
   style,
 }: FavoriteIconProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -31,7 +33,7 @@ export function FavoriteIcon({
       onPress={handlePress}
       style={[styles.container, animatedStyle, style]}
       accessibilityRole="button"
-      accessibilityLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      accessibilityLabel={isFavorite ? t('common.removeFromFavorites') : t('common.addToFavorites')}
       accessibilityState={{ selected: isFavorite }}
     >
       <Icon

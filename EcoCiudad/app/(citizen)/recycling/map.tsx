@@ -10,11 +10,13 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useRecyclingCenters } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { RECYCLING_MATERIALS } from '@/constants/recycling.constants';
 
 export default function RecyclingCentersMapScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | undefined>();
   const [selectedMaterial, setSelectedMaterial] = useState<string | undefined>();
 
@@ -28,7 +30,7 @@ export default function RecyclingCentersMapScreen() {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission required', 'Location permission is needed to show nearby centers');
+        Alert.alert(t('common.permissionRequired'), t('common.locationPermissionNearby'));
         return;
       }
 
@@ -38,7 +40,7 @@ export default function RecyclingCentersMapScreen() {
         longitude: location.coords.longitude,
       });
     })();
-  }, []);
+  }, [t]);
 
   const filteredCenters = centers?.filter((center) => {
     if (!selectedMaterial) return true;
@@ -49,7 +51,7 @@ export default function RecyclingCentersMapScreen() {
     <RecyclingCentersLayout
       header={
         <Header
-          title="Map View"
+          title={t('common.mapView')}
           onBackPress={() => router.back()}
         />
       }
@@ -61,7 +63,7 @@ export default function RecyclingCentersMapScreen() {
             size="sm"
             onPress={() => setSelectedMaterial(undefined)}
           >
-            All
+            {t('common.all')}
           </Chip>
           {Object.entries(RECYCLING_MATERIALS).map(([key, config]) => (
             <Chip
@@ -85,7 +87,7 @@ export default function RecyclingCentersMapScreen() {
 
         <View style={styles.infoContainer}>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            {filteredCenters.length} center{filteredCenters.length !== 1 ? 's' : ''} found
+            {t('common.centersFound', { count: filteredCenters.length })}
           </ThemedText>
         </View>
       </View>

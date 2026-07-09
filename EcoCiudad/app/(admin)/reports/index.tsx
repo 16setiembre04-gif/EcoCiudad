@@ -10,9 +10,12 @@ import { Card } from '@/presentation/components/atoms/card';
 import { Badge } from '@/presentation/components/atoms/badge';
 import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { EmptyState } from '@/presentation/components/atoms/empty-state';
+import { Button } from '@/presentation/components/atoms/button';
+import { ThemedText } from '@/presentation/components/atoms/text';
 import { useAdminReports } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { REPORT_CATEGORIES } from '@/constants';
 import { type Report, type ReportStatus, type ReportCategory } from '@/domain/entities';
 import { type ReportFilters as ReportFiltersType } from '@/domain/repositories';
@@ -20,6 +23,7 @@ import { type ReportFilters as ReportFiltersType } from '@/domain/repositories';
 export default function AdminReportsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ReportStatus | undefined>(undefined);
   const [categoryFilter, setCategoryFilter] = useState<ReportCategory | undefined>(undefined);
@@ -32,7 +36,7 @@ export default function AdminReportsScreen() {
     limit: 20,
   }), [search, statusFilter, categoryFilter]);
 
-  const { data: reports, isLoading, refetch } = useAdminReports(filters);
+  const { data: reports, isLoading, refetch, error } = useAdminReports(filters);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -50,7 +54,7 @@ export default function AdminReportsScreen() {
   }, []);
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(t('common.locale'), {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -72,7 +76,7 @@ export default function AdminReportsScreen() {
           description={item.description}
           status={item.status as any}
           category={categoryConfig?.icon || 'help'}
-          location={item.location.address || 'No location'}
+          location={item.location.address || t('common.noLocation')}
           date={formatDate(item.createdAt)}
         />
         <View style={styles.additionalInfo}>
@@ -83,13 +87,13 @@ export default function AdminReportsScreen() {
           )}
           {item.assigneeId && (
             <Badge variant="tonal" color="info">
-              Assigned
+              {t('common.assigned')}
             </Badge>
           )}
         </View>
       </Card>
     );
-  }, [handleReportPress]);
+  }, [handleReportPress, t]);
 
   const renderSkeleton = useCallback(() => (
     <View style={styles.skeletonContainer}>
@@ -112,7 +116,7 @@ export default function AdminReportsScreen() {
   return (
     <AdminLayout
       header={
-        <Header title="Reports Management" />
+        <Header title={t('common.reportsManagement')} />
       }
     >
       <View style={styles.container}>
@@ -120,7 +124,7 @@ export default function AdminReportsScreen() {
           <SearchBar
             value={search}
             onChangeText={setSearch}
-            placeholder="Search reports..."
+            placeholder={t('common.searchReports')}
           />
         </View>
 
@@ -132,7 +136,14 @@ export default function AdminReportsScreen() {
           onClearFilters={handleClearFilters}
         />
 
-        {isLoading ? (
+        {error ? (
+          <View style={styles.errorContainer}>
+            <ThemedText color={theme.colors.error}>{error.message || t('common.error')}</ThemedText>
+            <Button variant="outlined" onPress={() => refetch()} style={{ marginTop: spacing.md }}>
+              {t('common.retry')}
+            </Button>
+          </View>
+        ) : isLoading ? (
           renderSkeleton()
         ) : (
           <FlatList
@@ -151,8 +162,8 @@ export default function AdminReportsScreen() {
             ListEmptyComponent={
               <EmptyState
                 iconName="report"
-                title="No reports found"
-                description="Try adjusting your search or filters"
+                title={t('common.noReportsFound')}
+                description={t('common.tryAdjustingSearchFilters')}
               />
             }
           />
@@ -184,5 +195,10 @@ const styles = StyleSheet.create({
   },
   skeletonContainer: {
     paddingHorizontal: spacing.lg,
+  },
+  errorContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
   },
 });

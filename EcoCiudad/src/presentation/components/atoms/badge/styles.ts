@@ -2,18 +2,18 @@ import { type BadgeVariant, type BadgeSize, type BadgeColor } from './types';
 import { type ThemeColors } from '@/theme';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
+import { textStyles } from '@/theme/typography';
 
 interface BadgeSizeConfig {
   height: number;
   minWidth: number;
   paddingHorizontal: number;
-  fontSize: number;
 }
 
 const sizeConfig: Record<BadgeSize, BadgeSizeConfig> = {
-  sm: { height: 20, minWidth: 20, paddingHorizontal: spacing.sm, fontSize: 10 },
-  md: { height: 24, minWidth: 24, paddingHorizontal: spacing.md, fontSize: 12 },
-  lg: { height: 28, minWidth: 28, paddingHorizontal: spacing.lg, fontSize: 14 },
+  sm: { height: 20, minWidth: 20, paddingHorizontal: spacing.sm },
+  md: { height: 24, minWidth: 24, paddingHorizontal: spacing.md },
+  lg: { height: 28, minWidth: 28, paddingHorizontal: spacing.md },
 };
 
 export const getBadgeStyles = (
@@ -25,18 +25,18 @@ export const getBadgeStyles = (
   const sizeStyles = sizeConfig[size];
 
   const colorMap = {
-    primary: { main: colors.primary, light: colors.primaryLight, onMain: colors.onPrimary },
-    secondary: { main: colors.secondary, light: colors.primaryLight, onMain: colors.onSecondary },
-    success: { main: colors.success, light: '#DCFCE7', onMain: '#FFFFFF' },
-    warning: { main: colors.warning, light: '#FEF9C3', onMain: '#000000' },
-    error: { main: colors.error, light: '#FEE2E2', onMain: '#FFFFFF' },
-    info: { main: colors.info, light: '#DBEAFE', onMain: '#FFFFFF' },
+    primary: { main: colors.primary, light: colors.primaryContainer, onMain: colors.onPrimary, onLight: colors.onPrimaryContainer },
+    secondary: { main: colors.secondary, light: colors.secondaryLight, onMain: colors.onSecondary, onLight: colors.onSecondary },
+    success: { main: colors.success, light: colors.successLight, onMain: '#FFFFFF', onLight: '#166534' },
+    warning: { main: colors.warning, light: colors.warningLight, onMain: '#FFFFFF', onLight: '#92400E' },
+    error: { main: colors.error, light: colors.errorLight, onMain: '#FFFFFF', onLight: '#991B1B' },
+    info: { main: colors.info, light: colors.infoLight, onMain: '#FFFFFF', onLight: '#1E40AF' },
   };
 
   const colorScheme = colorMap[color];
 
   const baseContainer = {
-    height: sizeStyles.height,
+    minHeight: sizeStyles.height,
     minWidth: sizeStyles.minWidth,
     paddingHorizontal: sizeStyles.paddingHorizontal,
     borderRadius: borderRadius.full,
@@ -46,20 +46,25 @@ export const getBadgeStyles = (
     gap: spacing.xs,
   };
 
+  const baseText = {
+    ...textStyles.caption,
+    fontWeight: '600' as const,
+  };
+
   const variantStyles = {
     filled: {
       container: { backgroundColor: colorScheme.main },
-      text: { color: colorScheme.onMain, fontSize: sizeStyles.fontSize, fontWeight: '600' as const },
+      text: { ...baseText, color: colorScheme.onMain },
       dotColor: colorScheme.onMain,
     },
     outlined: {
-      container: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colorScheme.main },
-      text: { color: colorScheme.main, fontSize: sizeStyles.fontSize, fontWeight: '600' as const },
+      container: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colorScheme.main },
+      text: { ...baseText, color: colorScheme.main },
       dotColor: colorScheme.main,
     },
     tonal: {
       container: { backgroundColor: colorScheme.light },
-      text: { color: colorScheme.main, fontSize: sizeStyles.fontSize, fontWeight: '600' as const },
+      text: { ...baseText, color: colorScheme.onLight },
       dotColor: colorScheme.main,
     },
   };

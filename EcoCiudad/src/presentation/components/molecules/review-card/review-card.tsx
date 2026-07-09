@@ -5,6 +5,7 @@ import { RatingStars } from '@/presentation/components/atoms/rating-stars';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { type ReviewCardProps } from './types';
 
@@ -14,9 +15,10 @@ export function ReviewCard({
   containerStyle,
 }: ReviewCardProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(t('common.locale'), {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -51,7 +53,7 @@ export function ReviewCard({
       {review.images && review.images.length > 0 && (
         <View style={styles.imagesContainer}>
           <ThemedText type="caption" color={theme.colors.textSecondary}>
-            {review.images.length} photo{review.images.length > 1 ? 's' : ''} attached
+            {t('common.photosAttached', { count: review.images.length })}
           </ThemedText>
         </View>
       )}
@@ -60,11 +62,11 @@ export function ReviewCard({
         style={styles.helpfulButton}
         onPress={onHelpfulPress}
         accessibilityRole="button"
-        accessibilityLabel="Mark as helpful"
+        accessibilityLabel={t('common.markAsHelpful')}
       >
         <Icon name="success" size={16} color={theme.colors.textSecondary} />
         <ThemedText type="caption" color={theme.colors.textSecondary}>
-          Helpful ({review.helpfulCount})
+          {t('common.helpful')} ({review.helpfulCount})
         </ThemedText>
       </Pressable>
     </Card>

@@ -66,7 +66,7 @@ export function useToggleCenterFavorite() {
 
   return useMutation({
     mutationFn: async (centerId: string) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.recyclingCenterUseCases.toggleFavorite.execute(centerId, user.id);
       if (result.left) throw result.left;
       return result.right;
@@ -128,7 +128,7 @@ export function useSetCenterRating() {
 
   return useMutation({
     mutationFn: async ({ centerId, rating }: { centerId: string; rating: number }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuario no autenticado');
       const result = await container.recyclingCenterUseCases.setRating.execute(centerId, user.id, rating);
       if (result.left) throw result.left;
       return result.right;

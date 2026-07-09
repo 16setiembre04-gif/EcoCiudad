@@ -13,10 +13,12 @@ import { useEvent, useEventParticipants, useIsRegistered, useIsFavorite, useTogg
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 
 export default function EventDetailsScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
 
@@ -35,12 +37,16 @@ export default function EventDetailsScreen() {
     if (!event) return;
     try {
       await Share.share({
-        message: `Check out this event: ${event.title}\n${event.description}\n${event.location.address}`,
+        message: t('common.shareMessageEvent', {
+          title: event.title,
+          description: event.description,
+          address: event.location.address ?? '',
+        }),
       });
     } catch {
-      Alert.alert('Error', 'Failed to share event');
+      Alert.alert(t('common.error'), t('common.failedToShareEvent'));
     }
-  }, [event]);
+  }, [event, t]);
 
   const handleRegister = useCallback(() => {
     if (!user || !id) return;
@@ -50,18 +56,18 @@ export default function EventDetailsScreen() {
   const handleCancelRegistration = useCallback(() => {
     if (!id) return;
     Alert.alert(
-      'Cancel Registration',
-      'Are you sure you want to cancel your registration?',
+      t('common.cancelRegistration'),
+      t('common.confirmAttendanceQuestion'),
       [
-        { text: 'Keep', style: 'cancel' },
+        { text: t('common.keep'), style: 'cancel' },
         {
-          text: 'Cancel Registration',
+          text: t('common.cancelRegistration'),
           style: 'destructive',
           onPress: () => leaveEvent(id),
         },
       ],
     );
-  }, [id, leaveEvent]);
+  }, [id, leaveEvent, t]);
 
   const handleFavoritePress = useCallback(() => {
     if (!id) return;
@@ -72,7 +78,7 @@ export default function EventDetailsScreen() {
     return (
       <EventsLayout>
         <View style={styles.loadingContainer}>
-          <ThemedText>Loading event...</ThemedText>
+          <ThemedText>{t('common.loadingEvent')}</ThemedText>
         </View>
       </EventsLayout>
     );
@@ -91,7 +97,7 @@ export default function EventDetailsScreen() {
         />
 
         <View style={styles.section}>
-          <ThemedText type="subtitle">About This Event</ThemedText>
+          <ThemedText type="subtitle">{t('common.aboutThisEvent')}</ThemedText>
           <ThemedText type="body" color={theme.colors.textSecondary}>
             {event.description}
           </ThemedText>
@@ -99,7 +105,7 @@ export default function EventDetailsScreen() {
 
         {event.requirements && event.requirements.length > 0 && (
           <View style={styles.section}>
-            <ThemedText type="subtitle">Requirements</ThemedText>
+            <ThemedText type="subtitle">{t('common.requirements')}</ThemedText>
             {event.requirements.map((req, index) => (
               <View key={index} style={styles.requirementRow}>
                 <Icon name="check" size={16} color={theme.colors.primary} />
@@ -110,11 +116,11 @@ export default function EventDetailsScreen() {
         )}
 
         <View style={styles.section}>
-          <ThemedText type="subtitle">Rewards</ThemedText>
+          <ThemedText type="subtitle">{t('common.rewards')}</ThemedText>
           <RewardCard
             points={event.ecoPointsReward}
-            title="Attendance Reward"
-            description="Earn eco points by attending this event"
+            title={t('common.attendanceReward')}
+            description={t('common.earnPointsByAttending')}
             earned={false}
           />
         </View>
@@ -134,7 +140,7 @@ export default function EventDetailsScreen() {
 
         <ParticipantsList
           participants={participants ?? []}
-          title="Participants"
+          title={t('common.participants')}
         />
       </ScrollView>
     </EventsLayout>

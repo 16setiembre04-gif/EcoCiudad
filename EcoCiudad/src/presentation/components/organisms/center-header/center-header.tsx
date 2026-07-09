@@ -7,6 +7,7 @@ import { RatingStars } from '@/presentation/components/atoms/rating-stars';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { type CenterHeaderProps } from './types';
 
@@ -22,6 +23,7 @@ export function CenterHeader({
   style,
 }: CenterHeaderProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.container, style]}>
@@ -43,7 +45,7 @@ export function CenterHeader({
             style={styles.backButton}
             onPress={onBackPress}
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('common.goBack')}
           >
             <Icon name="arrow-left" size={20} color={theme.colors.onPrimary} />
           </Pressable>
@@ -64,7 +66,7 @@ export function CenterHeader({
               style={styles.actionButton}
               onPress={onSharePress}
               accessibilityRole="button"
-              accessibilityLabel="Share"
+              accessibilityLabel={t('common.share')}
             >
               <Icon name="share" size={20} color={theme.colors.onPrimary} />
             </Pressable>
@@ -79,7 +81,7 @@ export function CenterHeader({
           <View style={styles.ratingRow}>
             <RatingStars rating={center.rating} size="md" />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              ({center.reviewCount ?? 0} reviews)
+              ({center.reviewCount ?? 0} {t('common.reviews')})
             </ThemedText>
           </View>
         )}
@@ -100,7 +102,7 @@ export function CenterHeader({
               style={[styles.callButton, { backgroundColor: theme.colors.secondary }]}
               onPress={onCallPress}
               accessibilityRole="button"
-              accessibilityLabel="Call center"
+              accessibilityLabel={t('common.callCenter')}
             >
               <Icon name="phone" size={24} color={theme.colors.onSecondary} />
             </Pressable>

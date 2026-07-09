@@ -13,6 +13,7 @@ import { EmptyState } from '@/presentation/components/atoms/empty-state';
 import { useAdminUsers } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { USER_ROLES_CONFIG } from '@/constants';
 import { type User, type UserRole } from '@/domain/entities';
 import { type AdminFilters } from '@/domain/repositories';
@@ -20,6 +21,7 @@ import { type AdminFilters } from '@/domain/repositories';
 export default function AdminUsersScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<UserRole | undefined>(undefined);
   const [refreshing, setRefreshing] = useState(false);
@@ -72,13 +74,13 @@ export default function AdminUsersScreen() {
           </View>
           <View style={styles.badges}>
             <Badge variant="tonal" color={roleConfig.color === '#22C55E' ? 'success' : roleConfig.color === '#3B82F6' ? 'info' : 'primary'}>
-              {roleConfig.label}
+              {t(roleConfig.labelKey)}
             </Badge>
           </View>
         </View>
       </Card>
     );
-  }, [handleUserPress, theme.colors.textSecondary]);
+  }, [handleUserPress, theme.colors.textSecondary, t]);
 
   const renderSkeleton = useCallback(() => (
     <View style={styles.skeletonContainer}>
@@ -100,7 +102,7 @@ export default function AdminUsersScreen() {
   return (
     <AdminLayout
       header={
-        <Header title="Users Management" />
+        <Header title={t('common.usersManagement')} />
       }
     >
       <View style={styles.container}>
@@ -108,7 +110,7 @@ export default function AdminUsersScreen() {
           <SearchBar
             value={search}
             onChangeText={setSearch}
-            placeholder="Search users..."
+            placeholder={t('common.searchUsers')}
           />
         </View>
 
@@ -119,7 +121,7 @@ export default function AdminUsersScreen() {
                 variant={roleFilter === undefined ? 'filled' : 'outlined'}
                 color="primary"
               >
-                All
+                {t('common.all')}
               </Badge>
             </Pressable>
             {Object.entries(USER_ROLES_CONFIG).map(([role, config]) => (
@@ -128,7 +130,7 @@ export default function AdminUsersScreen() {
                   variant={roleFilter === role ? 'filled' : 'outlined'}
                   color={config.color === '#22C55E' ? 'success' : config.color === '#3B82F6' ? 'info' : 'primary'}
                 >
-                  {config.label}
+                  {t(config.labelKey)}
                 </Badge>
               </Pressable>
             ))}
@@ -154,8 +156,8 @@ export default function AdminUsersScreen() {
             ListEmptyComponent={
               <EmptyState
                 iconName="user"
-                title="No users found"
-                description="Try adjusting your search or filters"
+                title={t('common.noUsersFound')}
+                description={t('common.tryAdjustingSearchFilters')}
               />
             }
           />

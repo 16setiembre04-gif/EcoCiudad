@@ -17,18 +17,19 @@ import {
   useAdminActivateUser,
   useAdminDeactivateUser,
   useAdminSuspendUser,
-  useAdminRestoreUser,
   useAdminDeleteUser,
   useAdminAssignRole,
 } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { USER_ROLES_CONFIG } from '@/constants';
 import { type UserRole } from '@/domain/entities';
 
 export default function AdminUserDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: user, isLoading, refetch } = useAdminUser(id ?? '');
@@ -46,42 +47,42 @@ export default function AdminUserDetailScreen() {
       await activateMutation.mutateAsync(id);
       await refetch();
     } catch (error) {
-      console.error('Failed to activate user:', error);
+      Alert.alert(t('common.error'), t('errors.failedToActivateUser'));
     }
-  }, [id, activateMutation, refetch]);
+  }, [id, activateMutation, refetch, t]);
 
   const handleDeactivate = useCallback(async () => {
     if (!id) return;
     Alert.alert(
-      'Deactivate User',
-      'Are you sure you want to deactivate this user?',
+      t('common.deactivateUser'),
+      t('common.confirmDeactivateUser'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Deactivate',
+          text: t('common.deactivate'),
           style: 'destructive',
           onPress: async () => {
             try {
               await deactivateMutation.mutateAsync(id);
               await refetch();
             } catch (error) {
-              console.error('Failed to deactivate user:', error);
+              Alert.alert(t('common.error'), t('errors.failedToDeactivateUser'));
             }
           },
         },
       ]
     );
-  }, [id, deactivateMutation, refetch]);
+  }, [id, deactivateMutation, refetch, t]);
 
   const handleSuspend = useCallback(() => {
     if (!id) return;
     Alert.prompt(
-      'Suspend User',
-      'Enter reason for suspension:',
+      t('common.suspendUser'),
+      t('common.enterSuspensionReason'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Suspend',
+          text: t('common.suspend'),
           style: 'destructive',
           onPress: async (reason: string | undefined) => {
             if (!reason) return;
@@ -89,37 +90,37 @@ export default function AdminUserDetailScreen() {
               await suspendMutation.mutateAsync({ id, reason });
               await refetch();
             } catch (error) {
-              console.error('Failed to suspend user:', error);
+              Alert.alert(t('common.error'), t('errors.failedToSuspendUser'));
             }
           },
         },
       ],
       'plain-text'
     );
-  }, [id, suspendMutation, refetch]);
+  }, [id, suspendMutation, refetch, t]);
 
   const handleDelete = useCallback(async () => {
     if (!id) return;
     Alert.alert(
-      'Delete User',
-      'Are you sure you want to permanently delete this user? This action cannot be undone.',
+      t('common.deleteUser'),
+      t('common.confirmDeleteUser'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             try {
               await deleteMutation.mutateAsync(id);
               router.back();
             } catch (error) {
-              console.error('Failed to delete user:', error);
+              Alert.alert(t('common.error'), t('errors.failedToDeleteUser'));
             }
           },
         },
       ]
     );
-  }, [id, deleteMutation, router]);
+  }, [id, deleteMutation, router, t]);
 
   const handleAssignRole = useCallback(async (role: UserRole) => {
     if (!id) return;
@@ -127,9 +128,9 @@ export default function AdminUserDetailScreen() {
       await assignRoleMutation.mutateAsync({ id, role });
       await refetch();
     } catch (error) {
-      console.error('Failed to assign role:', error);
+      Alert.alert(t('common.error'), t('errors.failedToAssignRole'));
     }
-  }, [id, assignRoleMutation, refetch]);
+  }, [id, assignRoleMutation, refetch, t]);
 
   if (isLoading || !user) {
     return (
@@ -144,7 +145,7 @@ export default function AdminUserDetailScreen() {
   return (
     <AdminLayout
       header={
-        <Header title="User Details" showBackButton />
+        <Header title={t('common.userDetails')} showBackButton />
       }
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -165,10 +166,10 @@ export default function AdminUserDetailScreen() {
               </ThemedText>
               <View style={styles.badgeRow}>
                 <Badge variant="tonal" color={roleConfig.color === '#22C55E' ? 'success' : roleConfig.color === '#3B82F6' ? 'info' : 'primary'}>
-                  {roleConfig.label}
+                  {t(roleConfig.labelKey)}
                 </Badge>
                 <Badge variant="tonal" color="success">
-                  Active
+                  {t('common.active')}
                 </Badge>
               </View>
             </View>
@@ -197,7 +198,7 @@ export default function AdminUserDetailScreen() {
             <View style={styles.detailRow}>
               <Icon name="calendar" size={16} color={theme.colors.textSecondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Joined {new Date(user.createdAt).toLocaleDateString()}
+                {t('common.joined')} {new Date(user.createdAt).toLocaleDateString()}
               </ThemedText>
             </View>
           </View>
@@ -207,7 +208,7 @@ export default function AdminUserDetailScreen() {
         {statistics && (
           <Card variant="elevated" padding="lg" style={styles.statsCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Statistics
+              {t('common.statistics')}
             </ThemedText>
             <View style={styles.statsGrid}>
               <View style={styles.statItem}>
@@ -216,7 +217,7 @@ export default function AdminUserDetailScreen() {
                   {statistics.reportCount}
                 </ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Reports
+                  {t('common.reports')}
                 </ThemedText>
               </View>
               <View style={styles.statItem}>
@@ -225,7 +226,7 @@ export default function AdminUserDetailScreen() {
                   {statistics.eventCount}
                 </ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Events
+                  {t('common.events')}
                 </ThemedText>
               </View>
               <View style={styles.statItem}>
@@ -234,7 +235,7 @@ export default function AdminUserDetailScreen() {
                   {statistics.communityCount}
                 </ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Communities
+                  {t('common.communities')}
                 </ThemedText>
               </View>
               <View style={styles.statItem}>
@@ -243,7 +244,7 @@ export default function AdminUserDetailScreen() {
                   {statistics.ecoPoints}
                 </ThemedText>
                 <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  Eco Points
+                  {t('common.ecoPoints')}
                 </ThemedText>
               </View>
             </View>
@@ -253,13 +254,13 @@ export default function AdminUserDetailScreen() {
         {/* Actions Card */}
         <Card variant="elevated" padding="lg" style={styles.actionsCard}>
           <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-            Actions
+            {t('common.actions')}
           </ThemedText>
 
           {/* Role Assignment */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Assign Role
+              {t('common.assignRole')}
             </ThemedText>
             <View style={styles.roleButtons}>
               {Object.entries(USER_ROLES_CONFIG).map(([role, config]) => (
@@ -271,7 +272,7 @@ export default function AdminUserDetailScreen() {
                   loading={assignRoleMutation.isPending}
                   disabled={user.role === role}
                 >
-                  {config.label}
+                  {t(config.labelKey)}
                 </Button>
               ))}
             </View>
@@ -282,7 +283,7 @@ export default function AdminUserDetailScreen() {
           {/* Status Actions */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Status Actions
+              {t('common.statusActions')}
             </ThemedText>
             <View style={styles.statusButtons}>
               <Button
@@ -291,7 +292,7 @@ export default function AdminUserDetailScreen() {
                 onPress={handleDeactivate}
                 loading={deactivateMutation.isPending}
               >
-                Deactivate
+                {t('common.deactivate')}
               </Button>
               <Button
                 variant="outlined"
@@ -299,7 +300,7 @@ export default function AdminUserDetailScreen() {
                 onPress={handleSuspend}
                 loading={suspendMutation.isPending}
               >
-                Suspend
+                {t('common.suspend')}
               </Button>
               <Button
                 variant="primary"
@@ -307,7 +308,7 @@ export default function AdminUserDetailScreen() {
                 onPress={handleActivate}
                 loading={activateMutation.isPending}
               >
-                Activate
+                {t('common.activate')}
               </Button>
             </View>
           </View>
@@ -317,7 +318,7 @@ export default function AdminUserDetailScreen() {
           {/* Danger Zone */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.error} style={{ fontWeight: '600' }}>
-              Danger Zone
+              {t('common.dangerZone')}
             </ThemedText>
             <Button
               variant="destructive"
@@ -325,7 +326,7 @@ export default function AdminUserDetailScreen() {
               onPress={handleDelete}
               loading={deleteMutation.isPending}
             >
-              Delete User Permanently
+              {t('common.deleteUserPermanently')}
             </Button>
           </View>
         </Card>

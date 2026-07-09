@@ -1,4 +1,4 @@
-import { type Event, type EventCategory, type EventStatus, type EventParticipant, type EventAttendance, type EventReminder, type ParticipantStatus } from '../entities';
+import { type Event, type EventCategory, type EventStatus, type EventParticipant, type EventAttendance, type EventReminder } from '../entities';
 import { type DomainError } from '../errors';
 import { type Either } from './auth.repository';
 

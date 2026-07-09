@@ -1,3 +1,6 @@
+import { useCallback } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Avatar } from '@/presentation/components/atoms/avatar';
 import { Badge } from '@/presentation/components/atoms/badge';
 import { Button } from '@/presentation/components/atoms/button';
@@ -9,38 +12,52 @@ import { DashboardTemplate } from '@/presentation/components/templates';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from '@/localization';
+import { useSignOutMutation } from '@/presentation/hooks';
 
 export default function CitizenProfileScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
+  const signOutMutation = useSignOutMutation();
+
+  const handleSignOut = useCallback(() => {
+    Alert.alert(
+      t('profile.logout'),
+      t('profile.confirmLogout'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('profile.logout'),
+          style: 'destructive',
+          onPress: async () => {
+            signOutMutation.mutate(undefined, {
+              onSuccess: () => {
+                router.replace('/(auth)/role-selection');
+              },
+            });
+          },
+        },
+      ]
+    );
+  }, [t, signOutMutation, router]);
 
   if (!user) {
     return (
       <DashboardTemplate>
         <View style={styles.loadingContainer}>
-          <ThemedText>Cargando perfil...</ThemedText>
+          <ThemedText>{t('profile.loadingProfile')}</ThemedText>
         </View>
       </DashboardTemplate>
     );
   }
 
-  const handleSettingsPress = () => {
-    router.push('/(citizen)/settings');
-  };
-
-  const handleEditProfilePress = () => {
-    // TODO: Implementar edición de perfil
-    console.log('Editar perfil');
-  };
-
   return (
     <DashboardTemplate
       header={
         <Header
-          title="Mi Perfil"
+          title={t('profile.title')}
           showBackButton={false}
         />
       }
@@ -55,38 +72,33 @@ export default function CitizenProfileScreen() {
                   {user.displayName}
                 </ThemedText>
                 <Badge variant="tonal" color="primary">
-                  Ciudadano
+                  {t('auth.citizen')}
                 </Badge>
               </View>
               <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1}>
                 {user.email}
               </ThemedText>
             </View>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: theme.colors.surfaceVariant,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={() => router.push('/(citizen)/settings')}
             >
               <Icon name="settings" size={20} color={theme.colors.textPrimary} />
-            </View>
+            </Button>
           </View>
 
           <View style={styles.ecoPointsSection}>
             <View style={styles.ecoPointsItem}>
               <Icon name="achievement" size={20} color={theme.colors.primary} />
               <ThemedText type="bodySmall" color={theme.colors.primary}>
-                Nivel {user.level ?? 1}
+                {t('profile.level')} {user.level ?? 1}
               </ThemedText>
             </View>
             <View style={styles.ecoPointsItem}>
               <Icon name="eco-points" size={20} color={theme.colors.secondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                {user.ecoPoints ?? 0} puntos
+                {user.ecoPoints ?? 0} {t('profile.points')}
               </ThemedText>
             </View>
           </View>
@@ -95,21 +107,21 @@ export default function CitizenProfileScreen() {
             variant="outlined"
             size="md"
             fullWidth
-            onPress={handleEditProfilePress}
+            onPress={() => router.push('/(citizen)/settings')}
             iconName="edit"
           >
-            Editar Perfil
+            {t('profile.editProfile')}
           </Button>
         </Card>
 
         <Card variant="elevated" padding="md" style={styles.statsCard}>
-          <ThemedText type="subtitle">Estadísticas</ThemedText>
+          <ThemedText type="subtitle">{t('profile.stats')}</ThemedText>
           <View style={styles.statsGrid}>
             <View style={styles.statItem}>
               <Icon name="report" size={24} color={theme.colors.primary} />
               <ThemedText type="headline">0</ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Reportes
+                {t('dashboard.reports')}
               </ThemedText>
             </View>
 
@@ -117,7 +129,7 @@ export default function CitizenProfileScreen() {
               <Icon name="calendar" size={24} color={theme.colors.secondary} />
               <ThemedText type="headline">0</ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Eventos
+                {t('dashboard.events')}
               </ThemedText>
             </View>
 
@@ -125,7 +137,7 @@ export default function CitizenProfileScreen() {
               <Icon name="community" size={24} color={theme.colors.success} />
               <ThemedText type="headline">0</ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Comunidades
+                {t('dashboard.communities')}
               </ThemedText>
             </View>
 
@@ -133,54 +145,54 @@ export default function CitizenProfileScreen() {
               <Icon name="achievement" size={24} color={theme.colors.warning} />
               <ThemedText type="headline">0</ThemedText>
               <ThemedText type="caption" color={theme.colors.textSecondary}>
-                Logros
+                {t('profile.achievements')}
               </ThemedText>
             </View>
           </View>
         </Card>
 
         <Card variant="elevated" padding="md" style={styles.actionsCard}>
-          <ThemedText type="subtitle">Acciones</ThemedText>
+          <ThemedText type="subtitle">{t('profile.actions')}</ThemedText>
           <View style={styles.actionsList}>
             <Button
               variant="ghost"
               size="md"
               fullWidth
-              onPress={handleSettingsPress}
+              onPress={() => router.push('/(citizen)/settings')}
               iconName="settings"
               iconPosition="left"
             >
-              Configuración
+              {t('profile.settings')}
             </Button>
             <Button
               variant="ghost"
               size="md"
               fullWidth
-              onPress={() => console.log('Mis reportes')}
+              onPress={() => router.push('/(citizen)/(tabs)/reports')}
               iconName="report"
               iconPosition="left"
             >
-              Mis Reportes
+              {t('profile.myReports')}
             </Button>
             <Button
               variant="ghost"
               size="md"
               fullWidth
-              onPress={() => console.log('Mis eventos')}
+              onPress={() => router.push('/(citizen)/events/my-events')}
               iconName="calendar"
               iconPosition="left"
             >
-              Mis Eventos
+              {t('profile.myEvents')}
             </Button>
             <Button
               variant="ghost"
               size="md"
               fullWidth
-              onPress={() => console.log('Mis comunidades')}
+              onPress={() => router.push('/(citizen)/community/my-communities')}
               iconName="community"
               iconPosition="left"
             >
-              Mis Comunidades
+              {t('profile.myCommunities')}
             </Button>
           </View>
         </Card>
@@ -190,11 +202,12 @@ export default function CitizenProfileScreen() {
             variant="destructive"
             size="md"
             fullWidth
-            onPress={() => console.log('Cerrar sesión')}
+            onPress={handleSignOut}
             iconName="logout"
             iconPosition="left"
+            loading={signOutMutation.isPending}
           >
-            Cerrar Sesión
+            {t('profile.logout')}
           </Button>
         </Card>
       </ScrollView>

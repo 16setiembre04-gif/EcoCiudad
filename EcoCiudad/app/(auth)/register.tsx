@@ -9,19 +9,21 @@ import { GuestGuard } from '@/presentation/components/organisms/auth-guard';
 import { Button, Input, ThemedText } from '@/presentation/components/atoms';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import { type UserRole } from '@/domain/entities';
-
-const ROLES: { value: UserRole; label: string; description: string }[] = [
-  { value: 'citizen', label: 'Citizen', description: 'Report issues and join community events' },
-  { value: 'operator', label: 'Operator', description: 'Manage reports and collection routes' },
-  { value: 'admin', label: 'Administrator', description: 'Full system access and management' },
-];
 
 function RegisterScreenContent() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { signUp, isLoading, error, clearError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const ROLES: { value: UserRole; label: string; description: string }[] = [
+    { value: 'citizen', label: t('auth.citizen'), description: t('auth.communityJoin') },
+    { value: 'operator', label: t('auth.operator'), description: t('auth.operatorManage') },
+    { value: 'admin', label: t('auth.admin'), description: t('auth.adminFull') },
+  ];
 
   const {
     control,
@@ -69,11 +71,11 @@ function RegisterScreenContent() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <ThemedText type="displayLarge" style={[styles.title, { color: theme.colors.textPrimary }]}>
-            Create Account
+          <ThemedText type="display" style={[styles.title, { color: theme.colors.textPrimary }]}>
+            {t('citizenRegister.createAccount')}
           </ThemedText>
           <ThemedText type="body" style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            Join EcoCiudad and make a difference
+            {t('auth.joinEcoCiudad')}
           </ThemedText>
         </View>
 
@@ -83,8 +85,8 @@ function RegisterScreenContent() {
             name="displayName"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Full Name"
-                placeholder="Enter your full name"
+                label={t('operatorRegister.fullName')}
+                placeholder={t('operatorRegister.fullNamePlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -102,8 +104,8 @@ function RegisterScreenContent() {
             name="email"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Email"
-                placeholder="Enter your email"
+                label={t('auth.email')}
+                placeholder={t('citizenRegister.emailPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -122,8 +124,8 @@ function RegisterScreenContent() {
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Password"
-                placeholder="Create a password"
+                label={t('auth.password')}
+                placeholder={t('citizenRegister.createPassword')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -144,8 +146,8 @@ function RegisterScreenContent() {
             name="confirmPassword"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Confirm Password"
-                placeholder="Confirm your password"
+                label={t('auth.confirmPassword')}
+                placeholder={t('citizenRegister.confirmPasswordPlaceholder')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -163,7 +165,7 @@ function RegisterScreenContent() {
 
           <View style={styles.roleSection}>
             <ThemedText type="subtitle" style={{ color: theme.colors.textPrimary }}>
-              Select Your Role
+              {t('auth.selectRole')}
             </ThemedText>
             <View style={styles.roleOptions}>
               {ROLES.map((role) => (
@@ -237,7 +239,7 @@ function RegisterScreenContent() {
                   )}
                 </View>
                 <ThemedText type="bodySmall" style={{ color: theme.colors.textSecondary, flex: 1 }}>
-                  I agree to the Terms of Service and Privacy Policy
+                  {t('auth.termsAgreement')}
                 </ThemedText>
               </Pressable>
             )}
@@ -264,16 +266,16 @@ function RegisterScreenContent() {
             loading={isLoading}
             disabled={isLoading}
           >
-            Create Account
+            {t('citizenRegister.createAccount')}
           </Button>
 
           <View style={styles.loginContainer}>
             <ThemedText style={{ color: theme.colors.textSecondary }}>
-              Already have an account?{' '}
+              {t('auth.haveAccount')}{' '}
             </ThemedText>
             <Link href="/(auth)/login" asChild>
               <Button variant="ghost" size="sm">
-                Sign In
+                {t('auth.signIn')}
               </Button>
             </Link>
           </View>

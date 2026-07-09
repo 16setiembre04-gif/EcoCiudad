@@ -1,5 +1,5 @@
 import { type ViewStyle } from 'react-native';
-import { type Event, type EventCategory, type EventStatus } from '@/domain/entities';
+import { type Event } from '@/domain/entities';
 
 export interface EventCardProps {
   event: Event;

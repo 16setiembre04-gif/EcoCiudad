@@ -10,6 +10,7 @@ import { Button } from '@/presentation/components/atoms/button';
 import { Divider } from '@/presentation/components/atoms/divider';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { Loader } from '@/presentation/components/atoms/loader';
+import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
 import {
   useAdminReport,
   useAdminAssignReport,
@@ -19,6 +20,7 @@ import {
 } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { useTranslation } from '@/localization';
 import {
   REPORT_CATEGORIES,
   REPORT_STATUSES,
@@ -28,6 +30,7 @@ import { type ReportStatus, type ReportPriority, type UserRole } from '@/domain/
 
 export default function AdminReportDetailScreen() {
   const theme = useTheme();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: report, isLoading, refetch } = useAdminReport(id ?? '');
@@ -48,32 +51,32 @@ export default function AdminReportDetailScreen() {
       await refetch();
       setShowOperatorSelector(false);
     } catch (error) {
-      console.error('Failed to assign operator:', error);
+      Alert.alert(t('common.error'), t('errors.failedToAssignOperator'));
     }
-  }, [id, assignMutation, refetch]);
+  }, [id, assignMutation, refetch, t]);
 
   const handleUpdateStatus = useCallback(async (status: ReportStatus) => {
     if (!id) return;
     Alert.alert(
-      'Update Status',
-      `Are you sure you want to change the status to ${REPORT_STATUSES[status]?.label || status}?`,
+      t('common.updateStatus'),
+      `${t('common.confirmChangeStatusTo')} ${t(REPORT_STATUSES[status]?.labelKey as any) || status}?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Update',
+          text: t('common.update'),
           onPress: async () => {
             try {
               await statusMutation.mutateAsync({ reportId: id, status });
               await refetch();
               setShowStatusSelector(false);
             } catch (error) {
-              console.error('Failed to update status:', error);
+              Alert.alert(t('common.error'), t('errors.failedToUpdateStatus'));
             }
           },
         },
       ]
     );
-  }, [id, statusMutation, refetch]);
+  }, [id, statusMutation, refetch, t]);
 
   const handleUpdatePriority = useCallback(async (priority: ReportPriority) => {
     if (!id) return;
@@ -82,19 +85,23 @@ export default function AdminReportDetailScreen() {
       await refetch();
       setShowPrioritySelector(false);
     } catch (error) {
-      console.error('Failed to update priority:', error);
+      Alert.alert(t('common.error'), t('errors.failedToUpdatePriority'));
     }
-  }, [id, priorityMutation, refetch]);
+  }, [id, priorityMutation, refetch, t]);
 
-  const handleOpenInMaps = useCallback(() => {
+  const handleOpenInMaps = useCallback(async () => {
     if (!report?.location) return;
     const { latitude, longitude } = report.location;
     const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-    Linking.openURL(url);
-  }, [report]);
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
+    }
+  }, [report, t]);
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(t('common.locale'), {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
@@ -103,10 +110,25 @@ export default function AdminReportDetailScreen() {
     }).format(date);
   };
 
-  if (isLoading || !report) {
+  if (isLoading) {
     return (
       <AdminLayout>
         <Loader size="lg" />
+      </AdminLayout>
+    );
+  }
+
+  if (!report) {
+    return (
+      <AdminLayout
+        header={<Header title={t('common.reportDetails')} showBackButton />}
+      >
+        <View style={styles.errorContainer}>
+          <ThemedText color={theme.colors.error}>{t('reports.loadingReport')}</ThemedText>
+          <Button variant="outlined" onPress={() => refetch()} style={{ marginTop: spacing.md }}>
+            {t('common.retry')}
+          </Button>
+        </View>
       </AdminLayout>
     );
   }
@@ -118,7 +140,7 @@ export default function AdminReportDetailScreen() {
   return (
     <AdminLayout
       header={
-        <Header title="Report Details" showBackButton />
+        <Header title={t('common.reportDetails')} showBackButton />
       }
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -131,11 +153,11 @@ export default function AdminReportDetailScreen() {
               </ThemedText>
               <View style={styles.badgeRow}>
                 <Badge variant="tonal" color={statusConfig?.color || 'info'}>
-                  {statusConfig?.label || report.status}
+                  {statusConfig ? t(statusConfig.labelKey) : report.status}
                 </Badge>
                 {report.priority && (
                   <Badge variant="tonal" color={priorityConfig.color === '#22C55E' ? 'success' : priorityConfig.color === '#F59E0B' ? 'warning' : priorityConfig.color === '#F97316' ? 'error' : 'error'}>
-                    {priorityConfig.label}
+                    {t(priorityConfig.labelKey)}
                   </Badge>
                 )}
               </View>
@@ -152,7 +174,7 @@ export default function AdminReportDetailScreen() {
           <View style={styles.detailRow}>
             <Icon name={categoryConfig?.icon || 'help'} size={20} color={theme.colors.primary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Category: {categoryConfig?.label || report.category}
+              {t('reports.category')}: {categoryConfig ? t(categoryConfig.labelKey) : report.category}
             </ThemedText>
           </View>
 
@@ -162,7 +184,7 @@ export default function AdminReportDetailScreen() {
               <Icon name="location" size={20} color={theme.colors.textSecondary} />
               <View style={{ flex: 1 }}>
                 <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                  {report.location.address || 'No address'}
+                  {report.location.address || t('common.noAddress')}
                 </ThemedText>
                 <Button
                   variant="ghost"
@@ -170,7 +192,7 @@ export default function AdminReportDetailScreen() {
                   onPress={handleOpenInMaps}
                   style={{ marginTop: spacing.xs }}
                 >
-                  Open in Maps
+                  {t('common.openInMaps')}
                 </Button>
               </View>
             </View>
@@ -180,7 +202,7 @@ export default function AdminReportDetailScreen() {
           <View style={styles.detailRow}>
             <Icon name="user" size={20} color={theme.colors.textSecondary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Reporter: {report.isAnonymous ? 'Anonymous' : report.reporterId}
+              {t('common.reporter')}: {report.isAnonymous ? t('common.anonymous') : report.reporterId}
             </ThemedText>
           </View>
 
@@ -189,7 +211,7 @@ export default function AdminReportDetailScreen() {
             <View style={styles.detailRow}>
               <Icon name="truck" size={20} color={theme.colors.secondary} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Assigned to: {report.assigneeId}
+                {t('common.assignedTo')}: {report.assigneeId}
               </ThemedText>
             </View>
           )}
@@ -198,7 +220,7 @@ export default function AdminReportDetailScreen() {
           <View style={styles.detailRow}>
             <Icon name="calendar" size={20} color={theme.colors.textSecondary} />
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Created: {formatDate(report.createdAt)}
+              {t('common.created')}: {formatDate(report.createdAt)}
             </ThemedText>
           </View>
 
@@ -206,7 +228,7 @@ export default function AdminReportDetailScreen() {
             <View style={styles.detailRow}>
               <Icon name="check" size={20} color={theme.colors.success} />
               <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-                Resolved: {formatDate(report.resolvedAt)}
+                {t('common.resolved')}: {formatDate(report.resolvedAt)}
               </ThemedText>
             </View>
           )}
@@ -216,15 +238,9 @@ export default function AdminReportDetailScreen() {
         {report.images && report.images.length > 0 && (
           <Card variant="elevated" padding="lg" style={styles.imagesCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Images ({report.images.length})
+              {t('common.images')} ({report.images.length})
             </ThemedText>
-            <View style={styles.imagesGrid}>
-              {report.images.map((_image, index) => (
-                <View key={index} style={styles.imagePlaceholder}>
-                  <Icon name="image" size={32} color={theme.colors.textSecondary} />
-                </View>
-              ))}
-            </View>
+            <ImageGallery images={report.images} />
           </Card>
         )}
 
@@ -232,7 +248,7 @@ export default function AdminReportDetailScreen() {
         {report.resolutionNotes && (
           <Card variant="elevated" padding="lg" style={styles.notesCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Resolution Notes
+              {t('common.resolutionNotes')}
             </ThemedText>
             <ThemedText type="body" color={theme.colors.textSecondary}>
               {report.resolutionNotes}
@@ -243,13 +259,13 @@ export default function AdminReportDetailScreen() {
         {/* Admin Actions */}
         <Card variant="elevated" padding="lg" style={styles.actionsCard}>
           <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-            Admin Actions
+            {t('common.adminActions')}
           </ThemedText>
 
           {/* Assign Operator */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Assign Operator
+              {t('common.assignOperator')}
             </ThemedText>
             <Button
               variant="outlined"
@@ -257,7 +273,7 @@ export default function AdminReportDetailScreen() {
               onPress={() => setShowOperatorSelector(true)}
               loading={assignMutation.isPending}
             >
-              {report.assigneeId ? 'Reassign Operator' : 'Assign Operator'}
+              {report.assigneeId ? t('common.reassignOperator') : t('common.assignOperator')}
             </Button>
           </View>
 
@@ -266,7 +282,7 @@ export default function AdminReportDetailScreen() {
           {/* Update Status */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Update Status
+              {t('common.updateStatus')}
             </ThemedText>
             <Button
               variant="outlined"
@@ -274,7 +290,7 @@ export default function AdminReportDetailScreen() {
               onPress={() => setShowStatusSelector(true)}
               loading={statusMutation.isPending}
             >
-              Change Status
+              {t('common.changeStatus')}
             </Button>
           </View>
 
@@ -283,7 +299,7 @@ export default function AdminReportDetailScreen() {
           {/* Update Priority */}
           <View style={styles.actionSection}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              Update Priority
+              {t('common.updatePriority')}
             </ThemedText>
             <Button
               variant="outlined"
@@ -291,7 +307,7 @@ export default function AdminReportDetailScreen() {
               onPress={() => setShowPrioritySelector(true)}
               loading={priorityMutation.isPending}
             >
-              Change Priority
+              {t('common.changePriority')}
             </Button>
           </View>
         </Card>
@@ -300,7 +316,7 @@ export default function AdminReportDetailScreen() {
         {showOperatorSelector && operators && (
           <Card variant="elevated" padding="lg" style={styles.selectorCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Select Operator
+              {t('common.selectOperator')}
             </ThemedText>
             {operators.map((operator) => (
               <Button
@@ -318,7 +334,7 @@ export default function AdminReportDetailScreen() {
               size="md"
               onPress={() => setShowOperatorSelector(false)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </Card>
         )}
@@ -327,7 +343,7 @@ export default function AdminReportDetailScreen() {
         {showStatusSelector && (
           <Card variant="elevated" padding="lg" style={styles.selectorCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Select Status
+              {t('common.selectStatus')}
             </ThemedText>
             {Object.entries(REPORT_STATUSES).map(([status, config]) => (
               <Button
@@ -338,7 +354,7 @@ export default function AdminReportDetailScreen() {
                 style={{ marginBottom: spacing.sm }}
                 disabled={report.status === status}
               >
-                {config.label}
+                {t(config.labelKey as any)}
               </Button>
             ))}
             <Button
@@ -346,7 +362,7 @@ export default function AdminReportDetailScreen() {
               size="md"
               onPress={() => setShowStatusSelector(false)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </Card>
         )}
@@ -355,7 +371,7 @@ export default function AdminReportDetailScreen() {
         {showPrioritySelector && (
           <Card variant="elevated" padding="lg" style={styles.selectorCard}>
             <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
-              Select Priority
+              {t('common.selectPriority')}
             </ThemedText>
             {Object.entries(ADMIN_REPORT_PRIORITY_CONFIG).map(([priority, config]) => (
               <Button
@@ -366,7 +382,7 @@ export default function AdminReportDetailScreen() {
                 style={{ marginBottom: spacing.sm }}
                 disabled={report.priority === priority}
               >
-                {config.label}
+                {t(config.labelKey)}
               </Button>
             ))}
             <Button
@@ -374,7 +390,7 @@ export default function AdminReportDetailScreen() {
               size="md"
               onPress={() => setShowPrioritySelector(false)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </Card>
         )}
@@ -387,7 +403,12 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: spacing.lg,
     paddingBottom: spacing['3xl'],
-    gap: spacing.lg,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
   },
   infoCard: {
     gap: spacing.md,

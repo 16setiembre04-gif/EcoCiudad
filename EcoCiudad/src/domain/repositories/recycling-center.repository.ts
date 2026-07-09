@@ -1,4 +1,4 @@
-import { type RecyclingCenter, type CenterReview, type CenterRating, type CenterFavorite } from '../entities';
+import { type RecyclingCenter, type CenterReview, type CenterRating } from '../entities';
 import { type DomainError } from '../errors';
 import { type Either } from './auth.repository';
 
