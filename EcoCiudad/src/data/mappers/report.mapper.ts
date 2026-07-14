@@ -9,6 +9,26 @@ import {
 } from '../../domain/entities';
 import { type ReportDTO, type ReportCommentDTO, type ReportTimelineEntryDTO } from '../dto';
 
+const PRIORITY_TO_NUMBER: Record<ReportPriority, number> = {
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
+};
+
+const NUMBER_TO_PRIORITY: Record<string, ReportPriority> = {
+  '1': 'low',
+  '2': 'medium',
+  '3': 'high',
+  '4': 'critical',
+};
+
+function normalizePriority(value: string | number | undefined): ReportPriority | undefined {
+  if (value === undefined || value === null) return undefined;
+  const key = String(value);
+  return NUMBER_TO_PRIORITY[key] ?? (key as ReportPriority);
+}
+
 export class ReportMapper {
   static toDomain(dto: ReportDTO): Report {
     return {
@@ -27,7 +47,7 @@ export class ReportMapper {
       images: dto.images,
       reporterId: dto.reporter_id,
       assigneeId: dto.assignee_id,
-      priority: dto.priority as ReportPriority | undefined,
+      priority: normalizePriority(dto.priority),
       resolutionNotes: dto.resolution_notes,
       resolutionPhotos: dto.resolution_photos,
       estimatedCompletion: dto.estimated_completion ? new Date(dto.estimated_completion) : undefined,
@@ -37,29 +57,33 @@ export class ReportMapper {
     };
   }
 
-  static toDto(entity: Report): ReportDTO {
-    return {
-      id: entity.id,
-      title: entity.title,
-      description: entity.description,
-      category: entity.category,
-      status: entity.status,
-      severity: entity.severity,
-      is_anonymous: entity.isAnonymous,
-      latitude: entity.location.latitude,
-      longitude: entity.location.longitude,
-      address: entity.location.address,
-      images: entity.images,
-      reporter_id: entity.reporterId,
-      assignee_id: entity.assigneeId,
-      priority: entity.priority,
-      resolution_notes: entity.resolutionNotes,
-      resolution_photos: entity.resolutionPhotos,
-      estimated_completion: entity.estimatedCompletion?.toISOString(),
-      resolved_at: entity.resolvedAt?.toISOString(),
-      created_at: entity.createdAt.toISOString(),
-      updated_at: entity.updatedAt.toISOString(),
-    };
+  static toDto(entity: Partial<Report>): Partial<ReportDTO> {
+    const dto: Partial<ReportDTO> = {};
+
+    if (entity.id !== undefined) dto.id = entity.id;
+    if (entity.title !== undefined) dto.title = entity.title;
+    if (entity.description !== undefined) dto.description = entity.description;
+    if (entity.category !== undefined) dto.category = entity.category;
+    if (entity.status !== undefined) dto.status = entity.status;
+    if (entity.severity !== undefined) dto.severity = entity.severity;
+    if (entity.isAnonymous !== undefined) dto.is_anonymous = entity.isAnonymous;
+    if (entity.location !== undefined) {
+      dto.latitude = entity.location.latitude;
+      dto.longitude = entity.location.longitude;
+      dto.address = entity.location.address;
+    }
+    if (entity.images !== undefined) dto.images = entity.images;
+    if (entity.reporterId !== undefined) dto.reporter_id = entity.reporterId;
+    if (entity.assigneeId !== undefined) dto.assignee_id = entity.assigneeId;
+    if (entity.priority !== undefined) dto.priority = PRIORITY_TO_NUMBER[entity.priority];
+    if (entity.resolutionNotes !== undefined) dto.resolution_notes = entity.resolutionNotes;
+    if (entity.resolutionPhotos !== undefined) dto.resolution_photos = entity.resolutionPhotos;
+    if (entity.estimatedCompletion !== undefined) dto.estimated_completion = entity.estimatedCompletion.toISOString();
+    if (entity.resolvedAt !== undefined) dto.resolved_at = entity.resolvedAt.toISOString();
+    if (entity.createdAt !== undefined) dto.created_at = entity.createdAt.toISOString();
+    if (entity.updatedAt !== undefined) dto.updated_at = entity.updatedAt.toISOString();
+
+    return dto;
   }
 
   static commentToDomain(dto: ReportCommentDTO): ReportComment {
@@ -73,15 +97,17 @@ export class ReportMapper {
     };
   }
 
-  static commentToDto(entity: ReportComment): ReportCommentDTO {
-    return {
-      id: entity.id,
-      report_id: entity.reportId,
-      author_id: entity.authorId,
-      author_name: entity.authorName,
-      content: entity.content,
-      created_at: entity.createdAt.toISOString(),
-    };
+  static commentToDto(entity: Partial<ReportComment>): Partial<ReportCommentDTO> {
+    const dto: Partial<ReportCommentDTO> = {};
+
+    if (entity.id !== undefined) dto.id = entity.id;
+    if (entity.reportId !== undefined) dto.report_id = entity.reportId;
+    if (entity.authorId !== undefined) dto.author_id = entity.authorId;
+    if (entity.authorName !== undefined) dto.author_name = entity.authorName;
+    if (entity.content !== undefined) dto.content = entity.content;
+    if (entity.createdAt !== undefined) dto.created_at = entity.createdAt.toISOString();
+
+    return dto;
   }
 
   static timelineToDomain(dto: ReportTimelineEntryDTO): ReportTimelineEntry {

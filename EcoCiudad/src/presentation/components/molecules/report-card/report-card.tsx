@@ -30,14 +30,14 @@ export function ReportCard({
     <View style={{ gap: spacing.md }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <View style={{ flex: 1, gap: spacing.xs }}>
-            <ThemedText type="subtitle" numberOfLines={2}>
+            <ThemedText type="subtitle" numberOfLines={2} ellipsizeMode="tail">
               {title}
             </ThemedText>
-            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={2}>
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={2} ellipsizeMode="tail">
               {description}
             </ThemedText>
           </View>
-          <Badge variant="tonal" color={config.color}>
+          <Badge variant="tonal" color={config.color} style={{ maxWidth: 100 }}>
             {t(config.labelKey)}
           </Badge>
       </View>
@@ -49,12 +49,12 @@ export function ReportCard({
           <Icon name={category} size={20} color={theme.colors.primary} />
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
             <Icon name="location" size={16} color={theme.colors.textSecondary} />
-            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1}>
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1, flexShrink: 1 }}>
               {location}
             </ThemedText>
           </View>
         </View>
-        <ThemedText type="caption" color={theme.colors.textSecondary}>
+        <ThemedText type="caption" color={theme.colors.textSecondary} numberOfLines={1} ellipsizeMode="tail">
           {date}
         </ThemedText>
       </View>

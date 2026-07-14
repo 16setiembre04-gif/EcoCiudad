@@ -6,6 +6,7 @@ import {
   RecyclingCenterRemoteDataSource,
   CommunityRemoteDataSource,
   AdminRemoteDataSource,
+  TruckLocationRemoteDataSource,
 } from '../../data/datasources/remote';
 import { OperatorDatasource } from '../../data/datasources/operator.datasource';
 import {
@@ -18,6 +19,7 @@ import {
   PollRepository,
   OperatorRepositoryImpl,
   AdminRepositoryImpl,
+  TruckLocationRepository,
 } from '../../data/repositories';
 import {
   SignInUseCase,
@@ -28,6 +30,7 @@ import {
   ResetPasswordUseCase,
   UpdatePasswordUseCase,
   ResendVerificationUseCase,
+  UpdateProfileUseCase,
   GetReportsUseCase,
   GetReportByIdUseCase,
   GetMyReportsUseCase,
@@ -49,6 +52,7 @@ import {
   CreateEventUseCase,
   UpdateEventUseCase,
   CancelEventUseCase,
+  UploadEventImageUseCase,
   JoinEventUseCase,
   LeaveEventUseCase,
   GetEventParticipantsUseCase,
@@ -147,6 +151,10 @@ import {
   AdminAssignReportUseCase,
   AdminUpdateReportStatusUseCase,
   AdminUpdateReportPriorityUseCase,
+  GetTruckLocationsUseCase,
+  GetTruckLocationByIdUseCase,
+  GetTruckLocationsByRouteUseCase,
+  CalculateTruckProximityUseCase,
 } from '../../domain/use-cases';
 
 import { UpdateReportStatusUseCase as UpdateOperatorReportStatusUseCase } from '../../domain/use-cases/operator.use-cases';
@@ -156,6 +164,7 @@ const reportDataSource = new ReportRemoteDataSource(supabase);
 const eventDataSource = new EventRemoteDataSource(supabase);
 const recyclingCenterDataSource = new RecyclingCenterRemoteDataSource(supabase);
 const communityDataSource = new CommunityRemoteDataSource();
+const truckLocationDataSource = new TruckLocationRemoteDataSource();
 const operatorDataSource = new OperatorDatasource();
 
 const authRepository = new AuthRepositoryImpl(authDataSource);
@@ -163,6 +172,7 @@ const reportRepository = new ReportRepositoryImpl(reportDataSource);
 const eventRepository = new EventRepositoryImpl(eventDataSource);
 const recyclingCenterRepository = new RecyclingCenterRepositoryImpl(recyclingCenterDataSource);
 const communityRepository = new CommunityRepository(communityDataSource);
+const truckLocationRepository = new TruckLocationRepository(truckLocationDataSource);
 const postRepository = new PostRepository(communityDataSource);
 const pollRepository = new PollRepository(communityDataSource);
 const operatorRepository = new OperatorRepositoryImpl(operatorDataSource);
@@ -180,6 +190,7 @@ export const container = {
     resetPassword: new ResetPasswordUseCase(authRepository),
     updatePassword: new UpdatePasswordUseCase(authRepository),
     resendVerification: new ResendVerificationUseCase(authRepository),
+    updateProfile: new UpdateProfileUseCase(authRepository),
   },
   reportUseCases: {
     getReports: new GetReportsUseCase(reportRepository),
@@ -205,6 +216,7 @@ export const container = {
     createEvent: new CreateEventUseCase(eventRepository),
     updateEvent: new UpdateEventUseCase(eventRepository),
     cancelEvent: new CancelEventUseCase(eventRepository),
+    uploadImage: new UploadEventImageUseCase(eventRepository),
     joinEvent: new JoinEventUseCase(eventRepository),
     leaveEvent: new LeaveEventUseCase(eventRepository),
     getParticipants: new GetEventParticipantsUseCase(eventRepository),
@@ -288,6 +300,12 @@ export const container = {
     getPerformance: new GetOperatorPerformanceUseCase(operatorRepository),
     getTodayRoute: new GetTodayRouteUseCase(operatorRepository),
     optimizeRoute: new OptimizeRouteUseCase(operatorRepository),
+  },
+  truckUseCases: {
+    getTruckLocations: new GetTruckLocationsUseCase(truckLocationRepository),
+    getTruckLocationById: new GetTruckLocationByIdUseCase(truckLocationRepository),
+    getTruckLocationsByRoute: new GetTruckLocationsByRouteUseCase(truckLocationRepository),
+    calculateProximity: new CalculateTruckProximityUseCase(),
   },
   adminUseCases: {
     getDashboardStats: new GetDashboardStatsUseCase(adminRepository),

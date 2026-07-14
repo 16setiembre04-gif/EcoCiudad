@@ -6,6 +6,7 @@ export interface BottomNavigationItem {
   label: string;
   icon: IconName;
   badge?: number;
+  primary?: boolean;
 }
 
 export interface BottomNavigationProps {

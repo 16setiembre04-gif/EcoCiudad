@@ -23,6 +23,8 @@ export interface ThemeColors {
   warningLight: string;
   error: string;
   errorLight: string;
+  errorContainer: string;
+  onErrorContainer: string;
   info: string;
   infoLight: string;
 }
@@ -52,6 +54,8 @@ export const citizenThemeColors: ThemeColors = {
   warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
+  errorContainer: '#FEE2E2',
+  onErrorContainer: '#991B1B',
   info: '#3B82F6',
   infoLight: '#DBEAFE',
 };
@@ -81,6 +85,8 @@ export const operatorThemeColors: ThemeColors = {
   warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
+  errorContainer: '#FEE2E2',
+  onErrorContainer: '#991B1B',
   info: '#3B82F6',
   infoLight: '#DBEAFE',
 };
@@ -110,6 +116,8 @@ export const adminThemeColors: ThemeColors = {
   warningLight: '#FEF3C7',
   error: '#EF4444',
   errorLight: '#FEE2E2',
+  errorContainer: '#FEE2E2',
+  onErrorContainer: '#991B1B',
   info: '#3B82F6',
   infoLight: '#DBEAFE',
 };

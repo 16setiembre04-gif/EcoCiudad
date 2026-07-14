@@ -12,7 +12,7 @@ export interface ReportDTO {
   images: string[];
   reporter_id: string;
   assignee_id?: string;
-  priority?: string;
+  priority?: string | number;
   resolution_notes?: string;
   resolution_photos?: string[];
   estimated_completion?: string;

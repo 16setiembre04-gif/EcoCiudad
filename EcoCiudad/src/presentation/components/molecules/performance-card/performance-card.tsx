@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
   },
   statItem: {
     alignItems: 'center',
-    minWidth: 80,
+    flex: 1,
+    minWidth: 72,
   },
   categoriesContainer: {
     gap: spacing.sm,

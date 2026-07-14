@@ -1,2 +1,1 @@
-export { DistanceBadge } from './distance-badge';
-export { type DistanceBadgeProps } from './types';
+export { DistanceBadge, type DistanceBadgeProps } from './distance-badge';

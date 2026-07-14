@@ -32,7 +32,11 @@ export function Badge({
   return (
     <View style={[styles.container, style]} accessibilityRole="text">
       {iconName && <Icon name={iconName} size={size === 'sm' ? 10 : size === 'md' ? 12 : 14} color={styles.text.color} />}
-      {children && <Text style={[styles.text, textStyle]}>{children}</Text>}
+      {children && (
+        <Text style={[styles.text, { flexShrink: 1 }, textStyle]} numberOfLines={1} ellipsizeMode="tail">
+          {children}
+        </Text>
+      )}
     </View>
   );
 }

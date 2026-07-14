@@ -3,7 +3,7 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 import { QuickActionsProps } from './types';
 
 export function QuickActions({
@@ -15,51 +15,40 @@ export function QuickActions({
 }: QuickActionsProps) {
   const theme = useTheme();
 
-  const gapSize = spacing.md;
-  const itemWidth = `${(100 - (columns - 1) * 2) / columns}%` as any;
-
   return (
     <View
-      style={[
-        {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          gap: gapSize,
-          paddingHorizontal: spacing.lg,
-        },
-        containerStyle,
-      ]}
+      style={[styles.container, containerStyle]}
       testID={testID}
     >
       {items.map((item) => (
         <Pressable
           key={item.key}
           onPress={() => onItemPress(item.key)}
-          style={{ width: itemWidth }}
+          style={[
+            styles.item,
+            { minWidth: `${100 / columns}%`, flexBasis: `${100 / columns}%` },
+          ]}
           accessibilityRole="button"
           accessibilityLabel={item.label}
         >
           <Card
             variant="elevated"
             padding="md"
-            style={{ alignItems: 'center', gap: spacing.sm }}
+            style={styles.card}
           >
             <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: item.color || theme.colors.primaryContainer,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              style={[
+                styles.iconContainer,
+                { backgroundColor: item.color || theme.colors.primaryContainer },
+              ]}
             >
               <Icon name={item.icon} size={28} color={theme.colors.onPrimaryContainer} />
             </View>
             <ThemedText
               type="bodySmall"
-              style={{ textAlign: 'center', fontWeight: '500' }}
+              style={styles.label}
               numberOfLines={2}
+              ellipsizeMode="tail"
             >
               {item.label}
             </ThemedText>
@@ -69,3 +58,30 @@ export function QuickActions({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: spacing.lg,
+  },
+  item: {
+    padding: spacing.xs,
+    flex: 1,
+  },
+  card: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  iconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  label: {
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+});

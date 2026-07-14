@@ -7,6 +7,7 @@ export {
   ResetPasswordUseCase,
   UpdatePasswordUseCase,
   ResendVerificationUseCase,
+  UpdateProfileUseCase,
 } from './auth.use-cases';
 export {
   GetReportsUseCase,
@@ -32,6 +33,7 @@ export {
   CreateEventUseCase,
   UpdateEventUseCase,
   CancelEventUseCase,
+  UploadEventImageUseCase,
   JoinEventUseCase,
   LeaveEventUseCase,
   GetEventParticipantsUseCase,
@@ -63,6 +65,12 @@ export * from './community.use-cases';
 export * from './post.use-cases';
 export * from './poll.use-cases';
 export * from './operator.use-cases';
+export {
+  GetTruckLocationsUseCase,
+  GetTruckLocationByIdUseCase,
+  GetTruckLocationsByRouteUseCase,
+  CalculateTruckProximityUseCase,
+} from './truck.use-cases';
 export {
   GetDashboardStatsUseCase,
   GetActivityDataUseCase,

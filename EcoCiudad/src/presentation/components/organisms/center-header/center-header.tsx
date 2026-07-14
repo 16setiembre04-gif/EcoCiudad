@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   imageContainer: {
-    height: 220,
+    aspectRatio: 16 / 9,
     position: 'relative',
   },
   image: {

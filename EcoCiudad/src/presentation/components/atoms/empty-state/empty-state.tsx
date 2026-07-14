@@ -28,12 +28,12 @@ export function EmptyState({
         </View>
       )}
       
-      <ThemedText type="title" style={styles.title}>
+      <ThemedText type="title" style={styles.title} numberOfLines={2} ellipsizeMode="tail">
         {title}
       </ThemedText>
       
       {description && (
-        <ThemedText type="body" style={styles.description}>
+        <ThemedText type="body" style={styles.description} numberOfLines={3} ellipsizeMode="tail">
           {description}
         </ThemedText>
       )}

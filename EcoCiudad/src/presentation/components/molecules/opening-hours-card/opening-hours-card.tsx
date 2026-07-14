@@ -49,7 +49,9 @@ export function OpeningHoursCard({ openingHours, style }: OpeningHoursCardProps)
                 style={{
                   fontWeight: isToday ? '700' : '400',
                   color: isToday ? theme.colors.primary : theme.colors.textPrimary,
-                  width: 100,
+                  minWidth: 80,
+                  flexShrink: 0,
+                  flexGrow: 0,
                 }}
               >
                 {dayName}

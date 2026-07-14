@@ -107,7 +107,8 @@ export default function CitizenProfileScreen() {
             variant="outlined"
             size="md"
             fullWidth
-            onPress={() => router.push('/(citizen)/settings')}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onPress={() => router.push('/(citizen)/profile/edit' as any)}
             iconName="edit"
           >
             {t('profile.editProfile')}
@@ -266,13 +267,13 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.lg,
-    justifyContent: 'space-around',
+    gap: spacing.md,
   },
   statItem: {
     alignItems: 'center',
     gap: spacing.xs,
-    minWidth: 80,
+    flex: 1,
+    minWidth: 72,
   },
   actionsCard: {
     gap: spacing.md,

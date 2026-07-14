@@ -34,6 +34,7 @@ export const QUERY_KEYS = {
   ADMIN_REPORTS_DISTRICT: 'admin_reports_district',
   ADMIN_ACTIVITY_LOGS: 'admin_activity_logs',
   ADMIN_SETTINGS: 'admin_settings',
+  TRUCK_LOCATIONS: 'truck_locations',
 } as const;
 
 export const PAGINATION = {

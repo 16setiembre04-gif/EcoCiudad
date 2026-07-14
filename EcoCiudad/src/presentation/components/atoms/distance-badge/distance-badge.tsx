@@ -1,38 +1,38 @@
+import { View } from 'react-native';
 import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
-import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
-import { StyleSheet, View } from 'react-native';
-import { type DistanceBadgeProps } from './types';
+import { borderRadius } from '@/theme/radius';
+import { formatDistance } from '@/infrastructure/maps/geo.utils';
 
-export function DistanceBadge({ distanceKm, style }: DistanceBadgeProps) {
+export interface DistanceBadgeProps {
+  distanceKm: number;
+  size?: 'sm' | 'md';
+}
+
+export function DistanceBadge({ distanceKm, size = 'md' }: DistanceBadgeProps) {
   const theme = useTheme();
-
-  const formatDistance = (km: number): string => {
-    if (km < 1) {
-      return `${Math.round(km * 1000)}m`;
-    }
-    return `${km.toFixed(1)}km`;
-  };
+  const textType = size === 'sm' ? 'caption' : 'bodySmall';
+  const iconSize = size === 'sm' ? 12 : 14;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.primaryLight + '40' }, style]}>
-      <Icon name="location" size={14} color={theme.colors.primary} />
-      <ThemedText type="caption" style={{ color: theme.colors.primary, fontWeight: '600' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        backgroundColor: theme.colors.primaryContainer,
+        paddingHorizontal: size === 'sm' ? spacing.sm : spacing.md,
+        paddingVertical: size === 'sm' ? 2 : spacing.xs,
+        borderRadius: borderRadius.full,
+        alignSelf: 'flex-start',
+      }}
+    >
+      <Icon name="navigation" size={iconSize} color={theme.colors.primary} />
+      <ThemedText type={textType} color={theme.colors.primary}>
         {formatDistance(distanceKm)}
       </ThemedText>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.sm,
-    gap: spacing.xs,
-  },
-});

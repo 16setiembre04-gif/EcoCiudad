@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { type GeoLocation } from '@/domain/entities';
+import { LocationSelector } from '@/presentation/components/molecules/location-selector';
 import { CommunityTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
 import { Input } from '@/presentation/components/atoms/input';
@@ -20,7 +22,7 @@ export default function EditCommunityScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, selectedLocation } = useLocalSearchParams<{ id: string; selectedLocation?: string }>();
   const { data: community, isLoading } = useCommunity(id ?? '');
   const updateMutation = useUpdateCommunity();
 
@@ -30,6 +32,7 @@ export default function EditCommunityScreen() {
   const [privacy, setPrivacy] = useState<CommunityPrivacy>(CommunityPrivacy.PUBLIC);
   const [rulesText, setRulesText] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [geoLocation, setGeoLocation] = useState<GeoLocation | undefined>(undefined);
 
   useEffect(() => {
     if (community) {
@@ -38,8 +41,19 @@ export default function EditCommunityScreen() {
       setCategory(community.category);
       setPrivacy(community.privacy);
       setRulesText(community.rules?.join('\n') ?? '');
+      setGeoLocation(community.geoLocation);
     }
   }, [community]);
+
+  useEffect(() => {
+    if (selectedLocation) {
+      try {
+        setGeoLocation(JSON.parse(selectedLocation) as GeoLocation);
+      } catch {
+        // keep existing geoLocation
+      }
+    }
+  }, [selectedLocation]);
 
   const validate = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -68,6 +82,7 @@ export default function EditCommunityScreen() {
           description: description.trim(),
           category,
           privacy,
+          geoLocation,
           rules: rules.length > 0 ? rules : undefined,
         },
       });
@@ -75,7 +90,7 @@ export default function EditCommunityScreen() {
     } catch (error) {
       Alert.alert(t('common.error'), t('errors.failedToUpdateCommunity'));
     }
-  }, [validate, id, name, description, category, privacy, rulesText, updateMutation, router, t]);
+  }, [validate, id, name, description, category, privacy, geoLocation, rulesText, updateMutation, router, t]);
 
   if (isLoading || !community) {
     return (
@@ -151,6 +166,28 @@ export default function EditCommunityScreen() {
                 {t('common.private')}
               </Button>
             </View>
+          </View>
+
+          <View style={styles.section}>
+            <ThemedText type="subtitle" style={{ fontWeight: '600' }}>
+              {t('common.locationOnMap')}
+            </ThemedText>
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+              {t('common.locationOptional')}
+            </ThemedText>
+            <LocationSelector
+              location={geoLocation}
+              onPickLocation={() =>
+                router.push(
+                  `/(citizen)/report/map-picker?returnTo=community-edit&editReportId=${id}${
+                    geoLocation
+                      ? `&initialLatitude=${geoLocation.latitude}&initialLongitude=${geoLocation.longitude}&initialAddress=${encodeURIComponent(geoLocation.address ?? '')}`
+                      : ''
+                  }` as any,
+                )
+              }
+              onClear={() => setGeoLocation(undefined)}
+            />
           </View>
 
           <View style={styles.section}>

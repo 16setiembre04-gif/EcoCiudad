@@ -3,6 +3,7 @@ import { type QuickActionItem } from '@/presentation/components/organisms/quick-
 
 export const DASHBOARD_QUICK_ACTIONS: QuickActionItem[] = [
   { key: 'report', label: 'Reportar', icon: 'report' as IconName },
+  { key: 'map', label: 'Mapa', icon: 'map' },
   { key: 'community', label: 'Comunidad', icon: 'community' },
   { key: 'recycling', label: 'Centros', icon: 'recycle' },
   { key: 'events', label: 'Eventos', icon: 'calendar' },

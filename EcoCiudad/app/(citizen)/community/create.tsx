@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CommunityTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
 import { Input } from '@/presentation/components/atoms/input';
@@ -9,17 +9,43 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { Card } from '@/presentation/components/atoms/card';
 import { Chip } from '@/presentation/components/atoms/chip';
 import { useCreateCommunity } from '@/presentation/hooks';
+import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 import { COMMUNITY_CATEGORIES } from '@/constants';
 import { CommunityCategory, CommunityPrivacy } from '@/domain/entities/community';
+import { type GeoLocation } from '@/domain/entities';
+import { LocationSelector } from '@/presentation/components/molecules/location-selector';
 
 export default function CreateCommunityScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
+  const { selectedLocation } = useLocalSearchParams<{ selectedLocation?: string }>();
   const createMutation = useCreateCommunity();
+  const { user } = useAuthStore();
+
+  const [geoLocation, setGeoLocation] = useState<GeoLocation | undefined>(() => {
+    if (selectedLocation) {
+      try {
+        return JSON.parse(selectedLocation) as GeoLocation;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  });
+
+  useEffect(() => {
+    if (selectedLocation) {
+      try {
+        setGeoLocation(JSON.parse(selectedLocation) as GeoLocation);
+      } catch {
+        setGeoLocation(undefined);
+      }
+    }
+  }, [selectedLocation]);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -42,6 +68,10 @@ export default function CreateCommunityScreen() {
 
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
+    if (!user) {
+      Alert.alert(t('common.error'), t('auth.notAuthenticated'));
+      return;
+    }
 
     const rules = rulesText
       .split('\n')
@@ -56,14 +86,15 @@ export default function CreateCommunityScreen() {
         category,
         privacy,
         location: department && district ? { department: department.trim(), district: district.trim() } : undefined,
+        geoLocation,
         rules: rules.length > 0 ? rules : undefined,
-        ownerId: '',
+        ownerId: user.id,
       });
-      router.replace('/(citizen)/community/my-communities' as any);
+      router.replace('/(citizen)/community/my-communities');
     } catch (error) {
       Alert.alert(t('common.error'), t('errors.failedToCreateCommunity'));
     }
-  }, [validate, name, description, category, privacy, department, district, rulesText, createMutation, router, t]);
+  }, [validate, name, description, category, privacy, department, district, geoLocation, rulesText, createMutation, router, t, user]);
 
   return (
     <CommunityTemplate
@@ -148,6 +179,14 @@ export default function CreateCommunityScreen() {
               value={district}
               onChangeText={setDistrict}
               placeholder={t('common.yourDistrict')}
+            />
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+              {t('common.locationOnMap')}
+            </ThemedText>
+            <LocationSelector
+              location={geoLocation}
+              onPickLocation={() => router.push('/(citizen)/report/map-picker?returnTo=community-create' as any)}
+              onClear={() => setGeoLocation(undefined)}
             />
           </View>
 

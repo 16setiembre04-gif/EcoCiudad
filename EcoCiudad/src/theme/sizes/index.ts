@@ -14,7 +14,8 @@ export const sizes = {
     xl: 64,
   },
   touchTarget: {
-    min: 44,
+    min: 48,
+    sm: 44,
   },
 } as const;
 

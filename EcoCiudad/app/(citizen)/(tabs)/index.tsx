@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { View, StyleSheet, RefreshControl, Pressable } from 'react-native';
+import { View, StyleSheet, RefreshControl, Pressable, useWindowDimensions, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { DashboardTemplate } from '@/presentation/components/templates';
@@ -18,14 +18,16 @@ import { useDashboard } from '@/presentation/hooks/use-dashboard.hook';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { animations } from '@/theme/animations';
-import { DASHBOARD_QUICK_ACTIONS, getGreeting } from '@/constants/dashboard.constants';
 import { useTranslation } from '@/localization';
-import { FlatList } from 'react-native';
+import { DASHBOARD_QUICK_ACTIONS, getGreeting } from '@/constants/dashboard.constants';
 
 export default function CitizenHomeScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
+  const communityCardWidth = Math.min(Math.max(width * 0.72, 240), 320);
+  const quickActionColumns = width < 360 ? 3 : 4;
   const {
     stats,
     recentReports,
@@ -49,8 +51,11 @@ export default function CitizenHomeScreen() {
       case 'report':
         router.push('/(citizen)/report/create');
         break;
+      case 'map':
+        router.push('/(citizen)/(tabs)/map');
+        break;
       case 'community':
-        router.push('/(citizen)/(tabs)/community' as any);
+        router.push('/(citizen)/(tabs)/community');
         break;
       case 'recycling':
         router.push('/(citizen)/recycling/map');
@@ -70,6 +75,7 @@ export default function CitizenHomeScreen() {
   }, [router]);
 
   const handleCommunityPress = useCallback((id: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     router.push(`/(citizen)/community/${id}` as any);
   }, [router]);
 
@@ -82,7 +88,9 @@ export default function CitizenHomeScreen() {
           avatarUri={user?.avatarUrl}
           points={ecoPoints}
           level={level}
-          onProfilePress={() => router.push('/(citizen)/(tabs)/profile' as any)}
+          onProfilePress={() => {
+            router.push('/(citizen)/(tabs)/profile');
+          }}
           onNotificationsPress={() => router.push('/(citizen)/settings')}
         />
       }
@@ -113,7 +121,7 @@ export default function CitizenHomeScreen() {
           <QuickActions
             items={DASHBOARD_QUICK_ACTIONS}
             onItemPress={handleQuickAction}
-            columns={4}
+            columns={quickActionColumns}
           />
         </Animated.View>
 
@@ -149,7 +157,7 @@ export default function CitizenHomeScreen() {
             {isLoading ? (
               <View style={styles.horizontalList}>
                 {[0, 1].map((i) => (
-                  <View key={i} style={styles.communityCard}>
+                  <View key={i} style={[styles.communityCard, { width: communityCardWidth }]}>
                     <View style={[styles.communityAvatar, { backgroundColor: theme.colors.surfaceVariant }]} />
                     <View style={[styles.communityLine, { backgroundColor: theme.colors.surfaceVariant }]} />
                     <View style={[styles.communityLineShort, { backgroundColor: theme.colors.surfaceVariant }]} />
@@ -172,7 +180,7 @@ export default function CitizenHomeScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalList}
                 renderItem={({ item }) => (
-                  <View style={styles.communityCard}>
+                  <View style={[styles.communityCard, { width: communityCardWidth }]}>
                     <CommunityCard
                       name={item.name}
                       description={item.description}
@@ -226,7 +234,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   communityCard: {
-    width: 260,
+    flexShrink: 0,
   },
   communityAvatar: {
     width: 64,

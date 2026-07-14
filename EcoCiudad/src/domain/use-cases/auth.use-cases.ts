@@ -1,6 +1,6 @@
 import { type User } from '../entities';
 import { type DomainError } from '../errors';
-import { type Either, type CitizenSignUpData } from '../repositories';
+import { type Either, type CitizenSignUpData, type UpdateProfileData } from '../repositories';
 import { type AuthRepository } from '../repositories';
 
 export class SignInUseCase {
@@ -64,5 +64,13 @@ export class ResendVerificationUseCase {
 
   async execute(email: string): Promise<Either<DomainError, void>> {
     return this.authRepository.resendVerificationEmail(email);
+  }
+}
+
+export class UpdateProfileUseCase {
+  constructor(private readonly authRepository: AuthRepository) {}
+
+  async execute(userId: string, data: UpdateProfileData): Promise<Either<DomainError, User>> {
+    return this.authRepository.updateProfile(userId, data);
   }
 }

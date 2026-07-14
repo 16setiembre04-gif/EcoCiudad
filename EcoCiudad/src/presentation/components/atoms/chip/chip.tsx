@@ -22,7 +22,9 @@ export function Chip({
   const content = (
     <>
       {iconName && <Icon name={iconName} size={styles.iconSize} color={styles.iconColor} />}
-      <Text style={[styles.text, textStyle]}>{children}</Text>
+      <Text style={[styles.text, { flex: 1, flexShrink: 1 }, textStyle]} numberOfLines={1} ellipsizeMode="tail" adjustsFontSizeToFit>
+        {children}
+      </Text>
       {onDismiss && (
         <Pressable
           onPress={onDismiss}

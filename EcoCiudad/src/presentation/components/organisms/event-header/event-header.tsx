@@ -89,7 +89,8 @@ export function EventHeader({
         <View style={styles.categoryRow}>
           <Icon name={categoryConfig.icon} size={16} color={categoryConfig.color} />
           <ThemedText type="bodySmall" style={{ color: categoryConfig.color, fontWeight: '600' }}>
-            {categoryConfig.label}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {categoryConfig ? t(categoryConfig.labelKey as any) : ''}
           </ThemedText>
         </View>
 
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   imageContainer: {
-    height: 220,
+    aspectRatio: 16 / 9,
     position: 'relative',
   },
   image: {

@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Link } from 'expo-router';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema, type SignInFormData } from '@/lib/validations';
-import { useAuth } from '@/presentation/hooks';
-import { GuestGuard } from '@/presentation/components/organisms/auth-guard';
+import { useTranslation } from '@/localization';
 import { Button, Input, ThemedText } from '@/presentation/components/atoms';
+import { GuestGuard } from '@/presentation/components/organisms/auth-guard';
+import { useAuth } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
-import { useTranslation } from '@/localization';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link } from 'expo-router';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 function LoginScreenContent() {
   const theme = useTheme();

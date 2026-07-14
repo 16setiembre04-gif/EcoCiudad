@@ -5,8 +5,16 @@ import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { AssignedReportCard } from '@/presentation/components/molecules/assigned-report-card';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { type AssignedReportsListProps } from './types';
+
+const HORIZONTAL_CARD_MIN_WIDTH = 280;
+const HORIZONTAL_CARD_MAX_WIDTH = 360;
+
+function useHorizontalCardWidth() {
+  const { width } = useWindowDimensions();
+  return Math.min(Math.max(width * 0.82, HORIZONTAL_CARD_MIN_WIDTH), HORIZONTAL_CARD_MAX_WIDTH);
+}
 
 export function AssignedReportsList({
   reports,
@@ -18,6 +26,7 @@ export function AssignedReportsList({
   style,
 }: AssignedReportsListProps) {
   const { t } = useTranslation();
+  const horizontalCardWidth = useHorizontalCardWidth();
   const displayTitle = title ?? t('common.assignedReports');
 
   if (isLoading) {
@@ -26,7 +35,12 @@ export function AssignedReportsList({
         <SectionHeader title={displayTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <View style={horizontal ? styles.skeletonHorizontal : styles.skeletonVertical}>
           {[0, 1, 2].map((i) => (
-            <Card key={i} variant="elevated" padding="md" style={horizontal ? styles.skeletonCardH : styles.skeletonCardV}>
+            <Card
+              key={i}
+              variant="elevated"
+              padding="md"
+              style={horizontal ? [styles.skeletonCardH, { width: horizontalCardWidth }] : styles.skeletonCardV}
+            >
               <Skeleton width="100%" height={20} />
               <Skeleton width="80%" height={16} />
               <Skeleton width="60%" height={14} />
@@ -63,7 +77,7 @@ export function AssignedReportsList({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.horizontalList}
           renderItem={({ item }) => (
-            <View style={styles.horizontalCard}>
+            <View style={[styles.horizontalCard, { width: horizontalCardWidth }]}>
               <AssignedReportCard
                 report={item}
                 onPress={onReportPress ? () => onReportPress(item.id) : undefined}
@@ -104,7 +118,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   horizontalCard: {
-    width: 320,
+    flexShrink: 0,
   },
   verticalList: {
     paddingHorizontal: spacing.lg,
@@ -127,7 +141,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   skeletonCardH: {
-    width: 320,
     gap: spacing.sm,
   },
   skeletonCardV: {

@@ -1,4 +1,5 @@
 import { type SupabaseClient } from '@supabase/supabase-js';
+import { logger } from '@/services/logger';
 import { type ReportDTO, type ReportCommentDTO, type ReportTimelineEntryDTO } from '../../dto';
 
 export class ReportRemoteDataSource {
@@ -83,6 +84,24 @@ export class ReportRemoteDataSource {
   }
 
   async delete(id: string): Promise<void> {
+    try {
+      const { data: files } = await this.client.storage
+        .from('report-images')
+        .list(id, { limit: 100 });
+
+      if (files && files.length > 0) {
+        const paths = files.map((file) => `${id}/${file.name}`);
+        const { error: removeError } = await this.client.storage
+          .from('report-images')
+          .remove(paths);
+        if (removeError) {
+          logger.error('[ReportDataSource] Error removing images:', removeError);
+        }
+      }
+    } catch (cleanupError) {
+      logger.error('[ReportDataSource] Error cleaning up images:', cleanupError);
+    }
+
     const { error } = await this.client.from('reports').delete().eq('id', id);
     if (error) throw error;
   }
@@ -118,18 +137,20 @@ export class ReportRemoteDataSource {
   }
 
   async uploadImage(reportId: string, uri: string): Promise<string> {
-    const fileExt = uri.split('.').pop() ?? 'jpg';
+    const fileExt = uri.split('.').pop() || 'jpg';
     const fileName = `${reportId}/${Date.now()}.${fileExt}`;
+    const contentType = `image/${fileExt === 'jpg' ? 'jpeg' : fileExt}`;
 
-    const response = await fetch(uri);
-    const blob = await response.blob();
+    const fileBody = new FormData();
+    fileBody.append('file', {
+      uri,
+      name: fileName,
+      type: contentType,
+    } as unknown as Blob);
 
     const { error } = await this.client.storage
       .from('report-images')
-      .upload(fileName, blob, {
-        contentType: blob.type,
-        upsert: false,
-      });
+      .upload(fileName, fileBody);
 
     if (error) throw error;
 

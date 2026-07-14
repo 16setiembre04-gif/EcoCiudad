@@ -1,5 +1,6 @@
-import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
+
+import { LocationService } from '@/infrastructure/maps/location.service';
 import { NotificationService } from '@/infrastructure/notifications';
 
 export type PermissionStatus = 'granted' | 'denied' | 'undetermined';
@@ -10,8 +11,13 @@ export interface PermissionResult {
 }
 
 export async function requestLocationPermission(): Promise<PermissionResult> {
-  const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
-  return { status: status as PermissionStatus, canAskAgain };
+  const status = await LocationService.requestPermission();
+  return { status: status as PermissionStatus, canAskAgain: status !== 'denied' };
+}
+
+export async function getLocationPermissionStatus(): Promise<PermissionResult> {
+  const status = await LocationService.getPermissionStatus();
+  return { status: status as PermissionStatus, canAskAgain: status !== 'denied' };
 }
 
 export async function requestCameraPermission(): Promise<PermissionResult> {
@@ -29,10 +35,11 @@ export async function requestNotificationPermission(): Promise<PermissionResult>
   return { status: granted ? 'granted' : 'denied', canAskAgain: !granted };
 }
 
+/**
+ * @deprecated Usa LocationService.getCurrentLocation() directamente.
+ */
 export async function getLocationAsync() {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') {
-    throw new Error('Location permission denied');
-  }
-  return Location.getCurrentPositionAsync({});
+  return LocationService.getCurrentLocation();
 }
+
+export { LocationService };

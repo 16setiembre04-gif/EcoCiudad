@@ -13,3 +13,13 @@ export interface UserDTO {
   created_at: string;
   updated_at: string;
 }
+
+export interface UpdateProfileData {
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  department?: string;
+  district?: string;
+  avatarUrl?: string;
+}

@@ -247,6 +247,14 @@ export class EventRemoteDataSource {
       eco_points_earned: event.eco_points_reward ?? 10,
     };
 
+    const { data: profile } = await this.client
+      .from('profiles')
+      .select('eco_points')
+      .eq('id', userId)
+      .single();
+
+    const currentBalance = (profile?.eco_points as number | undefined) ?? 0;
+
     await this.client.from('eco_points_transactions').insert({
       user_id: userId,
       amount: attendance.eco_points_earned,
@@ -254,7 +262,7 @@ export class EventRemoteDataSource {
       reason: `Attended event: ${event.title}`,
       reference_type: 'event',
       reference_id: eventId,
-      balance_after: 0,
+      balance_after: currentBalance + attendance.eco_points_earned,
     });
 
     return attendance;
@@ -323,6 +331,30 @@ export class EventRemoteDataSource {
       .eq('user_id', userId);
     if (error) throw error;
     return (data ?? []) as unknown as EventReminderDTO[];
+  }
+
+  async uploadImage(eventId: string, uri: string): Promise<string> {
+    const fileExt = uri.split('.').pop() || 'jpg';
+    const fileName = `${eventId}/${Date.now()}.${fileExt}`;
+
+    const fileBody = new FormData();
+    fileBody.append('file', {
+      uri,
+      name: fileName,
+      type: `image/${fileExt === 'jpg' ? 'jpeg' : fileExt}`,
+    } as unknown as Blob);
+
+    const { error } = await this.client.storage
+      .from('event-images')
+      .upload(fileName, fileBody);
+
+    if (error) throw error;
+
+    const { data } = this.client.storage
+      .from('event-images')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
   }
 
   onEventChange(eventId: string, callback: (payload: unknown) => void) {

@@ -11,15 +11,16 @@ export const getChipStyles = (
   colors: ThemeColors,
 ) => {
   const sizeConfig = {
-    sm: { height: 32, paddingHorizontal: spacing.md, iconSize: 14 },
-    md: { height: 40, paddingHorizontal: spacing.lg, iconSize: 16 },
+    sm: { minHeight: 32, paddingHorizontal: spacing.md, iconSize: 14 },
+    md: { minHeight: 40, paddingHorizontal: spacing.lg, iconSize: 16 },
   };
 
   const sizeStyles = sizeConfig[size];
 
   const baseContainer = {
-    minHeight: sizeStyles.height,
+    minHeight: sizeStyles.minHeight,
     paddingHorizontal: sizeStyles.paddingHorizontal,
+    paddingVertical: spacing.xs,
     borderRadius: borderRadius.full,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,

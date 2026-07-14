@@ -1,13 +1,13 @@
 import {
   Home, Map, Calendar,   List, User, Settings, Search, Bell, Clock,
   Plus, Minus, Check, X, ChevronRight, ChevronLeft, ChevronUp, ChevronDown,
-  Edit3, Trash2, Camera, Image, MapPin, Phone, Mail, Lock, Eye, EyeOff,
+  Edit3, Trash2, Camera, Image, MapPin, MapPinOff, Phone, Mail, Lock, Eye, EyeOff,
   Star, Heart, Share2, Download, Upload, RefreshCw, Filter, SortAsc,
   Info, AlertTriangle, AlertCircle, CheckCircle, Menu, MoreVertical,
   MoreHorizontal, ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
   Leaf, Recycle, TreePine, Droplets, Volume2, HelpCircle,
   LogOut, ClipboardList, Truck, Route, Users, Award, Zap,
-  MessageSquare, Send, Link as LinkIcon, ExternalLink,
+  MessageSquare, Send, Link as LinkIcon, ExternalLink, Navigation, Locate,
 } from 'lucide-react-native';
 
 export const iconMap = {
@@ -33,6 +33,10 @@ export const iconMap = {
   camera: Camera,
   image: Image,
   location: MapPin,
+  'map-pin': MapPin,
+  'map-pin-off': MapPinOff,
+  navigation: Navigation,
+  locate: Locate,
   phone: Phone,
   email: Mail,
   lock: Lock,

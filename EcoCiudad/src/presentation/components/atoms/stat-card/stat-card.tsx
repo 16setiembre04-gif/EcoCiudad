@@ -16,10 +16,16 @@ export function StatCard({ label, value, iconName, color, style }: StatCardProps
       <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
         <Icon name={iconName} size={20} color={iconColor} />
       </View>
-      <ThemedText type="title" style={styles.value}>
+      <ThemedText type="title" style={styles.value} adjustsFontSizeToFit numberOfLines={1}>
         {value}
       </ThemedText>
-      <ThemedText type="caption" color={theme.colors.textSecondary} numberOfLines={1}>
+      <ThemedText
+        type="caption"
+        color={theme.colors.textSecondary}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={{ textAlign: 'center' }}
+      >
         {label}
       </ThemedText>
     </Card>

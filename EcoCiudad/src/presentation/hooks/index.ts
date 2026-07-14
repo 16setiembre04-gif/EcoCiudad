@@ -9,6 +9,7 @@ export {
   useResetPasswordMutation,
   useUpdatePasswordMutation,
   useResendVerificationMutation,
+  useUpdateProfileMutation,
 } from './use-auth-mutations.hook';
 export { useRecyclingCenters } from './use-recycling-centers.hook';
 export { useDashboard } from './use-dashboard.hook';
@@ -27,7 +28,7 @@ export {
   usePopularEvents,
   useCommunityEvents,
   useMyEvents,
-  useCreateEvent,
+  useCreateEventWithImages,
   useUpdateEvent,
   useCancelEvent,
   useLeaveEvent,
@@ -96,6 +97,11 @@ export {
   useAdminUpdateReportStatus,
   useAdminUpdateReportPriority,
 } from './use-admin-queries.hook';
+export {
+  useTruckLocations,
+  useTruckLocation,
+  useTruckLocationsByRoute,
+} from './use-truck-locations.hook';
 export {
   useCommunities,
   useCommunity,

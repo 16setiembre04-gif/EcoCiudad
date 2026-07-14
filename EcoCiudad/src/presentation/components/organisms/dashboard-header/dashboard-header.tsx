@@ -51,7 +51,7 @@ export function DashboardHeader({
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
             {greeting ?? t('common.hello')}
           </ThemedText>
-          <ThemedText type="headline" numberOfLines={1} style={{ fontSize: 24, lineHeight: 32 }}>
+          <ThemedText type="headline" numberOfLines={1}>
             {userName}
           </ThemedText>
           {(points !== undefined || level !== undefined) && (

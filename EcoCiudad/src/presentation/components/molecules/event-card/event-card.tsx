@@ -82,7 +82,8 @@ export function EventCard({
           <View style={styles.categoryRow}>
             <Icon name={categoryConfig.icon} size={16} color={categoryConfig.color} />
             <ThemedText type="caption" color={categoryConfig.color}>
-              {categoryConfig.label}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {categoryConfig ? t(categoryConfig.labelKey as any) : ''}
             </ThemedText>
           </View>
           {isRegistered && (
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   imageContainer: {
-    height: 140,
+    aspectRatio: 16 / 9,
     borderTopLeftRadius: borderRadius.xl,
     borderTopRightRadius: borderRadius.xl,
     overflow: 'hidden',
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   placeholderImage: {
-    height: 140,
+    aspectRatio: 16 / 9,
     borderTopLeftRadius: borderRadius.xl,
     borderTopRightRadius: borderRadius.xl,
     alignItems: 'center',

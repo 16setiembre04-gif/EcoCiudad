@@ -36,4 +36,5 @@ export interface EventRepository {
   getAttendance(eventId: string, userId: string): Promise<Either<DomainError, EventAttendance | null>>;
   setReminder(eventId: string, userId: string, reminderBefore: number, reminderType: 'push' | 'email' | 'sms'): Promise<Either<DomainError, EventReminder>>;
   getReminders(eventId: string, userId: string): Promise<Either<DomainError, EventReminder[]>>;
+  uploadImage(eventId: string, uri: string): Promise<Either<DomainError, string>>;
 }

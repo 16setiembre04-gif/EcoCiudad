@@ -102,7 +102,8 @@ export default function EventsHomeScreen() {
               iconName={config.icon}
               onPress={() => setSelectedCategory(key as EventCategory)}
             >
-              {config.label}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {t(config.labelKey as any)}
             </Chip>
           ))}
         </View>

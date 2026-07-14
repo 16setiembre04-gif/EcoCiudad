@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { authService, type SignInParams, type CitizenSignUpParams } from '@/services/auth';
+import { type UpdateProfileData } from '@/domain/repositories';
+import { container } from '@/presentation/navigation/container';
 import { useAuthStore } from '@/presentation/stores';
 import { QUERY_KEYS, AUTH_ROUTES } from '@/constants';
 import { logger } from '@/services/logger';
@@ -150,6 +152,25 @@ export function useResendVerificationMutation() {
       if (result.left) {
         throw new Error(result.left.message);
       }
+    },
+  });
+}
+
+export function useUpdateProfileMutation() {
+  const queryClient = useQueryClient();
+  const { user, setUser } = useAuthStore();
+
+  return useMutation({
+    mutationKey: [QUERY_KEYS.AUTH, 'updateProfile'],
+    mutationFn: async (data: UpdateProfileData) => {
+      if (!user) throw new Error('Usuario no autenticado');
+      const result = await container.authUseCases.updateProfile.execute(user.id, data);
+      if (result.left) throw new Error(result.left.message);
+      return result.right;
+    },
+    onSuccess: (updatedUser) => {
+      setUser(updatedUser);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.AUTH] });
     },
   });
 }

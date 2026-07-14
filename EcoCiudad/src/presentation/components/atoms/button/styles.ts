@@ -5,15 +5,15 @@ import { textStyles } from '@/theme/typography';
 import { type ButtonSize, type ButtonVariant } from './types';
 
 interface ButtonStyleConfig {
-  height: number;
+  minHeight: number;
   paddingHorizontal: number;
   iconSize: number;
 }
 
 const sizeConfig: Record<ButtonSize, ButtonStyleConfig> = {
-  sm: { height: 36, paddingHorizontal: spacing.lg, iconSize: 16 },
-  md: { height: 48, paddingHorizontal: spacing.xl, iconSize: 20 },
-  lg: { height: 56, paddingHorizontal: spacing['2xl'], iconSize: 24 },
+  sm: { minHeight: 40, paddingHorizontal: spacing.lg, iconSize: 16 },
+  md: { minHeight: 48, paddingHorizontal: spacing.xl, iconSize: 20 },
+  lg: { minHeight: 56, paddingHorizontal: spacing['2xl'], iconSize: 24 },
 };
 
 export const getButtonStyles = (
@@ -25,9 +25,9 @@ export const getButtonStyles = (
   const sizeStyles = sizeConfig[size];
 
   const baseContainer: ViewStyle = {
-    height: sizeStyles.height,
-    minHeight: sizeStyles.height,
+    minHeight: sizeStyles.minHeight,
     paddingHorizontal: sizeStyles.paddingHorizontal,
+    paddingVertical: spacing.sm,
     borderRadius: borderRadius.xl,
     justifyContent: 'center',
     alignItems: 'center',

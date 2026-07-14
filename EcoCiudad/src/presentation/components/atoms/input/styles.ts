@@ -5,15 +5,15 @@ import { spacing } from '@/theme/spacing';
 import { textStyles } from '@/theme/typography';
 
 interface InputSizeConfig {
-  height: number;
+  minHeight: number;
   paddingHorizontal: number;
   iconSize: number;
 }
 
 const sizeConfig: Record<InputSize, InputSizeConfig> = {
-  sm: { height: 40, paddingHorizontal: spacing.md, iconSize: 16 },
-  md: { height: 48, paddingHorizontal: spacing.lg, iconSize: 20 },
-  lg: { height: 56, paddingHorizontal: spacing.lg, iconSize: 24 },
+  sm: { minHeight: 40, paddingHorizontal: spacing.md, iconSize: 16 },
+  md: { minHeight: 48, paddingHorizontal: spacing.lg, iconSize: 20 },
+  lg: { minHeight: 56, paddingHorizontal: spacing.lg, iconSize: 24 },
 };
 
 export const getInputStyles = (
@@ -39,11 +39,10 @@ export const getInputStyles = (
   };
 
   const baseInputWrapper = {
-    minHeight: sizeStyles.height,
+    minHeight: sizeStyles.minHeight,
     borderRadius: borderRadius.lg,
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    overflow: 'hidden' as const,
   };
 
   const variantStyles = {
@@ -71,10 +70,12 @@ export const getInputStyles = (
 
   const inputStyle = {
     flex: 1,
-    minHeight: sizeStyles.height,
+    minHeight: sizeStyles.minHeight,
+    paddingVertical: spacing.sm,
     ...textStyles.body,
     color: state === 'disabled' ? colors.textDisabled : colors.textPrimary,
     paddingHorizontal: sizeStyles.paddingHorizontal,
+    textAlignVertical: 'center' as const,
   };
 
   return {
@@ -82,7 +83,7 @@ export const getInputStyles = (
     inputWrapper: variantStyles[variant].inputWrapper,
     input: inputStyle,
     iconSize: sizeStyles.iconSize,
-    iconContainerSize: sizeStyles.height,
+    iconContainerSize: sizeStyles.minHeight,
   };
 };
 

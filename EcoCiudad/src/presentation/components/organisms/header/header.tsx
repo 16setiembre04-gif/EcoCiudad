@@ -2,9 +2,11 @@ import { Icon } from '@/presentation/components/atoms/icon';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
+import { sizes } from '@/theme/sizes';
 import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HeaderProps } from './types';
 
 export function Header({
@@ -23,6 +25,7 @@ export function Header({
   const theme = useTheme();
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const handleBack = () => {
     if (onBackPress) {
@@ -34,33 +37,28 @@ export function Header({
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rightIconAccessibilityLabel = rightIcon ? t(`common.${rightIcon}` as any) : t('common.action');
+
   return (
     <View
       style={[
+        styles.container,
         {
           backgroundColor: theme.colors.surface,
-          paddingHorizontal: spacing.lg,
-          paddingVertical: spacing.md,
-          borderBottomWidth: 1,
           borderBottomColor: theme.colors.border,
+          paddingTop: insets.top > 0 ? insets.top : spacing.md,
         },
         containerStyle,
       ]}
       testID={testID}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, flex: 1 }}>
+      <View style={styles.inner}>
+        <View style={styles.leftSection}>
           {(showBackButton || leftIcon) && (
             <Pressable
               onPress={handleBack}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: theme.colors.surfaceVariant,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              style={[styles.iconButton, { backgroundColor: theme.colors.surfaceVariant }]}
               accessibilityRole="button"
               accessibilityLabel={showBackButton ? t('common.goBack') : t('common.menu')}
             >
@@ -71,12 +69,12 @@ export function Header({
               />
             </Pressable>
           )}
-          <View style={{ flex: 1 }}>
-            <ThemedText type="title" numberOfLines={1}>
+          <View style={styles.titleContainer}>
+            <ThemedText type="title" numberOfLines={1} ellipsizeMode="tail">
               {title}
             </ThemedText>
             {subtitle && (
-              <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1}>
+              <ThemedText type="bodySmall" color={theme.colors.textSecondary} numberOfLines={1} ellipsizeMode="tail">
                 {subtitle}
               </ThemedText>
             )}
@@ -87,16 +85,9 @@ export function Header({
         ) : rightIcon ? (
           <Pressable
             onPress={onRightIconPress}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: theme.colors.surfaceVariant,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={[styles.iconButton, { backgroundColor: theme.colors.surfaceVariant }]}
             accessibilityRole="button"
-            accessibilityLabel={rightIcon ? t(`common.${rightIcon}` as any) : t('common.action')}
+            accessibilityLabel={rightIconAccessibilityLabel}
           >
             <Icon name={rightIcon} size={20} color={theme.colors.textPrimary} />
           </Pressable>
@@ -105,3 +96,35 @@ export function Header({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderBottomWidth: 1,
+  },
+  inner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    minHeight: sizes.touchTarget.min + spacing.md,
+  },
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    flex: 1,
+  },
+  iconButton: {
+    width: sizes.touchTarget.min,
+    height: sizes.touchTarget.min,
+    borderRadius: sizes.touchTarget.min / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+  },
+  titleContainer: {
+    flex: 1,
+    minWidth: 0,
+  },
+});

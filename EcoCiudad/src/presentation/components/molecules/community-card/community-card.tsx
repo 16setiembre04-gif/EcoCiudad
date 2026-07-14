@@ -30,7 +30,7 @@ export function CommunityCard({
         <Avatar uri={imageUrl} name={name} size="lg" />
         <View style={{ flex: 1, gap: spacing.xs }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-            <ThemedText type="subtitle" numberOfLines={1}>
+            <ThemedText type="subtitle" numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1, flexShrink: 1 }}>
               {name}
             </ThemedText>
             {isJoined && (

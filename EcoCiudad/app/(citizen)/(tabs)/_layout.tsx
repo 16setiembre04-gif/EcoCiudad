@@ -7,6 +7,7 @@ interface TabItem {
   key: string;
   label: string;
   icon: IconName;
+  primary?: boolean;
 }
 
 export default function CitizenTabsLayout() {
@@ -14,9 +15,9 @@ export default function CitizenTabsLayout() {
 
   const tabs: TabItem[] = [
     { key: 'index', label: t('dashboard.title'), icon: 'home' },
-    { key: 'reports', label: t('reports.title'), icon: 'report' },
-    { key: 'community', label: t('communities.title'), icon: 'community' },
-    { key: 'events', label: t('events.title'), icon: 'calendar' },
+    { key: 'map', label: t('common.map'), icon: 'map' },
+    { key: 'report', label: t('reports.report'), icon: 'report', primary: true },
+    { key: 'activity', label: t('common.activity'), icon: 'calendar' },
     { key: 'profile', label: t('profile.title'), icon: 'user' },
   ];
 
@@ -42,10 +43,14 @@ export default function CitizenTabsLayout() {
       }}
     >
       <Tabs.Screen name="index" />
-      <Tabs.Screen name="reports" />
-      <Tabs.Screen name="community" />
-      <Tabs.Screen name="events" />
+      <Tabs.Screen name="map" />
+      <Tabs.Screen name="report" />
+      <Tabs.Screen name="activity" />
       <Tabs.Screen name="profile" />
+      {/* Funcionalidades mantenidas pero accesibles desde Actividad/Reportes */}
+      <Tabs.Screen name="reports" options={{ href: null }} />
+      <Tabs.Screen name="community" options={{ href: null }} />
+      <Tabs.Screen name="events" options={{ href: null }} />
     </Tabs>
   );
 }

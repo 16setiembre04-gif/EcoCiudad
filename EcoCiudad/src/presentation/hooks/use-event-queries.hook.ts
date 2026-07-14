@@ -71,17 +71,50 @@ export function useMyEvents(status?: EventStatus) {
   });
 }
 
-export function useCreateEvent() {
+export function useCreateEventWithImages() {
   const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
 
   return useMutation({
-    mutationFn: async (data: Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'currentAttendees'>) => {
-      const result = await container.eventUseCases.createEvent.execute(data);
+    mutationFn: async (data: {
+      event: Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'currentAttendees'>;
+      images: string[];
+    }) => {
+      if (!user) throw new Error('Usuario no autenticado');
+
+      const eventWithOrganizer = {
+        ...data.event,
+        organizerId: user.id,
+      };
+
+      const result = await container.eventUseCases.createEvent.execute(eventWithOrganizer);
       if (result.left) throw result.left;
-      return result.right;
+
+      const event = result.right;
+
+      if (data.images.length > 0) {
+        const uploadedUrls = await Promise.all(
+          data.images.map(async (uri) => {
+            const uploadResult = await container.eventUseCases.uploadImage.execute(event.id, uri);
+            if (uploadResult.left) throw uploadResult.left;
+            return uploadResult.right;
+          }),
+        );
+
+        const updateResult = await container.eventUseCases.updateEvent.execute(event.id, {
+          imageUrl: uploadedUrls[0],
+          bannerUrl: uploadedUrls[0],
+        });
+        if (updateResult.left) throw updateResult.left;
+
+        return { ...event, imageUrl: uploadedUrls[0], bannerUrl: uploadedUrls[0] };
+      }
+
+      return event;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.EVENTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.EVENTS, 'my'] });
     },
   });
 }

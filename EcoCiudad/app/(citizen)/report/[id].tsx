@@ -7,6 +7,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
 import { StatusTimeline } from '@/presentation/components/molecules/status-timeline';
 import { Header } from '@/presentation/components/organisms/header';
+import { MapViewer } from '@/presentation/components/organisms/map-viewer';
 import { DashboardTemplate } from '@/presentation/components/templates';
 import { useAddReportComment, useReport, useReportComments, useReportTimeline, useDeleteReport } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
@@ -14,13 +15,14 @@ import { useTheme } from '@/theme/context';
 import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
+import { LocationService } from '@/infrastructure/maps';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, ScrollView, Share, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('es-ES', {
+function formatDate(date: Date, locale = 'es-ES'): string {
+  return date.toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -32,7 +34,7 @@ function formatDate(date: Date): string {
 export default function ReportDetailScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
 
@@ -59,6 +61,15 @@ export default function ReportDetailScreen() {
     if (!id) return;
     router.push(`/(citizen)/report/edit/${id}` as any);
   }, [id, router]);
+
+  const handleOpenDirections = useCallback(async () => {
+    if (!report?.location) return;
+    try {
+      await LocationService.openDirections(report.location);
+    } catch {
+      Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
+    }
+  }, [report?.location, t]);
 
   const handleDelete = useCallback(() => {
     if (!id) return;
@@ -164,7 +175,7 @@ export default function ReportDetailScreen() {
           <View style={styles.infoRow}>
             <CategoryChip category={report.category} />
             <ThemedText type="caption" color={theme.colors.textSecondary}>
-              {formatDate(report.createdAt)}
+              {formatDate(report.createdAt, locale === 'es' ? 'es-ES' : 'en-US')}
             </ThemedText>
           </View>
 
@@ -172,11 +183,31 @@ export default function ReportDetailScreen() {
             <ImageGallery images={report.images} />
           )}
 
-          <View style={styles.locationContainer}>
-            <Icon name="location" size={16} color={theme.colors.textSecondary} />
-            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-              {report.location.address ?? t('common.locationNotAvailable')}
-            </ThemedText>
+          <View style={styles.locationCard}>
+            <View style={styles.locationHeader}>
+              <Icon name="location" size={16} color={theme.colors.textSecondary} />
+              <ThemedText type="bodySmall" color={theme.colors.textSecondary} style={styles.locationAddress}>
+                {report.location.address ?? t('common.locationNotAvailable')}
+              </ThemedText>
+            </View>
+            {report.location.latitude && report.location.longitude && (
+              <View style={styles.mapPreview}>
+                <MapViewer
+                  selectedCoordinate={report.location}
+                  showsUserLocation={false}
+                  showUserLocationButton={false}
+                  containerStyle={styles.mapContainer}
+                />
+              </View>
+            )}
+            <View style={styles.locationActions}>
+              <Button variant="outlined" size="sm" iconName="map" onPress={handleOpenDirections} style={styles.locationButton}>
+                {t('common.openInMaps')}
+              </Button>
+              <Button variant="outlined" size="sm" iconName="navigation" onPress={handleOpenDirections} style={styles.locationButton}>
+                {t('common.getDirections')}
+              </Button>
+            </View>
           </View>
 
           {timeline && timeline.length > 0 && (
@@ -206,7 +237,7 @@ export default function ReportDetailScreen() {
                         {comment.authorName}
                       </ThemedText>
                       <ThemedText type="caption" color={theme.colors.textSecondary}>
-                        {formatDate(comment.createdAt)}
+                        {formatDate(comment.createdAt, locale === 'es' ? 'es-ES' : 'en-US')}
                       </ThemedText>
                     </View>
                     <ThemedText type="bodySmall">{comment.content}</ThemedText>
@@ -275,21 +306,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: spacing.md,
+    flexWrap: 'wrap',
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: spacing.md,
+    flexWrap: 'wrap',
   },
-  locationContainer: {
+  locationCard: {
+    gap: spacing.md,
+    padding: spacing.md,
+    backgroundColor: '#F8FAFC',
+    borderRadius: borderRadius.lg,
+  },
+  locationHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: spacing.sm,
+  },
+  locationAddress: {
+    flex: 1,
+  },
+  mapPreview: {
+    height: 180,
+    borderRadius: borderRadius.md,
+    overflow: 'hidden',
+  },
+  mapContainer: {
+    borderRadius: borderRadius.md,
+  },
+  locationActions: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    flexWrap: 'wrap',
+  },
+  locationButton: {
+    flex: 1,
+    minWidth: 130,
   },
   actionsRow: {
     flexDirection: 'row',
     gap: spacing.md,
     marginTop: spacing.md,
+    flexWrap: 'wrap',
   },
   commentsSection: {
     gap: spacing.md,
@@ -308,11 +370,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: spacing.sm,
+    flexWrap: 'wrap',
   },
   commentInput: {
     flexDirection: 'row',
     gap: spacing.sm,
     alignItems: 'flex-end',
+    flexWrap: 'wrap',
   },
   textInput: {
     flex: 1,

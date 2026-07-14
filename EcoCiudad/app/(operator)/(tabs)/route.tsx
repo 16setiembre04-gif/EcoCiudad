@@ -1,12 +1,13 @@
 import { Header } from '@/presentation/components/organisms/header';
 import { RoutePlanner } from '@/presentation/components/organisms/route-planner';
+import { MapViewer } from '@/presentation/components/organisms/map-viewer';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
 import { useOptimizeRoute, useTodayRoute } from '@/presentation/hooks';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { Alert, Linking, Platform, StyleSheet } from 'react-native';
+import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 export default function OperatorRouteScreen() {
@@ -29,12 +30,17 @@ export default function OperatorRouteScreen() {
   const handleStartRoute = useCallback(() => {
     if (!route || route.length === 0) return;
 
+    const start = route[0].location;
     const destination = route[route.length - 1].location;
-    const waypoints = route.slice(0, -1).map((r) => `${r.location.latitude},${r.location.longitude}`).join('|');
+    const viaPoints = route.slice(1, -1);
+
+    const viaParams = viaPoints
+      .map((r) => `&via=${r.location.latitude}%2C${r.location.longitude}`)
+      .join('');
 
     const url = Platform.select({
-      ios: `comgooglemaps://?daddr=${destination.latitude},${destination.longitude}&directionsmode=driving${waypoints ? `&waypoints=${waypoints}` : ''}`,
-      default: `https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}&travelmode=driving${waypoints ? `&waypoints=${waypoints}` : ''}`,
+      ios: `https://www.openstreetmap.org/directions?from=${start.latitude},${start.longitude}&to=${destination.latitude},${destination.longitude}${viaParams}`,
+      default: `https://www.openstreetmap.org/directions?from=${start.latitude},${start.longitude}&to=${destination.latitude},${destination.longitude}${viaParams}`,
     });
 
     Linking.canOpenURL(url)
@@ -42,9 +48,7 @@ export default function OperatorRouteScreen() {
         if (supported) {
           return Linking.openURL(url);
         }
-        // Fallback to universal Google Maps web URL
-        const webUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination.latitude},${destination.longitude}&travelmode=driving${waypoints ? `&waypoints=${waypoints}` : ''}`;
-        return Linking.openURL(webUrl);
+        return Linking.openURL(url);
       })
       .catch(() => {
         Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
@@ -69,6 +73,27 @@ export default function OperatorRouteScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {route && route.length > 0 && (
+          <View style={styles.mapSection}>
+            <MapViewer
+              points={route
+                .filter((r) => r.location?.latitude && r.location?.longitude)
+                .map((r, index) => ({
+                  id: r.id,
+                  latitude: r.location.latitude,
+                  longitude: r.location.longitude,
+                  title: `${index + 1}. ${r.title}`,
+                  description: r.location.address ?? '',
+                  icon: 'report',
+                }))}
+              routeCoordinates={route
+                .filter((r) => r.location?.latitude && r.location?.longitude)
+                .map((r) => r.location)}
+              showsUserLocation
+              containerStyle={styles.map}
+            />
+          </View>
+        )}
         <RoutePlanner
           route={route ?? []}
           isLoading={isLoading}
@@ -87,5 +112,13 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: spacing['5xl'],
+  },
+  mapSection: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    height: 240,
+  },
+  map: {
+    borderRadius: 16,
   },
 });

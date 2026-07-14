@@ -8,23 +8,24 @@ import { LocationSelector } from '@/presentation/components/molecules/location-s
 import { PhotoPicker } from '@/presentation/components/molecules/photo-picker';
 import { Header } from '@/presentation/components/organisms/header';
 import { EventsLayout } from '@/presentation/components/templates/events-layout';
-import { useCreateEvent } from '@/presentation/hooks';
+import { useCreateEventWithImages } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 
 export default function CreateEventScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
+  const { selectedLocation } = useLocalSearchParams<{ selectedLocation?: string }>();
 
-  const { mutate: createEvent, isPending } = useCreateEvent();
+  const { mutate: createEvent, isPending } = useCreateEventWithImages();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -36,7 +37,26 @@ export default function CreateEventScreen() {
   const [maxAttendees, setMaxAttendees] = useState('');
   const [ecoPointsReward, setEcoPointsReward] = useState(EVENT_CONSTANTS.DEFAULT_ECO_POINTS_REWARD.toString());
   const [images, setImages] = useState<string[]>([]);
-  const [location, setLocation] = useState<GeoLocation | undefined>();
+  const [location, setLocation] = useState<GeoLocation | undefined>(() => {
+    if (selectedLocation) {
+      try {
+        return JSON.parse(selectedLocation) as GeoLocation;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  });
+
+  useEffect(() => {
+    if (selectedLocation) {
+      try {
+        setLocation(JSON.parse(selectedLocation) as GeoLocation);
+      } catch {
+        setLocation(undefined);
+      }
+    }
+  }, [selectedLocation]);
   const [requirements, setRequirements] = useState('');
   const [isVirtual, setIsVirtual] = useState(false);
   const [meetingLink, setMeetingLink] = useState('');
@@ -49,7 +69,7 @@ export default function CreateEventScreen() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       quality: 0.7,
     });
@@ -79,21 +99,22 @@ export default function CreateEventScreen() {
 
     createEvent(
       {
-        title,
-        description,
-        category,
-        startDate: startDateTime,
-        endDate: endDateTime,
-        location,
-        organizerId: user.id,
-        maxAttendees: maxAttendees ? parseInt(maxAttendees) : undefined,
-        status: 'upcoming',
-        imageUrl: images[0],
-        bannerUrl: images[0],
-        ecoPointsReward: parseInt(ecoPointsReward) || EVENT_CONSTANTS.DEFAULT_ECO_POINTS_REWARD,
-        requirements: requirements ? requirements.split('\n').filter(Boolean) : undefined,
-        isVirtual,
-        meetingLink: isVirtual ? meetingLink : undefined,
+        event: {
+          title,
+          description,
+          category,
+          startDate: startDateTime,
+          endDate: endDateTime,
+          location,
+          organizerId: user.id,
+          maxAttendees: maxAttendees ? parseInt(maxAttendees) : undefined,
+          status: 'upcoming',
+          ecoPointsReward: parseInt(ecoPointsReward) || EVENT_CONSTANTS.DEFAULT_ECO_POINTS_REWARD,
+          requirements: requirements ? requirements.split('\n').filter(Boolean) : undefined,
+          isVirtual,
+          meetingLink: isVirtual ? meetingLink : undefined,
+        },
+        images,
       },
       {
         onSuccess: () => {
@@ -117,25 +138,26 @@ export default function CreateEventScreen() {
         />
       }
     >
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.form}>
-          <Input
-            label={t('common.titleRequired')}
-            placeholder={t('common.title')}
-            value={title}
-            onChangeText={setTitle}
-            maxLength={100}
-          />
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardView}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <View style={styles.form}>
+            <Input
+              label={t('common.titleRequired')}
+              placeholder={t('common.title')}
+              value={title}
+              onChangeText={setTitle}
+              maxLength={100}
+            />
 
-          <Input
-            label={t('common.descriptionRequired')}
-            placeholder={t('common.description')}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            maxLength={500}
-          />
+            <Input
+              label={t('common.descriptionRequired')}
+              placeholder={t('common.description')}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={4}
+              maxLength={500}
+            />
 
           <View style={styles.section}>
             <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
@@ -150,7 +172,8 @@ export default function CreateEventScreen() {
                   iconName={config.icon}
                   onPress={() => setCategory(key as EventCategory)}
                 >
-                  {config.label}
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {t(config.labelKey as any)}
                 </Chip>
               ))}
             </View>
@@ -219,7 +242,7 @@ export default function CreateEventScreen() {
 
           <LocationSelector
             location={location}
-            onPickLocation={() => router.push('/(citizen)/report/map-picker')}
+            onPickLocation={() => router.push('/(citizen)/report/map-picker?returnTo=event-create')}
             onClear={() => setLocation(undefined)}
           />
 
@@ -266,11 +289,15 @@ export default function CreateEventScreen() {
           </Button>
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </EventsLayout>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -291,10 +318,12 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.md,
   },
   field: {
     flex: 1,
+    minWidth: 140,
   },
   virtualToggle: {
     flexDirection: 'row',

@@ -7,11 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "ecociudad",
     "userInterfaceStyle": "automatic",
-    // "splash": {
-    //   "image": "./assets/images/splash-icon.png",
-    //   "resizeMode": "contain",
-    //   "backgroundColor": "#2E7D32"
-    // },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.ecociudad.app",
@@ -71,13 +66,7 @@
           ]
         }
       ],
-      [
-        "react-native-maps",
-        {
-          "iosMapsApiKey": "YOUR_IOS_MAPS_API_KEY",
-          "androidMapsApiKey": "YOUR_ANDROID_MAPS_API_KEY"
-        }
-      ],
+      "@maplibre/maplibre-react-native",
       "expo-location",
       "expo-camera",
       "expo-image-picker"

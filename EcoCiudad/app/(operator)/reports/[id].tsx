@@ -8,14 +8,17 @@ import { StatusIndicator } from '@/presentation/components/atoms/status-indicato
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { ImageGallery } from '@/presentation/components/molecules/image-gallery';
 import { Header } from '@/presentation/components/organisms/header';
+import { MapViewer } from '@/presentation/components/organisms/map-viewer';
 import { OperatorLayout } from '@/presentation/components/templates/operator-layout';
+import { LocationService } from '@/infrastructure/maps';
 import { useRejectReport, useReportDetails, useResolveReport } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
+import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
 
 export default function OperatorReportDetailsScreen() {
   const theme = useTheme();
@@ -41,6 +44,15 @@ export default function OperatorReportDetailsScreen() {
       minute: '2-digit',
     });
   };
+
+  const handleDirections = useCallback(async () => {
+    if (!report?.location) return;
+    try {
+      await LocationService.openDirections(report.location);
+    } catch {
+      Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
+    }
+  }, [report?.location, t]);
 
   const handleResolve = useCallback(() => {
     if (!notes.trim()) {
@@ -101,8 +113,9 @@ export default function OperatorReportDetailsScreen() {
         />
       }
     >
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <Card variant="elevated" padding="md" style={styles.section}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardView}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <Card variant="elevated" padding="md" style={styles.section}>
           <View style={styles.headerRow}>
             <ThemedText type="headline">{report.title}</ThemedText>
             <View style={styles.badges}>
@@ -120,10 +133,25 @@ export default function OperatorReportDetailsScreen() {
 
           <View style={styles.infoRow}>
             <Icon name="location" size={16} color={theme.colors.textSecondary} />
-            <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
+            <ThemedText type="bodySmall" color={theme.colors.textSecondary} style={styles.infoText}>
               {report.location.address || t('common.noAddressProvided')}
             </ThemedText>
           </View>
+
+          {report.location && report.location.latitude && report.location.longitude && (
+            <View style={styles.mapPreview}>
+              <MapViewer
+                selectedCoordinate={report.location}
+                showsUserLocation={false}
+                showUserLocationButton={false}
+                containerStyle={styles.mapContainer}
+              />
+            </View>
+          )}
+
+          <Button variant="outlined" size="sm" iconName="navigation" onPress={handleDirections}>
+            {t('common.getDirections')}
+          </Button>
 
           <CategoryChip category={report.category} />
         </Card>
@@ -243,11 +271,15 @@ export default function OperatorReportDetailsScreen() {
           </View>
         )}
       </ScrollView>
+      </KeyboardAvoidingView>
     </OperatorLayout>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -274,8 +306,19 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: spacing.xs,
+  },
+  infoText: {
+    flex: 1,
+  },
+  mapPreview: {
+    height: 160,
+    borderRadius: borderRadius.md,
+    overflow: 'hidden',
+  },
+  mapContainer: {
+    borderRadius: borderRadius.md,
   },
   actionsContainer: {
     gap: spacing.md,

@@ -9,6 +9,7 @@ import {
 import { ICommunityRepository, CommunityFilters } from '@/domain/repositories/community.repository';
 import { CommunityRemoteDataSource } from '@/data/datasources/remote/community.datasource';
 import { CommunityMapper, CommunityMemberMapper } from '@/data/mappers/community.mapper';
+import { mapSupabaseErrorToDomainError } from '@/infrastructure/errors/supabase-error.mapper';
 
 export class CommunityRepository implements ICommunityRepository {
   constructor(private dataSource: CommunityRemoteDataSource) {}
@@ -19,7 +20,7 @@ export class CommunityRepository implements ICommunityRepository {
       const communities = dtos.map(CommunityMapper.toDomain);
       return right(communities);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -28,7 +29,7 @@ export class CommunityRepository implements ICommunityRepository {
       const dto = await this.dataSource.getCommunity(id);
       return right(CommunityMapper.toDomain(dto));
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -40,7 +41,7 @@ export class CommunityRepository implements ICommunityRepository {
       const created = await this.dataSource.createCommunity(dto);
       return right(CommunityMapper.toDomain(created));
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -50,7 +51,7 @@ export class CommunityRepository implements ICommunityRepository {
       const updated = await this.dataSource.updateCommunity(id, dto);
       return right(CommunityMapper.toDomain(updated));
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -59,7 +60,7 @@ export class CommunityRepository implements ICommunityRepository {
       await this.dataSource.deleteCommunity(id);
       return right(undefined);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -69,7 +70,7 @@ export class CommunityRepository implements ICommunityRepository {
       const members = dtos.map(CommunityMemberMapper.toDomain);
       return right(members);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -78,7 +79,7 @@ export class CommunityRepository implements ICommunityRepository {
       const dto = await this.dataSource.joinCommunity(communityId, userId);
       return right(CommunityMemberMapper.toDomain(dto));
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -87,7 +88,7 @@ export class CommunityRepository implements ICommunityRepository {
       await this.dataSource.leaveCommunity(communityId, userId);
       return right(undefined);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -100,7 +101,7 @@ export class CommunityRepository implements ICommunityRepository {
       const dto = await this.dataSource.updateMemberRole(communityId, userId, role);
       return right(CommunityMemberMapper.toDomain(dto));
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -110,7 +111,7 @@ export class CommunityRepository implements ICommunityRepository {
       const communities = dtos.map(CommunityMapper.toDomain);
       return right(communities);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 
@@ -119,7 +120,7 @@ export class CommunityRepository implements ICommunityRepository {
       const isMember = await this.dataSource.isMember(communityId, userId);
       return right(isMember);
     } catch (error) {
-      return left(error as Error);
+      return left(new Error(mapSupabaseErrorToDomainError(error).message));
     }
   }
 }

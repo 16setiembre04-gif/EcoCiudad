@@ -1,160 +1,182 @@
-import { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import * as Location from 'expo-location';
-import MapView, { Marker, type Region } from 'react-native-maps';
-import Animated, { FadeIn } from 'react-native-reanimated';
+
+
 import { DashboardTemplate } from '@/presentation/components/templates';
 import { Header } from '@/presentation/components/organisms/header';
 import { Button } from '@/presentation/components/atoms/button';
 import { Input } from '@/presentation/components/atoms/input';
 import { ThemedText } from '@/presentation/components/atoms/text';
-import { Icon } from '@/presentation/components/atoms/icon';
+import { MapViewer, type MapViewerRef } from '@/presentation/components/organisms/map-viewer';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { useTranslation } from '@/localization';
+import { LocationService, LocationServiceError } from '@/infrastructure/maps';
 import { type GeoLocation } from '@/domain/entities';
-
-const DEFAULT_REGION: Region = {
-  latitude: -25.2637,
-  longitude: -57.5759,
-  latitudeDelta: 0.05,
-  longitudeDelta: 0.05,
-};
+import { useReportDraftStore } from '@/presentation/stores';
+import { logger } from '@/services/logger';
 
 export default function MapPickerScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
-  const { editReportId } = useLocalSearchParams<{ editReportId?: string }>();
+  const mapViewerRef = useRef<MapViewerRef>(null);
+  const {
+    editReportId,
+    returnTo,
+    initialLatitude,
+    initialLongitude,
+    initialAddress,
+  } = useLocalSearchParams<{
+    editReportId?: string;
+    returnTo?: 'report-create' | 'report-edit' | 'event-create' | 'community-create' | 'community-edit';
+    initialLatitude?: string;
+    initialLongitude?: string;
+    initialAddress?: string;
+  }>();
 
-  const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState<GeoLocation | undefined>();
-  const [region, setRegion] = useState<Region>(DEFAULT_REGION);
+  const [selectedLocation, setSelectedLocation] = useState<GeoLocation | undefined>(() => {
+    if (initialLatitude && initialLongitude) {
+      return {
+        latitude: parseFloat(initialLatitude),
+        longitude: parseFloat(initialLongitude),
+        address: initialAddress || t('common.selectedLocation'),
+      };
+    }
+    return undefined;
+  });
+  const setDraftLocation = useReportDraftStore((s) => s.setLocation);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
+  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'undetermined' | null>(null);
+  const [isCheckingPermission, setIsCheckingPermission] = useState(true);
 
-  useEffect(() => {
-    getCurrentLocation();
+  const checkPermission = useCallback(async () => {
+    try {
+      const status = await LocationService.getPermissionStatus();
+      setPermissionStatus(status);
+    } catch (error) {
+      logger.error('[MapPicker] Error checking permission:', error);
+      setPermissionStatus('undetermined');
+    } finally {
+      setIsCheckingPermission(false);
+    }
   }, []);
 
-  const updateLocation = useCallback(async (coords: { latitude: number; longitude: number }) => {
+  useEffect(() => {
+    checkPermission();
+  }, [checkPermission]);
+
+  const handleRetryPermission = useCallback(async () => {
     try {
-      const geocode = await Location.reverseGeocodeAsync(coords);
-      const address = geocode[0]
-        ? [geocode[0].street, geocode[0].city, geocode[0].region]
-            .filter(Boolean)
-            .join(', ')
-        : t('common.selectedLocation');
-
-      const newLocation = {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        address,
-      };
-
-      setLocation(newLocation);
-      setRegion((prev) => ({
-        ...prev,
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      }));
-    } catch {
-      setLocation({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        address: t('common.selectedLocation'),
-      });
+      const status = await LocationService.requestPermission();
+      setPermissionStatus(status);
+    } catch (error) {
+      const message = error instanceof LocationServiceError ? error.message : t('common.failedToGetLocation');
+      Alert.alert(t('common.locationPermissionRequired'), message);
+      setPermissionStatus('denied');
     }
   }, [t]);
 
-  const getCurrentLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert(t('common.permissionRequired'), t('common.locationPermissionRequired'));
-        setLoading(false);
-        return;
-      }
-
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      const coords = {
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      };
-      await updateLocation(coords);
-    } catch {
-      Alert.alert(t('common.error'), t('common.failedToGetLocation'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) return;
 
     setSearchLoading(true);
     try {
-      const geocode = await Location.geocodeAsync(searchQuery);
-      if (geocode.length === 0) {
-        Alert.alert(t('common.error'), t('common.locationNotFound'));
-        return;
+      const results = await LocationService.geocodeAddress(searchQuery);
+      if (results.length > 0 && mapViewerRef.current) {
+        const first = results[0];
+        const placemark = await LocationService.reverseGeocode(first);
+        const location = { ...first, address: placemark.formattedAddress };
+        setSelectedLocation(location);
+        mapViewerRef.current.animateToCoordinate(first);
       }
-
-      await updateLocation({ latitude: geocode[0].latitude, longitude: geocode[0].longitude });
-    } catch {
-      Alert.alert(t('common.error'), t('common.failedToSearchLocation'));
+    } catch (searchError) {
+      logger.error('[MapPicker] Search error:', searchError);
+      const message = searchError instanceof LocationServiceError ? searchError.message : t('common.failedToGetLocation');
+      Alert.alert(t('common.error'), message);
     } finally {
       setSearchLoading(false);
     }
-  };
+  }, [searchQuery, t]);
 
-  const handleMapPress = async (e: { nativeEvent: { coordinate: { latitude: number; longitude: number } } }) => {
-    const { coordinate } = e.nativeEvent;
-    await updateLocation(coordinate);
-  };
+  const handleLocationSelect = useCallback((location: GeoLocation) => {
+    setSelectedLocation(location);
+  }, []);
 
-  const handleConfirm = () => {
-    if (!location) {
-      Alert.alert(t('common.error'), t('errors.selectLocation'));
+  const handleConfirm = useCallback(() => {
+    if (!selectedLocation) {
       return;
     }
 
-    if (editReportId) {
-      router.navigate({
-        pathname: `/(citizen)/report/edit/${editReportId}` as any,
-        params: { selectedLocation: JSON.stringify(location) },
-      });
-    } else {
-      router.navigate({
-        pathname: '/(citizen)/report/create',
-        params: { selectedLocation: JSON.stringify(location) },
-      });
-    }
-  };
+    const serialized = JSON.stringify(selectedLocation);
 
-  if (loading) {
+    if (returnTo === 'report-edit' && editReportId) {
+      router.navigate({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        pathname: `/(citizen)/report/edit/${editReportId}` as any,
+        params: { selectedLocation: serialized },
+      });
+      return;
+    }
+
+    if (returnTo === 'event-create') {
+      router.navigate({
+        pathname: '/(citizen)/events/create',
+        params: { selectedLocation: serialized },
+      });
+      return;
+    }
+
+    if (returnTo === 'community-create') {
+      router.navigate({
+        pathname: '/(citizen)/community/create',
+        params: { selectedLocation: serialized },
+      });
+      return;
+    }
+
+    if (returnTo === 'community-edit' && editReportId) {
+      router.navigate({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        pathname: `/(citizen)/community/${editReportId}/edit` as any,
+        params: { selectedLocation: serialized },
+      });
+      return;
+    }
+
+    // default: report-create
+    setDraftLocation(selectedLocation);
+    router.back();
+  }, [selectedLocation, returnTo, editReportId, router, setDraftLocation]);
+
+  if (isCheckingPermission) {
     return (
       <DashboardTemplate
         header={<Header title={t('common.pickLocation')} onBackPress={() => router.back()} />}
       >
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+        <View style={styles.centered}>
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
-            {t('common.gettingLocation')}
+            {t('common.loading')}
           </ThemedText>
         </View>
       </DashboardTemplate>
     );
   }
 
+  const permissionBlocked = permissionStatus === 'denied';
+
   return (
     <DashboardTemplate
       header={<Header title={t('common.pickLocation')} onBackPress={() => router.back()} />}
     >
-      <View style={styles.container}>
-        <Animated.View entering={FadeIn} style={styles.content}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.container}
+      >
+        <View style={styles.content}>
           <View style={styles.searchContainer}>
             <Input
               placeholder={t('common.searchLocation')}
@@ -166,52 +188,64 @@ export default function MapPickerScreen() {
             />
           </View>
 
-          <View style={[styles.mapContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
-            <MapView
-              style={styles.map}
-              region={region}
-              onRegionChangeComplete={setRegion}
-              onPress={handleMapPress}
-              showsUserLocation
-              showsMyLocationButton
-            >
-              {location && (
-                <Marker
-                  coordinate={{
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                  }}
-                  draggable
-                  onDragEnd={(e) => updateLocation(e.nativeEvent.coordinate)}
-                />
-              )}
-            </MapView>
+          {permissionBlocked && (
+            <View style={[styles.warningBanner, { backgroundColor: theme.colors.errorContainer }]}>
+              <ThemedText type="bodySmall" color={theme.colors.error} style={styles.warningText}>
+                {t('common.locationPermissionNeeded')}
+              </ThemedText>
+              <Button
+                variant="ghost"
+                size="sm"
+                onPress={handleRetryPermission}
+                textStyle={{ color: theme.colors.error }}
+              >
+                {t('common.retry')}
+              </Button>
+            </View>
+          )}
+
+          <View style={styles.mapWrapper}>
+            <MapViewer
+              ref={mapViewerRef}
+              selectable
+              selectedCoordinate={selectedLocation}
+              onLocationSelect={handleLocationSelect}
+              showsUserLocation={!permissionBlocked}
+              showUserLocationButton={!permissionBlocked}
+              containerStyle={styles.mapContainer}
+            />
           </View>
 
-          {location && (
+          {selectedLocation && (
             <View style={[styles.locationInfo, { backgroundColor: theme.colors.surfaceVariant }]}>
-              <Icon name="location" size={20} color={theme.colors.primary} />
-              <View style={styles.locationText}>
-                <ThemedText type="bodySmall" numberOfLines={2}>
-                  {location.address}
-                </ThemedText>
-                <ThemedText type="caption" color={theme.colors.textSecondary}>
-                  {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
-                </ThemedText>
-              </View>
+              <ThemedText type="bodySmall" numberOfLines={2}>
+                {selectedLocation.address}
+              </ThemedText>
+              <ThemedText type="caption" color={theme.colors.textSecondary}>
+                {selectedLocation.latitude.toFixed(6)}, {selectedLocation.longitude.toFixed(6)}
+              </ThemedText>
             </View>
           )}
 
           <View style={styles.buttonContainer}>
-            <Button variant="outlined" onPress={getCurrentLocation}>
+            <Button
+              variant="outlined"
+              onPress={() => mapViewerRef.current?.getCurrentLocation()}
+              style={styles.flexButton}
+            >
               {t('common.useCurrentLocation')}
             </Button>
-            <Button variant="primary" onPress={handleConfirm} disabled={!location}>
+            <Button
+              variant="primary"
+              onPress={handleConfirm}
+              disabled={!selectedLocation}
+              style={styles.flexButton}
+            >
               {t('common.confirmLocation')}
             </Button>
           </View>
-        </Animated.View>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </DashboardTemplate>
   );
 }
@@ -220,11 +254,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  loadingContainer: {
+  centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: spacing.md,
   },
   content: {
     flex: 1,
@@ -234,27 +267,35 @@ const styles = StyleSheet.create({
   searchContainer: {
     gap: spacing.md,
   },
-  mapContainer: {
-    flex: 1,
-    borderRadius: borderRadius.lg,
-    overflow: 'hidden',
+  warningBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.sm,
+    borderRadius: borderRadius.md,
+    gap: spacing.sm,
   },
-  map: {
+  warningText: {
     flex: 1,
+  },
+  mapWrapper: {
+    flex: 1,
+    minHeight: 240,
+  },
+  mapContainer: {
+    borderRadius: borderRadius.lg,
   },
   locationInfo: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: spacing.md,
     padding: spacing.md,
     borderRadius: borderRadius.md,
-  },
-  locationText: {
-    flex: 1,
     gap: spacing.xs,
   },
   buttonContainer: {
     flexDirection: 'row',
     gap: spacing.md,
+    flexWrap: 'wrap',
+  },
+  flexButton: {
+    flex: 1,
+    minWidth: 140,
   },
 });

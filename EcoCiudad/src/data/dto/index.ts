@@ -1,4 +1,4 @@
-export { type UserDTO } from './user.dto';
+export { type UserDTO, type UpdateProfileData } from './user.dto';
 export { type ReportDTO, type ReportCommentDTO, type ReportTimelineEntryDTO } from './report.dto';
 export {
   type EventDTO,

@@ -10,6 +10,9 @@ export interface CommunityDTO {
   logo_url?: string;
   department?: string;
   district?: string;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
   max_members?: number;
   rules?: string[];
   member_count: number;

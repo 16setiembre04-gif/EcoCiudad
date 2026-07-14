@@ -15,6 +15,7 @@ import {
   Poll,
   PollOption,
   PollVote,
+  type GeoLocation,
 } from '@/domain/entities/community';
 import {
   CommunityDTO,
@@ -30,6 +31,15 @@ import {
 
 export class CommunityMapper {
   static toDomain(dto: CommunityDTO): Community {
+    const geoLocation: GeoLocation | undefined =
+      dto.latitude != null && dto.longitude != null
+        ? {
+            latitude: dto.latitude,
+            longitude: dto.longitude,
+            address: dto.address,
+          }
+        : undefined;
+
     return {
       id: dto.id,
       name: dto.name,
@@ -42,6 +52,7 @@ export class CommunityMapper {
         department: dto.department,
         district: dto.district,
       } : undefined,
+      geoLocation,
       maxMembers: dto.max_members,
       rules: dto.rules,
       memberCount: dto.member_count,
@@ -63,6 +74,9 @@ export class CommunityMapper {
       logo_url: domain.logoUrl,
       department: domain.location?.department,
       district: domain.location?.district,
+      latitude: domain.geoLocation?.latitude,
+      longitude: domain.geoLocation?.longitude,
+      address: domain.geoLocation?.address,
       max_members: domain.maxMembers,
       rules: domain.rules,
       member_count: domain.memberCount,

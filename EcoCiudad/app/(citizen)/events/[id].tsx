@@ -5,13 +5,17 @@ import { EventsLayout } from '@/presentation/components/templates/events-layout'
 import { EventHeader } from '@/presentation/components/organisms/event-header';
 import { EventRegistration } from '@/presentation/components/organisms/event-registration';
 import { ParticipantsList } from '@/presentation/components/organisms/participants-list';
+import { MapViewer } from '@/presentation/components/organisms/map-viewer';
 import { ThemedText } from '@/presentation/components/atoms/text';
 import { Divider } from '@/presentation/components/atoms/divider';
 import { Icon } from '@/presentation/components/atoms/icon';
+import { Button } from '@/presentation/components/atoms/button';
 import { RewardCard } from '@/presentation/components/molecules/reward-card';
+import { LocationService } from '@/infrastructure/maps';
 import { useEvent, useEventParticipants, useIsRegistered, useIsFavorite, useToggleFavorite, useJoinEvent, useLeaveEvent } from '@/presentation/hooks';
 import { useAuthStore } from '@/presentation/stores';
 import { useTheme } from '@/theme/context';
+import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 
@@ -74,6 +78,15 @@ export default function EventDetailsScreen() {
     toggleFavorite(id);
   }, [id, toggleFavorite]);
 
+  const handleDirections = useCallback(async () => {
+    if (!event?.location) return;
+    try {
+      await LocationService.openDirections(event.location);
+    } catch {
+      Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
+    }
+  }, [event?.location, t]);
+
   if (isLoading || !event) {
     return (
       <EventsLayout>
@@ -109,9 +122,26 @@ export default function EventDetailsScreen() {
             {event.requirements.map((req, index) => (
               <View key={index} style={styles.requirementRow}>
                 <Icon name="check" size={16} color={theme.colors.primary} />
-                <ThemedText type="bodySmall">{req}</ThemedText>
+                <ThemedText type="bodySmall" style={styles.requirementText}>{req}</ThemedText>
               </View>
             ))}
+          </View>
+        )}
+
+        {event.location && !event.isVirtual && (
+          <View style={styles.section}>
+            <ThemedText type="subtitle">{t('common.mapView')}</ThemedText>
+            <View style={styles.mapPreview}>
+              <MapViewer
+                selectedCoordinate={event.location}
+                showsUserLocation={false}
+                showUserLocationButton={false}
+                containerStyle={styles.mapContainer}
+              />
+            </View>
+            <Button variant="outlined" size="sm" iconName="navigation" onPress={handleDirections}>
+              {t('common.getDirections')}
+            </Button>
           </View>
         )}
 
@@ -165,7 +195,18 @@ const styles = StyleSheet.create({
   },
   requirementRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: spacing.sm,
+  },
+  requirementText: {
+    flex: 1,
+  },
+  mapPreview: {
+    height: 180,
+    borderRadius: borderRadius.md,
+    overflow: 'hidden',
+  },
+  mapContainer: {
+    borderRadius: borderRadius.md,
   },
 });

@@ -48,7 +48,7 @@ export function EcoPointsCard({ points, level, progress, pointsForNextLevel }: E
           <ThemedText type="bodySmall" color={theme.colors.textSecondary}>
             {t('common.ecoPoints')}
           </ThemedText>
-          <ThemedText type="headline" color={theme.colors.onPrimaryContainer}>
+          <ThemedText type="headline" color={theme.colors.onPrimaryContainer} adjustsFontSizeToFit numberOfLines={1}>
             {points}
           </ThemedText>
         </View>
@@ -60,7 +60,7 @@ export function EcoPointsCard({ points, level, progress, pointsForNextLevel }: E
             borderRadius: borderRadius.full,
           }}
         >
-          <ThemedText type="caption" color={theme.colors.onPrimary}>
+          <ThemedText type="caption" color={theme.colors.onPrimary} numberOfLines={1} ellipsizeMode="tail">
             {t('common.level')} {level}
           </ThemedText>
         </View>

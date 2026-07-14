@@ -39,6 +39,12 @@ export enum ReactionType {
   ANGRY = 'angry',
 }
 
+export interface GeoLocation {
+  latitude: number;
+  longitude: number;
+  address?: string;
+}
+
 export interface Community {
   id: string;
   name: string;
@@ -51,6 +57,7 @@ export interface Community {
     department: string;
     district: string;
   };
+  geoLocation?: GeoLocation;
   maxMembers?: number;
   rules?: string[];
   memberCount: number;

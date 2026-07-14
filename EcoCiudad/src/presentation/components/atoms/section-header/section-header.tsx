@@ -13,7 +13,9 @@ export function SectionHeader({ title, actionLabel, onActionPress, style }: Sect
       <ThemedText
         type="subtitle"
         color={theme.colors.textPrimary}
-        style={{ fontWeight: '600' }}
+        style={{ fontWeight: '600', flex: 1, flexShrink: 1 }}
+        numberOfLines={1}
+        ellipsizeMode="tail"
       >
         {title}
       </ThemedText>
@@ -27,7 +29,13 @@ export function SectionHeader({ title, actionLabel, onActionPress, style }: Sect
           accessibilityRole="button"
           accessibilityLabel={actionLabel}
         >
-          <ThemedText type="bodySmall" color={theme.colors.primary}>
+          <ThemedText
+            type="bodySmall"
+            color={theme.colors.primary}
+            style={{ flexShrink: 1, maxWidth: 120 }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {actionLabel}
           </ThemedText>
           <Icon name="chevron-right" size={16} color={theme.colors.primary} />

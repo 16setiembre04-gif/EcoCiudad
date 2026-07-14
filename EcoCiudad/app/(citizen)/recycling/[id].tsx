@@ -5,10 +5,13 @@ import { MaterialList } from '@/presentation/components/molecules/material-list'
 import { OpeningHoursCard } from '@/presentation/components/molecules/opening-hours-card';
 import { CenterGallery } from '@/presentation/components/organisms/center-gallery';
 import { CenterHeader } from '@/presentation/components/organisms/center-header';
+import { MapViewer } from '@/presentation/components/organisms/map-viewer';
 import { ReviewsSection } from '@/presentation/components/organisms/reviews-section';
 import { RecyclingCentersLayout } from '@/presentation/components/templates/recycling-centers-layout';
+import { LocationService } from '@/infrastructure/maps';
 import { useCenterReviews, useIsCenterFavorite, useMarkReviewHelpful, useRecyclingCenterDetails, useToggleCenterFavorite } from '@/presentation/hooks';
 import { useTheme } from '@/theme/context';
+import { borderRadius } from '@/theme/radius';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -30,9 +33,8 @@ export default function RecyclingCenterDetailsScreen() {
 
   const handleDirections = useCallback(async () => {
     if (!center) return;
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${center.latitude},${center.longitude}`;
     try {
-      await Linking.openURL(url);
+      await LocationService.openDirections(center);
     } catch {
       Alert.alert(t('common.error'), t('common.failedToOpenMaps'));
     }
@@ -107,6 +109,18 @@ export default function RecyclingCenterDetailsScreen() {
         )}
 
         <View style={styles.section}>
+          <ThemedText type="subtitle">{t('common.mapView')}</ThemedText>
+          <View style={styles.mapPreview}>
+            <MapViewer
+              selectedCoordinate={center}
+              showsUserLocation={false}
+              showUserLocationButton={false}
+              containerStyle={styles.mapContainer}
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
           <OpeningHoursCard openingHours={center.openingHours} />
         </View>
 
@@ -176,5 +190,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    flexWrap: 'wrap',
+  },
+  mapPreview: {
+    height: 200,
+    borderRadius: borderRadius.md,
+    overflow: 'hidden',
+  },
+  mapContainer: {
+    borderRadius: borderRadius.md,
   },
 });

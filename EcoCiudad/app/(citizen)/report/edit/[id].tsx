@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { DashboardTemplate } from '@/presentation/components/templates';
@@ -143,10 +143,11 @@ export default function EditReportScreen() {
         />
       }
     >
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <Animated.View entering={FadeIn} style={styles.form}>
-          <Input
-            label={t('reports.titleLabel')}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardView}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <Animated.View entering={FadeIn} style={styles.form}>
+            <Input
+              label={t('reports.titleLabel')}
             placeholder={t('reports.titlePlaceholder')}
             value={title}
             onChangeText={setTitle}
@@ -208,7 +209,7 @@ export default function EditReportScreen() {
 
           <LocationSelector
             location={location}
-            onPickLocation={() => router.push(`/(citizen)/report/map-picker?editReportId=${id}` as any)}
+            onPickLocation={() => router.push(`/(citizen)/report/map-picker?returnTo=report-edit&editReportId=${id}` as any)}
             onClear={() => setLocation(undefined)}
           />
           {errors.location && (
@@ -222,11 +223,15 @@ export default function EditReportScreen() {
           </Button>
         </Animated.View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </DashboardTemplate>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -252,6 +257,7 @@ const styles = StyleSheet.create({
   },
   severityRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.sm,
   },
 });

@@ -7,6 +7,7 @@ import { ThemedText } from '@/presentation/components/atoms/text';
 import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
+import { calculateDistance } from '@/infrastructure/maps';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { type RoutePlannerProps } from './types';
 
@@ -55,8 +56,17 @@ export function RoutePlanner({
     );
   }
 
-  const totalDistance = route.length * 2.5; // Estimate 2.5km per stop
-  const estimatedTime = route.length * 15; // Estimate 15 minutes per stop
+  // Calculo real de distancia usando Haversine entre paradas consecutivas
+  let totalDistance = 0;
+  for (let i = 0; i < route.length - 1; i++) {
+    const from = route[i].location;
+    const to = route[i + 1].location;
+    if (from && to) {
+      totalDistance += calculateDistance(from, to);
+    }
+  }
+  // Estimacion de tiempo: 40 km/h promedio en ciudad + 10 min por parada
+  const estimatedTime = Math.round((totalDistance / 40) * 60 + route.length * 10);
 
   return (
     <View style={[styles.container, style]}>
@@ -100,7 +110,11 @@ export function RoutePlanner({
                   {item.location.address || t('common.noAddress')}
                 </ThemedText>
               </View>
-              {item.priority && <PriorityBadge priority={item.priority} size="sm" />}
+              {item.priority && (
+                <View style={styles.badgeContainer}>
+                  <PriorityBadge priority={item.priority} size="sm" />
+                </View>
+              )}
             </View>
           </Card>
         )}
@@ -159,6 +173,10 @@ const styles = StyleSheet.create({
   routeCardInfo: {
     flex: 1,
     gap: 2,
+    minWidth: 0,
+  },
+  badgeContainer: {
+    flexShrink: 0,
   },
   actions: {
     paddingHorizontal: spacing.lg,

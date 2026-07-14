@@ -25,6 +25,8 @@ export * from './performance-card';
 export * from './operator-card';
 export * from './photo-picker';
 export * from './location-selector';
+export * from './permission-denied';
+export * from './map-location-pill';
 export * from './status-timeline';
 export * from './image-gallery';
 export * from './activity-chart';

@@ -7,12 +7,20 @@ export abstract class DomainError {
 
 export class UnexpectedError extends DomainError {
   readonly type = 'UnexpectedError';
-  readonly message = 'An unexpected error occurred';
+  readonly message: string;
+  constructor(message: string = 'An unexpected error occurred', context?: Record<string, unknown>) {
+    super(context);
+    this.message = message;
+  }
 }
 
 export class NetworkError extends DomainError {
   readonly type = 'NetworkError';
-  readonly message = 'A network error occurred';
+  readonly message: string;
+  constructor(message: string = 'A network error occurred') {
+    super();
+    this.message = message;
+  }
 }
 
 export class ValidationError extends DomainError {
@@ -27,7 +35,11 @@ export class ValidationError extends DomainError {
 
 export class AuthenticationError extends DomainError {
   readonly type = 'AuthenticationError';
-  readonly message = 'Authentication failed';
+  readonly message: string;
+  constructor(message: string = 'Authentication failed') {
+    super();
+    this.message = message;
+  }
 }
 
 export class NotFoundError extends DomainError {

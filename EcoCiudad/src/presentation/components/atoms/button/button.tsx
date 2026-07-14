@@ -79,7 +79,13 @@ export function Button({
       ) : (
         <>
           {iconPosition === 'left' && renderIcon()}
-          <ThemedText type="button" style={[styles.text, textStyle]}>
+          <ThemedText
+            type="button"
+            style={[styles.text, { flex: 1, flexShrink: 1, textAlign: 'center' }, textStyle]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            adjustsFontSizeToFit
+          >
             {children}
           </ThemedText>
           {iconPosition === 'right' && renderIcon()}

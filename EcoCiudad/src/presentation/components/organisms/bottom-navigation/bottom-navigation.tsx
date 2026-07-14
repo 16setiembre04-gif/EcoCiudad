@@ -5,12 +5,14 @@ import { useTheme } from '@/theme/context';
 import { spacing } from '@/theme/spacing';
 import { borderRadius } from '@/theme/radius';
 import { elevation } from '@/theme/elevation';
+import { sizes } from '@/theme/sizes';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomNavigationItem, BottomNavigationProps } from './types';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -37,20 +39,25 @@ function NavigationItem({ item, isActive, onPress }: NavigationItemProps) {
     scale.value = withSpring(1, { damping: 12, stiffness: 180 });
   };
 
+  const isPrimary = item.primary;
+  const backgroundColor = isPrimary
+    ? theme.colors.primary
+    : isActive
+      ? theme.colors.primaryContainer
+      : 'transparent';
+  const iconColor = isPrimary ? theme.colors.onPrimary : isActive ? theme.colors.primary : theme.colors.textSecondary;
+  const labelColor = isPrimary ? theme.colors.primary : isActive ? theme.colors.primary : theme.colors.textSecondary;
+
   return (
     <AnimatedPressable
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={[
+        styles.item,
+        isPrimary && styles.primaryItem,
         {
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: 56,
-          paddingVertical: spacing.xs,
-          borderRadius: borderRadius.xl,
-          backgroundColor: isActive ? theme.colors.primaryContainer : 'transparent',
+          backgroundColor,
         },
         animatedStyle,
       ]}
@@ -58,22 +65,24 @@ function NavigationItem({ item, isActive, onPress }: NavigationItemProps) {
       accessibilityState={{ selected: isActive }}
       accessibilityLabel={item.label}
     >
-      <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={styles.iconWrapper}>
         <Icon
           name={item.icon}
-          size={24}
-          color={isActive ? theme.colors.primary : theme.colors.textSecondary}
+          size={isPrimary ? 28 : 24}
+          color={iconColor}
         />
         {item.badge !== undefined && item.badge > 0 && (
-          <View style={{ position: 'absolute', top: -4, right: -8 }}>
+          <View style={styles.badgeWrapper}>
             <Badge variant="filled" color="error" size="sm" dot />
           </View>
         )}
       </View>
       <ThemedText
         type="caption"
-        color={isActive ? theme.colors.primary : theme.colors.textSecondary}
-        style={{ fontWeight: isActive ? '600' : '500', marginTop: spacing.xs }}
+        color={labelColor}
+        style={[styles.label, { fontWeight: isActive || isPrimary ? '600' : '500' }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
       >
         {item.label}
       </ThemedText>
@@ -89,21 +98,15 @@ export function BottomNavigation({
   testID,
 }: BottomNavigationProps) {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <View
       style={[
+        styles.container,
         {
           backgroundColor: theme.colors.surface,
-          borderTopLeftRadius: borderRadius['2xl'],
-          borderTopRightRadius: borderRadius['2xl'],
-          paddingHorizontal: spacing.md,
-          paddingTop: spacing.sm,
-          paddingBottom: spacing.md,
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          ...elevation.medium,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : spacing.md,
         },
         containerStyle,
       ]}
@@ -120,3 +123,47 @@ export function BottomNavigation({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderTopLeftRadius: borderRadius['2xl'],
+    borderTopRightRadius: borderRadius['2xl'],
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    ...elevation.medium,
+  },
+  item: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: sizes.touchTarget.min,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.xl,
+  },
+  primaryItem: {
+    marginTop: -spacing.md,
+    height: 56,
+    width: 56,
+    borderRadius: 28,
+    alignSelf: 'flex-end',
+    ...elevation.medium,
+  },
+  iconWrapper: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeWrapper: {
+    position: 'absolute',
+    top: -4,
+    right: -8,
+  },
+  label: {
+    marginTop: spacing.xs,
+    textAlign: 'center',
+    width: '100%',
+  },
+});

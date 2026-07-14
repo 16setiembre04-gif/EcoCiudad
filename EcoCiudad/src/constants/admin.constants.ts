@@ -43,7 +43,7 @@ export const ADMIN_ACTIVITY_ACTIONS: Record<string, { labelKey: string; icon: Ic
 export const REPORT_CATEGORY_CONFIG: Record<string, { labelKey: string; icon: IconName; color: string }> = {
   waste: { labelKey: 'reports.categories.waste', icon: 'delete', color: '#EF4444' },
   pollution: { labelKey: 'reports.categories.pollution', icon: 'warning', color: '#F97316' },
-  green_space: { labelKey: 'reports.categories.greenSpace', icon: 'tree', color: '#22C55E' },
+  green_space: { labelKey: 'reports.categories.green_space', icon: 'tree', color: '#22C55E' },
   water: { labelKey: 'reports.categories.water', icon: 'water', color: '#3B82F6' },
   noise: { labelKey: 'reports.categories.noise', icon: 'noise', color: '#8B5CF6' },
   other: { labelKey: 'reports.categories.other', icon: 'help', color: '#6B7280' },
@@ -71,7 +71,7 @@ export const USER_STATUS_CONFIG: Record<string, { labelKey: string; color: strin
 
 export const ADMIN_REPORT_STATUS_CONFIG: Record<string, { labelKey: string; color: string }> = {
   pending: { labelKey: 'reportStatuses.pending', color: '#F59E0B' },
-  in_review: { labelKey: 'reportStatuses.inReview', color: '#3B82F6' },
+  in_review: { labelKey: 'reportStatuses.in_review', color: '#3B82F6' },
   resolved: { labelKey: 'reportStatuses.resolved', color: '#22C55E' },
   rejected: { labelKey: 'reportStatuses.rejected', color: '#EF4444' },
 };

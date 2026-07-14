@@ -1,8 +1,9 @@
 import { type Event, type EventParticipant, type EventAttendance, type EventReminder } from '../../domain/entities';
-import { type DomainError, UnexpectedError, NotFoundError } from '../../domain/errors';
+import { type DomainError } from '../../domain/errors';
 import { type Either, type EventRepository, type EventFilters } from '../../domain/repositories';
 import { type EventRemoteDataSource } from '../datasources/remote';
 import { EventMapper, EventParticipantMapper, EventAttendanceMapper, EventReminderMapper } from '../mappers';
+import { mapSupabaseErrorToDomainError } from '../../infrastructure/errors/supabase-error.mapper';
 
 export class EventRepositoryImpl implements EventRepository {
   constructor(private readonly dataSource: EventRemoteDataSource) {}
@@ -11,8 +12,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dto = await this.dataSource.getById(id);
       return { right: EventMapper.toDomain(dto) };
-    } catch {
-      return { left: new NotFoundError('Event not found') };
+    } catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -20,8 +21,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getAll(filters as Record<string, unknown>);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -29,8 +30,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getUpcoming(filters as Record<string, unknown>);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -38,8 +39,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getNearby(latitude, longitude, radiusKm);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -47,8 +48,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getPopular(limit);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -56,8 +57,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getCommunityEvents(communityId);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -65,8 +66,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getMyEvents(userId, status);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -77,8 +78,8 @@ export class EventRepositoryImpl implements EventRepository {
       const dto = EventMapper.toDto(event as Event);
       const created = await this.dataSource.create(dto);
       return { right: EventMapper.toDomain(created) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -87,8 +88,8 @@ export class EventRepositoryImpl implements EventRepository {
       const dto = EventMapper.toDto(data as Event);
       const updated = await this.dataSource.update(id, dto);
       return { right: EventMapper.toDomain(updated) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -96,8 +97,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const updated = await this.dataSource.cancel(id);
       return { right: EventMapper.toDomain(updated) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -105,8 +106,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       await this.dataSource.joinEvent(eventId, userId);
       return { right: undefined };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -114,8 +115,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       await this.dataSource.leaveEvent(eventId, userId);
       return { right: undefined };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -123,8 +124,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getParticipants(eventId);
       return { right: dtos.map(EventParticipantMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -132,8 +133,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const result = await this.dataSource.isRegistered(eventId, userId);
       return { right: result };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -141,8 +142,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const result = await this.dataSource.toggleFavorite(eventId, userId);
       return { right: result };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -150,8 +151,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getFavorites(userId);
       return { right: dtos.map(EventMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -159,8 +160,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const result = await this.dataSource.isFavorite(eventId, userId);
       return { right: result };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -168,8 +169,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dto = await this.dataSource.markAttendance(eventId, userId);
       return { right: EventAttendanceMapper.toDomain(dto) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -177,8 +178,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dto = await this.dataSource.getAttendance(eventId, userId);
       return { right: dto ? EventAttendanceMapper.toDomain(dto) : null };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -191,8 +192,8 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dto = await this.dataSource.setReminder(eventId, userId, reminderBefore, reminderType);
       return { right: EventReminderMapper.toDomain(dto) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -200,8 +201,17 @@ export class EventRepositoryImpl implements EventRepository {
     try {
       const dtos = await this.dataSource.getReminders(eventId, userId);
       return { right: dtos.map(EventReminderMapper.toDomain) };
-    } catch {
-      return { left: new UnexpectedError() };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
+    }
+  }
+
+  async uploadImage(eventId: string, uri: string): Promise<Either<DomainError, string>> {
+    try {
+      const url = await this.dataSource.uploadImage(eventId, uri);
+      return { right: url };
+    }   catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 }

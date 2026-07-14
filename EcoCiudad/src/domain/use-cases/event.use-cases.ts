@@ -175,3 +175,11 @@ export class GetRemindersUseCase {
     return this.eventRepository.getReminders(eventId, userId);
   }
 }
+
+export class UploadEventImageUseCase {
+  constructor(private readonly eventRepository: EventRepository) {}
+
+  async execute(eventId: string, uri: string): Promise<Either<DomainError, string>> {
+    return this.eventRepository.uploadImage(eventId, uri);
+  }
+}

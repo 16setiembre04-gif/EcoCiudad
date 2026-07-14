@@ -13,6 +13,16 @@ export interface CitizenSignUpData {
   district: string;
 }
 
+export interface UpdateProfileData {
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  department?: string;
+  district?: string;
+  avatarUrl?: string;
+}
+
 export interface AuthRepository {
   signIn(email: string, password: string): Promise<Either<DomainError, User>>;
   signUp(email: string, password: string, displayName: string): Promise<Either<DomainError, User>>;
@@ -22,4 +32,5 @@ export interface AuthRepository {
   resetPassword(email: string): Promise<Either<DomainError, void>>;
   updatePassword(newPassword: string): Promise<Either<DomainError, void>>;
   resendVerificationEmail(email: string): Promise<Either<DomainError, void>>;
+  updateProfile(userId: string, data: UpdateProfileData): Promise<Either<DomainError, User>>;
 }

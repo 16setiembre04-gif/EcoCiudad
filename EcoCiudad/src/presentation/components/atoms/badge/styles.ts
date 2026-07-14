@@ -5,15 +5,15 @@ import { spacing } from '@/theme/spacing';
 import { textStyles } from '@/theme/typography';
 
 interface BadgeSizeConfig {
-  height: number;
+  minHeight: number;
   minWidth: number;
   paddingHorizontal: number;
 }
 
 const sizeConfig: Record<BadgeSize, BadgeSizeConfig> = {
-  sm: { height: 20, minWidth: 20, paddingHorizontal: spacing.sm },
-  md: { height: 24, minWidth: 24, paddingHorizontal: spacing.md },
-  lg: { height: 28, minWidth: 28, paddingHorizontal: spacing.md },
+  sm: { minHeight: 20, minWidth: 20, paddingHorizontal: spacing.sm },
+  md: { minHeight: 24, minWidth: 24, paddingHorizontal: spacing.md },
+  lg: { minHeight: 28, minWidth: 28, paddingHorizontal: spacing.md },
 };
 
 export const getBadgeStyles = (
@@ -36,9 +36,10 @@ export const getBadgeStyles = (
   const colorScheme = colorMap[color];
 
   const baseContainer = {
-    minHeight: sizeStyles.height,
+    minHeight: sizeStyles.minHeight,
     minWidth: sizeStyles.minWidth,
     paddingHorizontal: sizeStyles.paddingHorizontal,
+    paddingVertical: spacing.xs,
     borderRadius: borderRadius.full,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,

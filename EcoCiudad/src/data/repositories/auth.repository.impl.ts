@@ -1,8 +1,9 @@
 import { type User } from '../../domain/entities';
-import { type DomainError, UnexpectedError, AuthenticationError } from '../../domain/errors';
-import { type AuthRepository, type Either, type CitizenSignUpData } from '../../domain/repositories';
+import { type DomainError, UnexpectedError } from '../../domain/errors';
+import { type AuthRepository, type Either, type CitizenSignUpData, type UpdateProfileData } from '../../domain/repositories';
 import { type AuthRemoteDataSource } from '../datasources/remote';
 import { UserMapper } from '../mappers';
+import { mapSupabaseErrorToDomainError } from '../../infrastructure/errors/supabase-error.mapper';
 
 export class AuthRepositoryImpl implements AuthRepository {
   constructor(private readonly dataSource: AuthRemoteDataSource) {}
@@ -12,7 +13,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       const dto = await this.dataSource.signIn(email, password);
       return { right: UserMapper.toDomain(dto) };
     } catch (error) {
-      return { left: new AuthenticationError() };
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -21,7 +22,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       const dto = await this.dataSource.signUp(email, password, displayName);
       return { right: UserMapper.toDomain(dto) };
     } catch (error) {
-      return { left: new UnexpectedError() };
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -30,7 +31,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       const dto = await this.dataSource.signUpCitizen(data);
       return { right: UserMapper.toDomain(dto) };
     } catch (error) {
-      return { left: new AuthenticationError() };
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 
@@ -76,6 +77,15 @@ export class AuthRepositoryImpl implements AuthRepository {
       return { right: undefined };
     } catch {
       return { left: new UnexpectedError() };
+    }
+  }
+
+  async updateProfile(userId: string, data: UpdateProfileData): Promise<Either<DomainError, User>> {
+    try {
+      const dto = await this.dataSource.updateProfile(userId, data);
+      return { right: UserMapper.toDomain(dto) };
+    } catch (error) {
+      return { left: mapSupabaseErrorToDomainError(error) };
     }
   }
 }

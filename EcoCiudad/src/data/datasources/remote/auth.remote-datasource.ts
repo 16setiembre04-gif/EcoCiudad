@@ -1,5 +1,5 @@
 import { type SupabaseClient } from '@supabase/supabase-js';
-import { type UserDTO } from '../../dto';
+import { type UpdateProfileData, type UserDTO } from '../../dto';
 
 export interface CitizenSignUpData {
   email: string;
@@ -77,6 +77,27 @@ export class AuthRemoteDataSource {
       email,
     });
     if (error) throw error;
+  }
+
+  async updateProfile(userId: string, data: UpdateProfileData): Promise<UserDTO> {
+    const { data: updated, error } = await this.client
+      .from('profiles')
+      .update({
+        display_name: data.displayName,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        phone: data.phone,
+        department: data.department,
+        district: data.district,
+        avatar_url: data.avatarUrl,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return updated as unknown as UserDTO;
   }
 
   onAuthStateChange(callback: (event: string, session: unknown) => void) {

@@ -5,8 +5,16 @@ import { Skeleton } from '@/presentation/components/atoms/skeleton';
 import { EventCard } from '@/presentation/components/molecules/event-card';
 import { spacing } from '@/theme/spacing';
 import { useTranslation } from '@/localization';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { type UpcomingEventsListProps } from './types';
+
+const HORIZONTAL_CARD_MIN_WIDTH = 280;
+const HORIZONTAL_CARD_MAX_WIDTH = 360;
+
+function useHorizontalCardWidth() {
+  const { width } = useWindowDimensions();
+  return Math.min(Math.max(width * 0.82, HORIZONTAL_CARD_MIN_WIDTH), HORIZONTAL_CARD_MAX_WIDTH);
+}
 
 export function UpcomingEventsList({
   events,
@@ -21,6 +29,7 @@ export function UpcomingEventsList({
   style,
 }: UpcomingEventsListProps) {
   const { t } = useTranslation();
+  const horizontalCardWidth = useHorizontalCardWidth();
   const sectionTitle = title ?? t('events.upcoming');
 
   if (isLoading) {
@@ -29,7 +38,15 @@ export function UpcomingEventsList({
         <SectionHeader title={sectionTitle} actionLabel={onViewAllPress ? t('common.viewAll') : undefined} onActionPress={onViewAllPress} />
         <View style={horizontal ? styles.skeletonHorizontal : styles.skeletonVertical}>
           {[0, 1, 2].map((i) => (
-            <Card key={i} variant="elevated" padding="none" style={horizontal ? styles.skeletonCardH : styles.skeletonCardV}>
+            <Card
+              key={i}
+              variant="elevated"
+              padding="none"
+              style={[
+                horizontal ? { width: horizontalCardWidth } : styles.skeletonCardV,
+                styles.skeletonCardBase,
+              ]}
+            >
               <Skeleton width="100%" height={140} variant="rect" />
               <View style={styles.skeletonContent}>
                 <Skeleton width="40%" height={14} />
@@ -69,7 +86,7 @@ export function UpcomingEventsList({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.horizontalList}
           renderItem={({ item }) => (
-            <View style={styles.horizontalCard}>
+            <View style={[styles.horizontalCard, { width: horizontalCardWidth }]}>
               <EventCard
                 event={item}
                 isFavorite={favorites.includes(item.id)}
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   horizontalCard: {
-    width: 300,
+    flexShrink: 0,
   },
   verticalList: {
     paddingHorizontal: spacing.lg,
@@ -138,8 +155,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     gap: spacing.md,
   },
-  skeletonCardH: {
-    width: 300,
+  skeletonCardBase: {
     overflow: 'hidden',
     borderRadius: 20,
   },

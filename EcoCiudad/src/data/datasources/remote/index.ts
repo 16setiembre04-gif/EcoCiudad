@@ -4,3 +4,4 @@ export { EventRemoteDataSource } from './event.remote-datasource';
 export { RecyclingCenterRemoteDataSource } from './recycling-center.remote-datasource';
 export { CommunityRemoteDataSource } from './community.datasource';
 export { AdminRemoteDataSource } from './admin.remote-datasource';
+export { TruckLocationRemoteDataSource } from './truck-location.remote-datasource';

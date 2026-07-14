@@ -71,7 +71,7 @@ class AuthService {
           hint: (error as any).hint,
           fullError: JSON.stringify(error, null, 2)
         });
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       if (!data.user) {
@@ -123,7 +123,7 @@ class AuthService {
 
       if (error) {
         logger.error('Citizen sign up failed', error.message);
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       if (!data.user) {
@@ -163,12 +163,12 @@ class AuthService {
       if (error) {
         logger.error('Sign in failed', error.message);
         if (error.message.includes('Invalid login credentials')) {
-          return { left: new AuthenticationError({ message: 'Correo o contraseña inválidos' }) };
+          return { left: new AuthenticationError('Correo o contraseña inválidos') };
         }
         if (error.message.includes('Email not confirmed')) {
-          return { left: new AuthenticationError({ message: 'Por favor verifica tu correo antes de iniciar sesión' }) };
+          return { left: new AuthenticationError('Por favor verifica tu correo antes de iniciar sesión') };
         }
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       if (!data.user) {
@@ -236,7 +236,7 @@ class AuthService {
 
       if (error) {
         logger.error('Reset password failed', error.message);
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       logger.info('Password reset email sent', { email });
@@ -255,7 +255,7 @@ class AuthService {
 
       if (error) {
         logger.error('Update password failed', error.message);
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       logger.info('Password updated successfully');
@@ -275,7 +275,7 @@ class AuthService {
 
       if (error) {
         logger.error('Resend verification email failed', error.message);
-        return { left: new AuthenticationError({ message: error.message }) };
+        return { left: new AuthenticationError(error.message) };
       }
 
       logger.info('Verification email resent', { email });
